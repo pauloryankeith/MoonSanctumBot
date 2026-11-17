@@ -160,6 +160,89 @@ def find_relevant_data(user_text):
     text_lower = text_lower.replace("devils dead", "devil's deed").replace("devil dead", "devil's deed")
     matches = []
     
+    # 0. Recipe Ore Detection & Stat Projection Engine (theforge.gg exact formulas)
+    ore_pattern = r'(\d+)\s*(?:x\s*)?([a-zA-Z\s\'-]+?)(?=,\s*|\s+and\s+|\s+\d+|$|\.|\n)'
+    matches_ores = re.findall(ore_pattern, user_text, re.IGNORECASE)
+    
+    parsed_ores = []
+    ore_lookup = {}
+    for item in OPTIMIZER_TRAITS:
+        if item.get("name") and item.get("multiplier"):
+            try:
+                ore_lookup[item["name"].lower()] = (item["name"], float(item["multiplier"]))
+            except (ValueError, TypeError):
+                pass
+    for ore in LIVE_ORES:
+        if ore.get("name") and ore.get("multiplier"):
+            try:
+                m_val = float(str(ore["multiplier"]).replace("x", "").strip())
+                if ore["name"].lower() not in ore_lookup:
+                    ore_lookup[ore["name"].lower()] = (ore["name"], m_val)
+            except (ValueError, TypeError):
+                pass
+
+    for count_str, name_str in matches_ores:
+        name_clean = name_str.strip().lower()
+        if len(name_clean) < 3 or name_clean in ["total", "units", "molds", "level", "lvl"]:
+            continue
+        for o_key, (official_name, m_val) in ore_lookup.items():
+            if o_key in name_clean or (len(name_clean) > 4 and name_clean in o_key):
+                parsed_ores.append((int(count_str), official_name, m_val))
+                break
+
+    if parsed_ores:
+        total_ores = sum(c for c, _, _ in parsed_ores)
+        weighted_sum = sum(c * m for c, _, m in parsed_ores)
+        calc_mult = weighted_sum / total_ores if total_ores > 0 else 1.0
+
+        # Likeliest roll by ore count (theforge.gg odds)
+        if total_ores >= 46:
+            likeliest_roll = f"{total_ores} ores, likeliest Heavy Chestplate (84% chance) at +{55.0 * calc_mult * 2.0:.2f}% Health (Masterwork 100%) or +{55.0 * calc_mult:.2f}% Health (Normal 0%)"
+        elif total_ores >= 21:
+            likeliest_roll = f"{total_ores} ores, likeliest Spear (93% chance) at {16.54 * calc_mult * 2.0:.2f} DMG (Masterwork 100%) or {16.54 * calc_mult:.2f} DMG (Normal 0%), or Heavy Armor piece at +{35.0 * calc_mult * 2.0:.2f}% Health"
+        elif total_ores >= 9:
+            likeliest_roll = f"{total_ores} ores, likeliest Swords/Katanas/Axes or Medium Armor (~12.75% base HP -> +{12.75 * calc_mult * 2.0:.2f}% Masterwork Health)"
+        else:
+            likeliest_roll = f"{total_ores} ores, likeliest Dagger or Light Armor (~5.0% base HP -> +{5.0 * calc_mult * 2.0:.2f}% Masterwork Health)"
+
+        # Check for specific armor piece in text
+        specific_stats = []
+        for a in DATABASE_ARMOR:
+            if a["name"].lower() in text_lower:
+                h_val = float(a.get("health_val", 0))
+                norm_hp = h_val * calc_mult
+                mw_hp = norm_hp * 2.0
+                specific_stats.append(f"{a['name']}: +{mw_hp:.2f}% Health (Masterwork 100%) | +{norm_hp:.2f}% Health (Normal 0%) [Base: {h_val}%]")
+
+        # Check for specific weapon piece in text
+        for w in DATABASE_WEAPONS:
+            if w["name"].lower() in text_lower:
+                try:
+                    dmg_val = float(w.get("damage", 0))
+                    norm_dmg = dmg_val * calc_mult
+                    mw_dmg = norm_dmg * 2.0
+                    specific_stats.append(f"{w['name']}: {mw_dmg:.2f} DMG (Masterwork 100%) | {norm_dmg:.2f} DMG (Normal 0%) [Base: {dmg_val} DMG]")
+                except (ValueError, TypeError):
+                    pass
+
+        # Build exact projection block
+        proj_str = (
+            f"=== EXACT RECIPE STAT PROJECTION (theforge.gg verified) ===\n"
+            f"• Crucible Ore Count: {total_ores} total units\n"
+            f"• Weighted Multiplier: {calc_mult:.3f}x\n"
+            f"• Likeliest Equipment Roll: {likeliest_roll}\n"
+        )
+        if specific_stats:
+            proj_str += f"• Specific Item Projections:\n  " + "\n  ".join(f"• {s}" for s in specific_stats) + "\n"
+        else:
+            proj_str += (
+                f"• Armor Benchmarks: Heavy Chestplate (55% base): +{55.0 * calc_mult * 2.0:.2f}% HP (Masterwork 100%) | +{55.0 * calc_mult:.2f}% HP (Normal)\n"
+                f"  Medium Chestplate/Samurai (12.75% base): +{12.75 * calc_mult * 2.0:.2f}% HP (Masterwork 100%) | +{12.75 * calc_mult:.2f}% HP (Normal)\n"
+                f"• Weapon Benchmark: Spear/Colossal Sword: {16.54 * calc_mult * 2.0:.2f} DMG (Masterwork 100%) | {16.54 * calc_mult:.2f} DMG (Normal)\n"
+            )
+        proj_str += "========================================================="
+        matches.append(proj_str)
+
     # 1. Check weapon database (DPS, Damage, Speed, Range, Chance)
     for w in DATABASE_WEAPONS:
         w_name = w["name"].lower()
@@ -229,7 +312,7 @@ def find_relevant_data(user_text):
         if re.search(pattern, text_lower) and not any(ore["name"] in m for m in matches):
             matches.append(f"- {ore['name']} ({ore['rarity']}): Location '{ore['location']}', Mult: {ore['multiplier']}, Price: {ore['price']}")
 
-    return "\n".join(matches[:4]) if matches else ""
+    return "\n".join(matches[:7]) if matches else ""
 
 def live_web_search(query: str, max_results: int = 3):
     """Searches the live web via DuckDuckGo with smart domain targeting."""
@@ -326,6 +409,7 @@ NPCS = {
             "3. Common typos: 'devil's dead' is the colossal sword 'Devil's Deed'. "
             "4. If a guild member asks about someone (e.g. @Zyee, @seiko), refer strictly to that person by name. "
             "5. For casual banter: 1-2 chill, friendly sentences. For forge/armor recipes or calculations: give an expert, precise master-blacksmith breakdown."
+            "6. Whenever evaluating a recipe or ore combination, you MUST explicitly include an 'Approximate Stats' section grounded in the Verified Data: report the likeliest equipment roll (e.g. '51 ores: likeliest roll is Heavy Chestplate (84% chance)'), state the exact expected stats for both Masterwork 100% Quality (doubles base stats at 2.0x) and Normal (0% Quality), and include any specific piece mentioned (e.g. Samurai Chestplate at Masterwork: +463.25% Health)."
         )
     }
 }
@@ -528,7 +612,8 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         "CRITICAL DISCORD FORMATTING RULE:\n"
         "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
         "Write all math and equations in plain, clean Discord text (e.g. 'Base Health % * Multiplier * Quality' or '386.75 / 51 = 18.16x').\n"
-        "2. Be thorough, detailed, and complete in your blacksmithing and equipment analysis. Do not abruptly cut off; fully explain all numbers, traits, and armor mechanics in depth.\n\n"
+        "2. Be thorough, detailed, and complete in your blacksmithing and equipment analysis. Do not abruptly cut off; fully explain all numbers, traits, and armor mechanics in depth.\n"
+        "3. When evaluating forge recipes or ore combinations, always include an 'Approximate Stats' section reporting the likeliest roll and expected stats (both Normal and Masterwork 100% Quality) from the Verified Data.\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
         f"Respond as {npc['name']} in clean Discord format:"
     )
