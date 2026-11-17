@@ -1,0 +1,690 @@
+[
+  {
+    "name": "Light Set",
+    "class": "Light",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Light Helmet",
+        "slot": "Helmet",
+        "health": 3.75
+      },
+      {
+        "name": "Light Chestplate",
+        "slot": "Chestplate",
+        "health": 5
+      },
+      {
+        "name": "Light Leggings",
+        "slot": "Leggings",
+        "health": 4.375
+      }
+    ],
+    "per_piece_stats": [
+      "Movement speed: +15"
+    ],
+    "ability_name": "None",
+    "ability_desc": "",
+    "weapon_affinity": "Daggers",
+    "weapon_stats": [
+      "Attack speed: +12.5"
+    ],
+    "affinity_weapons": [
+      "Cultist Dagger",
+      "Curved Dagger",
+      "Dagger",
+      "Damascus Dagger",
+      "Falchion Knife",
+      "Gladius Dagger",
+      "Hook",
+      "Jitte",
+      "Kunai",
+      "Shark's Fangs",
+      "Tanto"
+    ]
+  },
+  {
+    "name": "Ninja Set",
+    "class": "Light",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Ninja's Headgear",
+        "slot": "Helmet",
+        "health": 9
+      },
+      {
+        "name": "Ninja's Armor",
+        "slot": "Chestplate",
+        "health": 13.5
+      },
+      {
+        "name": "Ninja's Leggings",
+        "slot": "Leggings",
+        "health": 10
+      }
+    ],
+    "per_piece_stats": [
+      "Movement speed: +10"
+    ],
+    "ability_name": "Shadow Step",
+    "ability_desc": "While not sprinting, 25% chance to dodge an attack.",
+    "weapon_affinity": "Ninja weapons",
+    "weapon_stats": [
+      "Attack speed: +12",
+      "Lethality: +12"
+    ],
+    "affinity_weapons": [
+      "Kunai",
+      "Tanto",
+      "Jitte",
+      "Chokuto",
+      "Sodegarami",
+      "Bo Staff",
+      "Straight Edge Katana",
+      "Hook Blade"
+    ]
+  },
+  {
+    "name": "Voidstrider Set",
+    "class": "Light",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Voidstrider's Helmet",
+        "slot": "Helmet",
+        "health": 16
+      },
+      {
+        "name": "Voidstrider's Chestplate",
+        "slot": "Chestplate",
+        "health": 22
+      },
+      {
+        "name": "Voidstrider's Leggings",
+        "slot": "Leggings",
+        "health": 18
+      }
+    ],
+    "per_piece_stats": [
+      "Movement speed: +10"
+    ],
+    "ability_name": "Void Step",
+    "ability_desc": "After a dash, your first hit within 2 seconds deals 30% more damage.",
+    "weapon_affinity": "Rogue weapons",
+    "weapon_stats": [
+      "Attack speed: +10",
+      "Lethality: +10"
+    ],
+    "affinity_weapons": [
+      "Dagger",
+      "Falchion Knife",
+      "Curved Dagger",
+      "Damascus Dagger",
+      "Falchion"
+    ]
+  },
+  {
+    "name": "Medium Set",
+    "class": "Medium",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Medium Helmet",
+        "slot": "Helmet",
+        "health": 6.25
+      },
+      {
+        "name": "Medium Chestplate",
+        "slot": "Chestplate",
+        "health": 8.75
+      },
+      {
+        "name": "Medium Leggings",
+        "slot": "Leggings",
+        "health": 7.5
+      }
+    ],
+    "per_piece_stats": [
+      "Stamina: +10"
+    ],
+    "ability_name": "Second Breath",
+    "ability_desc": "Successful attacks restore 2% stamina.",
+    "weapon_affinity": "Gladiator weapons",
+    "weapon_stats": [
+      "Attack speed: +20",
+      "Lethality: +20"
+    ],
+    "affinity_weapons": [
+      "Gladius",
+      "Gladius Dagger"
+    ]
+  },
+  {
+    "name": "Samurai Set",
+    "class": "Medium",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Samurai Helmet",
+        "slot": "Helmet",
+        "health": 8
+      },
+      {
+        "name": "Samurai Chestplate",
+        "slot": "Chestplate",
+        "health": 12.75
+      },
+      {
+        "name": "Samurai Leggings",
+        "slot": "Leggings",
+        "health": 9
+      }
+    ],
+    "per_piece_stats": [
+      "Damage reduction: +8"
+    ],
+    "ability_name": "None",
+    "ability_desc": "",
+    "weapon_affinity": "Samurai weapons",
+    "weapon_stats": [
+      "Attack speed: +10",
+      "Lethality: +10"
+    ],
+    "affinity_weapons": [
+      "Uchigatana",
+      "Tachi",
+      "Juto Katana",
+      "Kurokiba-gatana",
+      "Washi-maru",
+      "Hachiwari",
+      "Shakujo",
+      "Naginata",
+      "Sharktooth Odachi"
+    ]
+  },
+  {
+    "name": "Viking Set",
+    "class": "Medium",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Viking Helmet",
+        "slot": "Helmet",
+        "health": 10.5
+      },
+      {
+        "name": "Viking Chestplate",
+        "slot": "Chestplate",
+        "health": 15
+      },
+      {
+        "name": "Viking Leggings",
+        "slot": "Leggings",
+        "health": 11
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Berserker",
+    "ability_desc": "Below 50% health: +35% physical damage and movement speed for 8 seconds. 30 second cooldown.",
+    "weapon_affinity": "Viking weapons",
+    "weapon_stats": [
+      "Stun damage: +12.5",
+      "Attack speed: +12.5",
+      "Lethality: +12.5"
+    ],
+    "affinity_weapons": [
+      "Axe",
+      "Battleaxe",
+      "Curved Handle Axe",
+      "Spade Armed Axe",
+      "Ornate Short Axe",
+      "Double Battle Axe",
+      "Greater Battle Axe"
+    ]
+  },
+  {
+    "name": "Rootguard Set",
+    "class": "Medium",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Rootguard Helmet",
+        "slot": "Helmet",
+        "health": 15
+      },
+      {
+        "name": "Rootguard Chestplate",
+        "slot": "Chestplate",
+        "health": 21
+      },
+      {
+        "name": "Rootguard Leggings",
+        "slot": "Leggings",
+        "health": 17
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Grove",
+    "ability_desc": "15% chance on hit to grow a grove for 5 seconds that heals you and nearby allies 1.5% max health per second. 20 second cooldown. Every weapon heals 5% of damage dealt (max 8% of max health).",
+    "weapon_affinity": "Graveyard and Holy weapons",
+    "weapon_stats": [
+      "Attack speed: +10",
+      "Lethality: +10"
+    ],
+    "affinity_weapons": [
+      "Grave Maker",
+      "Coffin Lid",
+      "Scythe",
+      "Reaper Scythe",
+      "Skull Crusher",
+      "Executioner's Greataxe",
+      "The Carver",
+      "Jack's Crest",
+      "Thornspine",
+      "Excalibur",
+      "Angelic Spear",
+      "Sun Great Axe",
+      "Moon Crescent Spear",
+      "Royal Guardian's Glaive"
+    ]
+  },
+  {
+    "name": "Gloomwarden Set",
+    "class": "Medium",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Gloomwarden's Helmet",
+        "slot": "Helmet",
+        "health": 24
+      },
+      {
+        "name": "Gloomwarden's Chestplate",
+        "slot": "Chestplate",
+        "health": 33
+      },
+      {
+        "name": "Gloomwarden's Leggings",
+        "slot": "Leggings",
+        "health": 27
+      }
+    ],
+    "per_piece_stats": [
+      "Stamina: +8"
+    ],
+    "ability_name": "Gloom Guard",
+    "ability_desc": "A hit that would take over 10% of your max health is blocked automatically for 25 stamina. 8 second cooldown.",
+    "weapon_affinity": "Crystallized weapons",
+    "weapon_stats": [
+      "Attack speed: +10",
+      "Lethality: +10"
+    ],
+    "affinity_weapons": [
+      "Colossal Gemblade",
+      "Crystalized Broadsword"
+    ]
+  },
+  {
+    "name": "Knight Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Knight Helmet",
+        "slot": "Helmet",
+        "health": 12.5
+      },
+      {
+        "name": "Knight Chestplate",
+        "slot": "Chestplate",
+        "health": 16.25
+      },
+      {
+        "name": "Knight Leggings",
+        "slot": "Leggings",
+        "health": 13.75
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Riposte",
+    "ability_desc": "Parrying an attack makes your next attack deal 35% more damage.",
+    "weapon_affinity": "Knight weapons",
+    "weapon_stats": [
+      "Attack speed: +7.5",
+      "Lethality: +7.5"
+    ],
+    "affinity_weapons": [
+      "Crusader Sword",
+      "Long Sword",
+      "Zweihander",
+      "Great Sword",
+      "Spear",
+      "Knight Spear",
+      "Halberd",
+      "Spiked Halberd",
+      "Spiked Mace",
+      "Rapier"
+    ]
+  },
+  {
+    "name": "Dark Knight Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Dark Knight Helmet",
+        "slot": "Helmet",
+        "health": 18.75
+      },
+      {
+        "name": "Dark Knight Chestplate",
+        "slot": "Chestplate",
+        "health": 25
+      },
+      {
+        "name": "Dark Knight Leggings",
+        "slot": "Leggings",
+        "health": 21.875
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Thorns",
+    "ability_desc": "Reflect 12.5% of physical damage taken (max 5% of your max health).",
+    "weapon_affinity": "Dark Knight weapons",
+    "weapon_stats": [
+      "Attack speed: +7.5",
+      "Lethality: +7.5"
+    ],
+    "affinity_weapons": [
+      "Dark Knight's Gauntlets",
+      "Dark Knight's Greatsword"
+    ]
+  },
+  {
+    "name": "Wolf Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Wolf Helmet",
+        "slot": "Helmet",
+        "health": 25
+      },
+      {
+        "name": "Wolf Chestplate",
+        "slot": "Chestplate",
+        "health": 35
+      },
+      {
+        "name": "Wolf Leggings",
+        "slot": "Leggings",
+        "health": 28
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Pack Tactics",
+    "ability_desc": "+5% lethality and attack speed for each nearby ally (up to 4), lasting 10 seconds. Max +20%.",
+    "weapon_affinity": "Gauntlets",
+    "weapon_stats": [
+      "Attack speed: +7.5",
+      "Lethality: +7.5"
+    ],
+    "affinity_weapons": [
+      "Boxing Gloves",
+      "Dark Knight's Gauntlets",
+      "Ironhand",
+      "Relevator",
+      "Savage Claws"
+    ]
+  },
+  {
+    "name": "Raven Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Raven's Helmet",
+        "slot": "Helmet",
+        "health": 26.5
+      },
+      {
+        "name": "Raven's Chestplate",
+        "slot": "Chestplate",
+        "health": 37
+      },
+      {
+        "name": "Raven's Leggings",
+        "slot": "Leggings",
+        "health": 29.25
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Blood Pact",
+    "ability_desc": "In combat: lose 1% max health every 2 seconds for +15% lethality and attack speed. Stops at 50% health. Kills heal 1.5% max health.",
+    "weapon_affinity": "Hellbound weapons",
+    "weapon_stats": [
+      "Attack speed: +7.5",
+      "Lethality: +7.5"
+    ],
+    "affinity_weapons": [
+      "Demonic Spear",
+      "Devil's Deed",
+      "Chaos",
+      "Cultist Dagger",
+      "Batwing Reaver",
+      "Duskwing Cleaver"
+    ]
+  },
+  {
+    "name": "Vanguard Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Vanguard Helmet",
+        "slot": "Helmet",
+        "health": 29
+      },
+      {
+        "name": "Vanguard Chestplate",
+        "slot": "Chestplate",
+        "health": 40
+      },
+      {
+        "name": "Vanguard Leggings",
+        "slot": "Leggings",
+        "health": 32
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Shield",
+    "ability_desc": "35% chance on hit to take 25% less damage.",
+    "weapon_affinity": "Halberds and spears",
+    "weapon_stats": [
+      "Attack speed: +7.5",
+      "Lethality: +7.5"
+    ],
+    "affinity_weapons": [
+      "Fangtian",
+      "Halberd",
+      "Royal Guardian's Glaive",
+      "Spiked Halberd",
+      "Angelic Spear",
+      "Bo Staff",
+      "Compass Spear",
+      "Demonic Spear",
+      "Knight Spear",
+      "Moon Crescent Spear",
+      "Naginata",
+      "Shakujo",
+      "Sodegarami",
+      "Spear",
+      "Trident"
+    ]
+  },
+  {
+    "name": "Shogun Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Shogun's Helmet",
+        "slot": "Helmet",
+        "health": 34
+      },
+      {
+        "name": "Shogun's Chestplate",
+        "slot": "Chestplate",
+        "health": 46
+      },
+      {
+        "name": "Shogun's Leggings",
+        "slot": "Leggings",
+        "health": 36
+      }
+    ],
+    "per_piece_stats": [],
+    "ability_name": "Focus",
+    "ability_desc": "Blocks and parries give 1 Focus. At 3 Focus your next attack uses them all and deals 150% more damage.",
+    "weapon_affinity": "Katanas and halberds",
+    "weapon_stats": [
+      "Attack speed: +6",
+      "Lethality: +6"
+    ],
+    "affinity_weapons": [
+      "Juto Katana",
+      "Kurokiba-gatana",
+      "Straight Edge Katana",
+      "Tachi",
+      "Uchigatana",
+      "Washi-maru",
+      "Fangtian",
+      "Halberd",
+      "Royal Guardian's Glaive",
+      "Spiked Halberd"
+    ]
+  },
+  {
+    "name": "Juggernaut Set",
+    "class": "Heavy",
+    "pieces_count": 2,
+    "pieces": [
+      {
+        "name": "Juggernaut's Chestplate",
+        "slot": "Chestplate",
+        "health": 53
+      },
+      {
+        "name": "Juggernaut's Leggings",
+        "slot": "Leggings",
+        "health": 41
+      }
+    ],
+    "per_piece_stats": [
+      "Damage reduction: +10"
+    ],
+    "ability_name": "Impact",
+    "ability_desc": "25% of the damage you take is stored as Impact. Your next attack releases it as extra damage (max 15% of your max health).",
+    "weapon_affinity": "Colossal weapons and greatswords",
+    "weapon_stats": [
+      "Attack speed: +5",
+      "Lethality: +5"
+    ],
+    "affinity_weapons": [
+      "Coffin Lid",
+      "Colossal Gemblade",
+      "Colossal Terrorblade",
+      "Comically Large Spoon",
+      "Devil's Deed",
+      "Dragon Slayer",
+      "Excalibur",
+      "Great Sword",
+      "Hammer",
+      "Kinmon Kamagatana",
+      "Otsuchi",
+      "Sharktooth Odachi",
+      "Skull Crusher",
+      "Anchored Greatsword",
+      "Crusader Sword",
+      "Dark Knight's Greatsword",
+      "Jack's Crest",
+      "Long Sword",
+      "The Carver",
+      "Zweihander"
+    ]
+  },
+  {
+    "name": "Dreadhorn Set",
+    "class": "Heavy",
+    "pieces_count": 3,
+    "pieces": [
+      {
+        "name": "Dreadhorn's Helmet",
+        "slot": "Helmet",
+        "health": 38
+      },
+      {
+        "name": "Dreadhorn's Chestplate",
+        "slot": "Chestplate",
+        "health": 55
+      },
+      {
+        "name": "Dreadhorn's Leggings",
+        "slot": "Leggings",
+        "health": 43
+      }
+    ],
+    "per_piece_stats": [
+      "Damage reduction: +4"
+    ],
+    "ability_name": "Dead Impaler",
+    "ability_desc": "The 5th hit in a row on the same enemy impales it: it bleeds 5% of your weapon damage every second for 5 seconds and is stunned for 1 second. 20 second cooldown.",
+    "weapon_affinity": "Sword & Shield",
+    "weapon_stats": [
+      "Attack speed: +8",
+      "Lethality: +8"
+    ],
+    "affinity_weapons": [
+      "Knight's Bulwark",
+      "Rosethorn"
+    ]
+  },
+  {
+    "name": "Goblin's Crown",
+    "class": "Heavy",
+    "pieces_count": 1,
+    "pieces": [
+      {
+        "name": "Goblin's Crown",
+        "slot": "Helmet",
+        "health": 26
+      }
+    ],
+    "per_piece_stats": [
+      "Luck: +10"
+    ],
+    "ability_name": "Goblin's Greed",
+    "ability_desc": "+10% gold from selling and enemies, +10% chance for extra ore, 5% shop discount. You take 30% more damage.",
+    "weapon_affinity": "Brute weapons",
+    "weapon_stats": [
+      "Attack speed: +5",
+      "Lethality: +5"
+    ],
+    "affinity_weapons": [
+      "Tetsubo",
+      "Kanabo",
+      "Otsuchi",
+      "Kinmon Kamagatana",
+      "Ironhand",
+      "Boxing Gloves",
+      "Relevator",
+      "Mace",
+      "Hammerhead Mace",
+      "Hammer",
+      "Spiked Mace",
+      "Winged Mace",
+      "Colossal Terrorblade"
+    ]
+  }
+]

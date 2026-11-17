@@ -1,0 +1,1424 @@
+[
+  {
+    "name": "Stone",
+    "location": "Stonewake's Cross",
+    "rarity": "Common",
+    "multiplier": "0.2x",
+    "chance": "1/1",
+    "price": "3$",
+    "trait": ""
+  },
+  {
+    "name": "Sand Stone",
+    "location": "Stonewake's Cross",
+    "rarity": "Common",
+    "multiplier": "0.25x",
+    "chance": "1/2",
+    "price": "3.75$",
+    "trait": ""
+  },
+  {
+    "name": "Copper",
+    "location": "Stonewake's Cross",
+    "rarity": "Common",
+    "multiplier": "0.3x",
+    "chance": "1/3",
+    "price": "4.5$",
+    "trait": ""
+  },
+  {
+    "name": "Iron",
+    "location": "Stonewake's Cross",
+    "rarity": "Common",
+    "multiplier": "0.35x",
+    "chance": "1/5",
+    "price": "5.25$",
+    "trait": ""
+  },
+  {
+    "name": "Tin",
+    "location": "Stonewake's Cross",
+    "rarity": "Uncommon",
+    "multiplier": "0.43x",
+    "chance": "1/7",
+    "price": "6.38$",
+    "trait": ""
+  },
+  {
+    "name": "Silver",
+    "location": "Stonewake's Cross",
+    "rarity": "Uncommon",
+    "multiplier": "0.5x",
+    "chance": "1/12",
+    "price": "7.5$",
+    "trait": ""
+  },
+  {
+    "name": "Gold",
+    "location": "Stonewake's Cross",
+    "rarity": "Uncommon",
+    "multiplier": "0.65x",
+    "chance": "1/16",
+    "price": "19.5$",
+    "trait": ""
+  },
+  {
+    "name": "Mushroomite",
+    "location": "Stonewake's Cross",
+    "rarity": "Rare",
+    "multiplier": "0.8x",
+    "chance": "1/22",
+    "price": "12$",
+    "trait": ""
+  },
+  {
+    "name": "Platinum",
+    "location": "Stonewake's Cross",
+    "rarity": "Rare",
+    "multiplier": "0.8x",
+    "chance": "1/28",
+    "price": "12$",
+    "trait": ""
+  },
+  {
+    "name": "Bananite",
+    "location": "Stonewake's Cross",
+    "rarity": "Uncommon",
+    "multiplier": "0.85x",
+    "chance": "1/30",
+    "price": "12.75$",
+    "trait": ""
+  },
+  {
+    "name": "Cardboardite",
+    "location": "Stonewake's Cross",
+    "rarity": "Common",
+    "multiplier": "0.7x",
+    "chance": "1/31",
+    "price": "10.5$",
+    "trait": ""
+  },
+  {
+    "name": "Aite",
+    "location": "Stonewake's Cross",
+    "rarity": "Epic",
+    "multiplier": "1.1x",
+    "chance": "1/44",
+    "price": "16.5$",
+    "trait": ""
+  },
+  {
+    "name": "Poopite",
+    "location": "Stonewake's Cross",
+    "rarity": "Epic",
+    "multiplier": "1.2x",
+    "chance": "1/131",
+    "price": "18$",
+    "trait": ""
+  },
+  {
+    "name": "Fichillium",
+    "location": "Stonewake's Cross",
+    "rarity": "Relic",
+    "multiplier": "0x",
+    "chance": "1/1",
+    "price": "0$",
+    "trait": ""
+  },
+  {
+    "name": "Cobalt",
+    "location": "Forgotten Kingdom",
+    "rarity": "Uncommon",
+    "multiplier": "1x",
+    "chance": "1/37",
+    "price": "15$",
+    "trait": ""
+  },
+  {
+    "name": "Titanium",
+    "location": "Forgotten Kingdom",
+    "rarity": "Uncommon",
+    "multiplier": "1.15x",
+    "chance": "1/50",
+    "price": "17.25$",
+    "trait": ""
+  },
+  {
+    "name": "Lapis Lazuli",
+    "location": "Forgotten Kingdom",
+    "rarity": "Uncommon",
+    "multiplier": "1.3x",
+    "chance": "1/73",
+    "price": "19.5$",
+    "trait": ""
+  },
+  {
+    "name": "Boneite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "1.2x",
+    "chance": "1/222",
+    "price": "18$",
+    "trait": ""
+  },
+  {
+    "name": "Volcanic Rock",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "1.55x",
+    "chance": "1/55",
+    "price": "23.25$",
+    "trait": ""
+  },
+  {
+    "name": "Quartz",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "1.5x",
+    "chance": "1/90",
+    "price": "22.5$",
+    "trait": ""
+  },
+  {
+    "name": "Amethyst",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "1.65x",
+    "chance": "1/115",
+    "price": "24.75$",
+    "trait": ""
+  },
+  {
+    "name": "Topaz",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "1.75x",
+    "chance": "1/143",
+    "price": "26.25$",
+    "trait": ""
+  },
+  {
+    "name": "Diamond",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "2x",
+    "chance": "1/192",
+    "price": "30$",
+    "trait": ""
+  },
+  {
+    "name": "Dark Boneite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "2.25x",
+    "chance": "1/555",
+    "price": "33.75$",
+    "trait": ""
+  },
+  {
+    "name": "Sapphire",
+    "location": "Forgotten Kingdom",
+    "rarity": "Rare",
+    "multiplier": "2.25x",
+    "chance": "1/247",
+    "price": "33.75$",
+    "trait": ""
+  },
+  {
+    "name": "Cuprite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Epic",
+    "multiplier": "2.43x",
+    "chance": "1/303",
+    "price": "36.45$",
+    "trait": ""
+  },
+  {
+    "name": "Obsidian",
+    "location": "Forgotten Kingdom",
+    "rarity": "Epic",
+    "multiplier": "2.35x",
+    "chance": "1/333",
+    "price": "35.25$",
+    "trait": ""
+  },
+  {
+    "name": "Emerald",
+    "location": "Forgotten Kingdom",
+    "rarity": "Epic",
+    "multiplier": "2.55x",
+    "chance": "1/363",
+    "price": "38.25$",
+    "trait": ""
+  },
+  {
+    "name": "Ruby",
+    "location": "Forgotten Kingdom",
+    "rarity": "Epic",
+    "multiplier": "2.95x",
+    "chance": "1/487",
+    "price": "44.25$",
+    "trait": ""
+  },
+  {
+    "name": "Rivalite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Epic",
+    "multiplier": "3.33x",
+    "chance": "1/569",
+    "price": "49.95$",
+    "trait": ""
+  },
+  {
+    "name": "Slimite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Epic",
+    "multiplier": "2.25x",
+    "chance": "1/247",
+    "price": "33.75$",
+    "trait": ""
+  },
+  {
+    "name": "Uranium",
+    "location": "Forgotten Kingdom",
+    "rarity": "Legendary",
+    "multiplier": "3x",
+    "chance": "1/777",
+    "price": "66$",
+    "trait": ""
+  },
+  {
+    "name": "Mythril",
+    "location": "Forgotten Kingdom",
+    "rarity": "Legendary",
+    "multiplier": "3.5x",
+    "chance": "Crafted",
+    "price": "52.5$",
+    "trait": ""
+  },
+  {
+    "name": "Eye Ore",
+    "location": "Forgotten Kingdom",
+    "rarity": "Legendary",
+    "multiplier": "4x",
+    "chance": "Crafted",
+    "price": "60$",
+    "trait": ""
+  },
+  {
+    "name": "Fireite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Legendary",
+    "multiplier": "4.5x",
+    "chance": "1/2,187",
+    "price": "67.5$",
+    "trait": ""
+  },
+  {
+    "name": "Magmaite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Legendary",
+    "multiplier": "5x",
+    "chance": "Crafted",
+    "price": "75$",
+    "trait": ""
+  },
+  {
+    "name": "Lightite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Legendary",
+    "multiplier": "4.6x",
+    "chance": "Crafted",
+    "price": "69$",
+    "trait": ""
+  },
+  {
+    "name": "Demonite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Mythic",
+    "multiplier": "5.5x",
+    "chance": "Crafted",
+    "price": "82.5$",
+    "trait": ""
+  },
+  {
+    "name": "Darkryte",
+    "location": "Forgotten Kingdom",
+    "rarity": "Mythic",
+    "multiplier": "6.3x",
+    "chance": "Crafted",
+    "price": "94.5$",
+    "trait": ""
+  },
+  {
+    "name": "Royal Boneite",
+    "location": "Forgotten Kingdom",
+    "rarity": "Mythic",
+    "multiplier": "6.7x",
+    "chance": "1/12",
+    "price": "301.5$",
+    "trait": ""
+  },
+  {
+    "name": "Orange Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Epic",
+    "multiplier": "3x",
+    "chance": "Crafted",
+    "price": "45$",
+    "trait": ""
+  },
+  {
+    "name": "Magenta Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Epic",
+    "multiplier": "3.1x",
+    "chance": "Crafted",
+    "price": "46.5$",
+    "trait": ""
+  },
+  {
+    "name": "Green Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Epic",
+    "multiplier": "3.2x",
+    "chance": "Crafted",
+    "price": "48$",
+    "trait": ""
+  },
+  {
+    "name": "Crimson Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Epic",
+    "multiplier": "3.3x",
+    "chance": "Crafted",
+    "price": "49.5$",
+    "trait": ""
+  },
+  {
+    "name": "Blue Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Epic",
+    "multiplier": "3.4x",
+    "chance": "Crafted",
+    "price": "51$",
+    "trait": ""
+  },
+  {
+    "name": "Rainbow Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Legendary",
+    "multiplier": "5.25x",
+    "chance": "Crafted",
+    "price": "78.75$",
+    "trait": ""
+  },
+  {
+    "name": "Arcane Crystal",
+    "location": "Goblin Cave",
+    "rarity": "Mythic",
+    "multiplier": "9x",
+    "chance": "Crafted",
+    "price": "135$",
+    "trait": ""
+  },
+  {
+    "name": "Grass",
+    "location": "Frostspire Expanse",
+    "rarity": "Common",
+    "multiplier": "0.1x",
+    "chance": "1/23",
+    "price": "1.5$",
+    "trait": ""
+  },
+  {
+    "name": "Tungsten",
+    "location": "Frostspire Expanse",
+    "rarity": "Common",
+    "multiplier": "1.95x",
+    "chance": "Crafted",
+    "price": "48.75$",
+    "trait": ""
+  },
+  {
+    "name": "Sulfur",
+    "location": "Frostspire Expanse",
+    "rarity": "Uncommon",
+    "multiplier": "2.1x",
+    "chance": "Crafted",
+    "price": "51.56$",
+    "trait": ""
+  },
+  {
+    "name": "Pumice",
+    "location": "Frostspire Expanse",
+    "rarity": "Rare",
+    "multiplier": "2.2x",
+    "chance": "Crafted",
+    "price": "54.38$",
+    "trait": ""
+  },
+  {
+    "name": "Graphite",
+    "location": "Frostspire Expanse",
+    "rarity": "Rare",
+    "multiplier": "2.33x",
+    "chance": "Crafted",
+    "price": "58.13$",
+    "trait": ""
+  },
+  {
+    "name": "Aetherit",
+    "location": "Frostspire Expanse",
+    "rarity": "Rare",
+    "multiplier": "2.55x",
+    "chance": "Crafted",
+    "price": "63.75$",
+    "trait": ""
+  },
+  {
+    "name": "Scheelite",
+    "location": "Frostspire Expanse",
+    "rarity": "Rare",
+    "multiplier": "2.8x",
+    "chance": "Crafted",
+    "price": "69.38$",
+    "trait": ""
+  },
+  {
+    "name": "Larimar",
+    "location": "Frostspire Expanse",
+    "rarity": "Epic",
+    "multiplier": "3.1x",
+    "chance": "Crafted",
+    "price": "76.88$",
+    "trait": ""
+  },
+  {
+    "name": "Neurotite",
+    "location": "Frostspire Expanse",
+    "rarity": "Epic",
+    "multiplier": "3.2x",
+    "chance": "Crafted",
+    "price": "80.63$",
+    "trait": ""
+  },
+  {
+    "name": "Frost Fossil",
+    "location": "Frostspire Expanse",
+    "rarity": "Epic",
+    "multiplier": "3.34x",
+    "chance": "Crafted",
+    "price": "84.38$",
+    "trait": ""
+  },
+  {
+    "name": "Tide Carve",
+    "location": "Frostspire Expanse",
+    "rarity": "Epic",
+    "multiplier": "3.5x",
+    "chance": "Crafted",
+    "price": "88.13$",
+    "trait": ""
+  },
+  {
+    "name": "Velchire",
+    "location": "Frostspire Expanse",
+    "rarity": "Legendary",
+    "multiplier": "4.7x",
+    "chance": "Crafted",
+    "price": "103.13$",
+    "trait": ""
+  },
+  {
+    "name": "Sanctis",
+    "location": "Frostspire Expanse",
+    "rarity": "Legendary",
+    "multiplier": "5x",
+    "chance": "1/305",
+    "price": "112.5$",
+    "trait": ""
+  },
+  {
+    "name": "Snowite",
+    "location": "Frostspire Expanse",
+    "rarity": "Legendary",
+    "multiplier": "6x",
+    "chance": "Crafted",
+    "price": "150$",
+    "trait": ""
+  },
+  {
+    "name": "Iceite",
+    "location": "Frostspire Expanse",
+    "rarity": "Mythic",
+    "multiplier": "8x",
+    "chance": "Crafted",
+    "price": "196.88$",
+    "trait": ""
+  },
+  {
+    "name": "Prismatic Heart",
+    "location": "Frostspire Expanse",
+    "rarity": "Legendary",
+    "multiplier": "4.3x",
+    "chance": "1/5,555",
+    "price": "112.5$",
+    "trait": ""
+  },
+  {
+    "name": "Mistvein",
+    "location": "The Peak",
+    "rarity": "Rare",
+    "multiplier": "5.4x",
+    "chance": "Crafted",
+    "price": "135$",
+    "trait": ""
+  },
+  {
+    "name": "Lgarite",
+    "location": "The Peak",
+    "rarity": "Rare",
+    "multiplier": "5.7x",
+    "chance": "Crafted",
+    "price": "140.63$",
+    "trait": ""
+  },
+  {
+    "name": "Voidfractal",
+    "location": "The Peak",
+    "rarity": "Rare",
+    "multiplier": "6x",
+    "chance": "Crafted",
+    "price": "150$",
+    "trait": ""
+  },
+  {
+    "name": "Moltenfrost",
+    "location": "The Peak",
+    "rarity": "Epic",
+    "multiplier": "6.2x",
+    "chance": "Crafted",
+    "price": "155.63$",
+    "trait": ""
+  },
+  {
+    "name": "Crimsonite",
+    "location": "The Peak",
+    "rarity": "Epic",
+    "multiplier": "5.8x",
+    "chance": "Crafted",
+    "price": "159.38$",
+    "trait": ""
+  },
+  {
+    "name": "Malachite",
+    "location": "The Peak",
+    "rarity": "Epic",
+    "multiplier": "6.4x",
+    "chance": "Crafted",
+    "price": "165$",
+    "trait": ""
+  },
+  {
+    "name": "Aqujade",
+    "location": "The Peak",
+    "rarity": "Epic",
+    "multiplier": "6.75x",
+    "chance": "Crafted",
+    "price": "168.75$",
+    "trait": ""
+  },
+  {
+    "name": "Cryptex",
+    "location": "The Peak",
+    "rarity": "Epic",
+    "multiplier": "7x",
+    "chance": "Crafted",
+    "price": "174.38$",
+    "trait": ""
+  },
+  {
+    "name": "Galestor",
+    "location": "The Peak",
+    "rarity": "Epic",
+    "multiplier": "7.2x",
+    "chance": "Crafted",
+    "price": "178.13$",
+    "trait": ""
+  },
+  {
+    "name": "Voidstar",
+    "location": "The Peak",
+    "rarity": "Legendary",
+    "multiplier": "7.5x",
+    "chance": "Crafted",
+    "price": "187.5$",
+    "trait": ""
+  },
+  {
+    "name": "Etherealite",
+    "location": "The Peak",
+    "rarity": "Mythic",
+    "multiplier": "8.5x",
+    "chance": "Crafted",
+    "price": "208.13$",
+    "trait": ""
+  },
+  {
+    "name": "Suryafal",
+    "location": "The Peak",
+    "rarity": "Relic",
+    "multiplier": "11.5x",
+    "chance": "Crafted",
+    "price": "328.13$",
+    "trait": ""
+  },
+  {
+    "name": "Heavenite",
+    "location": "The Peak",
+    "rarity": "Divine",
+    "multiplier": "13.7x",
+    "chance": "Crafted",
+    "price": "468.75$",
+    "trait": ""
+  },
+  {
+    "name": "Gargantuan",
+    "location": "The Peak",
+    "rarity": "Divine",
+    "multiplier": "15x",
+    "chance": "Crafted",
+    "price": "624.38$",
+    "trait": ""
+  },
+  {
+    "name": "Mosasaursit",
+    "location": "The Peak",
+    "rarity": "Exotic",
+    "multiplier": "7.5x",
+    "chance": "1/1",
+    "price": "131.25$",
+    "trait": ""
+  },
+  {
+    "name": "Yeti Heart",
+    "location": "The Peak",
+    "rarity": "Mythic",
+    "multiplier": "6x",
+    "chance": "1/7,407",
+    "price": "150$",
+    "trait": ""
+  },
+  {
+    "name": "Golem Heart",
+    "location": "The Peak",
+    "rarity": "Divine",
+    "multiplier": "8.5x",
+    "chance": "1/9,259",
+    "price": "187.5$",
+    "trait": ""
+  },
+  {
+    "name": "Frogite",
+    "location": "Raven Cave",
+    "rarity": "Epic",
+    "multiplier": "6.2x",
+    "chance": "Crafted",
+    "price": "159.38$",
+    "trait": ""
+  },
+  {
+    "name": "Moon Stone",
+    "location": "Raven Cave",
+    "rarity": "Legendary",
+    "multiplier": "7.2x",
+    "chance": "1/1,328",
+    "price": "178.13$",
+    "trait": ""
+  },
+  {
+    "name": "Gulabite",
+    "location": "Raven Cave",
+    "rarity": "Legendary",
+    "multiplier": "7.77x",
+    "chance": "1/1,666",
+    "price": "187.5$",
+    "trait": ""
+  },
+  {
+    "name": "Coinite",
+    "location": "Raven Cave",
+    "rarity": "Legendary",
+    "multiplier": "1x",
+    "chance": "1/2,525",
+    "price": "300$",
+    "trait": ""
+  },
+  {
+    "name": "Duranite",
+    "location": "Raven Cave",
+    "rarity": "Mythic",
+    "multiplier": "9x",
+    "chance": "Crafted",
+    "price": "225$",
+    "trait": ""
+  },
+  {
+    "name": "Evil Eye",
+    "location": "Raven Cave",
+    "rarity": "Mythic",
+    "multiplier": "9.5x",
+    "chance": "1/5,555",
+    "price": "249.38$",
+    "trait": ""
+  },
+  {
+    "name": "Stolen Heart",
+    "location": "Raven Cave",
+    "rarity": "Divine",
+    "multiplier": "12.5x",
+    "chance": "Crafted",
+    "price": "288.75$",
+    "trait": ""
+  },
+  {
+    "name": "Heart Of The Island",
+    "location": "Raven Cave",
+    "rarity": "Relic",
+    "multiplier": "13x",
+    "chance": "Crafted",
+    "price": "346.88$",
+    "trait": ""
+  },
+  {
+    "name": "Bamboo",
+    "location": "Bamboo Forest",
+    "rarity": "Uncommon",
+    "multiplier": "4x",
+    "chance": "1/6",
+    "price": "93.75$",
+    "trait": ""
+  },
+  {
+    "name": "Root Spire",
+    "location": "Bamboo Forest",
+    "rarity": "Uncommon",
+    "multiplier": "4.44x",
+    "chance": "1/19",
+    "price": "103.13$",
+    "trait": ""
+  },
+  {
+    "name": "Water Stone",
+    "location": "Bamboo Forest",
+    "rarity": "Rare",
+    "multiplier": "4.7x",
+    "chance": "1/54",
+    "price": "105.94$",
+    "trait": ""
+  },
+  {
+    "name": "Earthite",
+    "location": "Bamboo Forest",
+    "rarity": "Rare",
+    "multiplier": "5x",
+    "chance": "Crafted",
+    "price": "117.19$",
+    "trait": ""
+  },
+  {
+    "name": "Melonite",
+    "location": "Bamboo Forest",
+    "rarity": "Rare",
+    "multiplier": "5.2x",
+    "chance": "1/100",
+    "price": "121.88$",
+    "trait": ""
+  },
+  {
+    "name": "Rock Seed",
+    "location": "Bamboo Forest",
+    "rarity": "Rare",
+    "multiplier": "5.5x",
+    "chance": "1/124",
+    "price": "128.44$",
+    "trait": ""
+  },
+  {
+    "name": "Wraith",
+    "location": "Bamboo Forest",
+    "rarity": "Epic",
+    "multiplier": "5.75x",
+    "chance": "1/142",
+    "price": "134.06$",
+    "trait": ""
+  },
+  {
+    "name": "Tiger's Eye",
+    "location": "Bamboo Forest",
+    "rarity": "Epic",
+    "multiplier": "6x",
+    "chance": "Crafted",
+    "price": "135.94$",
+    "trait": ""
+  },
+  {
+    "name": "Shikanite",
+    "location": "Bamboo Forest",
+    "rarity": "Epic",
+    "multiplier": "6.15x",
+    "chance": "1/213",
+    "price": "142.5$",
+    "trait": ""
+  },
+  {
+    "name": "Cyanite Jade",
+    "location": "Bamboo Forest",
+    "rarity": "Epic",
+    "multiplier": "6.5x",
+    "chance": "Crafted",
+    "price": "151.88$",
+    "trait": ""
+  },
+  {
+    "name": "Magit",
+    "location": "Bamboo Forest",
+    "rarity": "Epic",
+    "multiplier": "6.8x",
+    "chance": "1/300",
+    "price": "159.38$",
+    "trait": ""
+  },
+  {
+    "name": "Duquack",
+    "location": "Bamboo Forest",
+    "rarity": "Legendary",
+    "multiplier": "8x",
+    "chance": "Crafted",
+    "price": "187.5$",
+    "trait": ""
+  },
+  {
+    "name": "Onyx",
+    "location": "Bamboo Forest",
+    "rarity": "Legendary",
+    "multiplier": "10x",
+    "chance": "Crafted",
+    "price": "234.38$",
+    "trait": ""
+  },
+  {
+    "name": "Aurelia-no-Ki",
+    "location": "Holy Tree",
+    "rarity": "Rare",
+    "multiplier": "9.5x",
+    "chance": "1/185",
+    "price": "221.25$",
+    "trait": ""
+  },
+  {
+    "name": "Sakuranite",
+    "location": "Holy Tree",
+    "rarity": "Rare",
+    "multiplier": "10.1x",
+    "chance": "1/244",
+    "price": "189.38$",
+    "trait": ""
+  },
+  {
+    "name": "Fruite",
+    "location": "Holy Tree",
+    "rarity": "Rare",
+    "multiplier": "10.33x",
+    "chance": "1/290",
+    "price": "241.88$",
+    "trait": ""
+  },
+  {
+    "name": "Blue Gem Quill",
+    "location": "Holy Tree",
+    "rarity": "Epic",
+    "multiplier": "11x",
+    "chance": "Crafted",
+    "price": "257.81$",
+    "trait": ""
+  },
+  {
+    "name": "Heat Steel",
+    "location": "Holy Tree",
+    "rarity": "Epic",
+    "multiplier": "11.5x",
+    "chance": "Crafted",
+    "price": "270$",
+    "trait": ""
+  },
+  {
+    "name": "Sealed Curse",
+    "location": "Holy Tree",
+    "rarity": "Epic",
+    "multiplier": "12x",
+    "chance": "Crafted",
+    "price": "225$",
+    "trait": ""
+  },
+  {
+    "name": "Zenstone",
+    "location": "Holy Tree",
+    "rarity": "Legendary",
+    "multiplier": "12.21x",
+    "chance": "1/380",
+    "price": "228.94$",
+    "trait": ""
+  },
+  {
+    "name": "Azuryxite",
+    "location": "Holy Tree",
+    "rarity": "Legendary",
+    "multiplier": "13x",
+    "chance": "Crafted",
+    "price": "304.69$",
+    "trait": ""
+  },
+  {
+    "name": "Sun Stone",
+    "location": "Holy Tree",
+    "rarity": "Legendary",
+    "multiplier": "13.39x",
+    "chance": "1/390",
+    "price": "314.06$",
+    "trait": ""
+  },
+  {
+    "name": "Roosite",
+    "location": "Holy Tree",
+    "rarity": "Legendary",
+    "multiplier": "14x",
+    "chance": "1/492",
+    "price": "262.5$",
+    "trait": ""
+  },
+  {
+    "name": "Meteorite",
+    "location": "Holy Tree",
+    "rarity": "Mythic",
+    "multiplier": "14.44x",
+    "chance": "Crafted",
+    "price": "338.44$",
+    "trait": ""
+  },
+  {
+    "name": "Heavenly Orb",
+    "location": "Holy Tree",
+    "rarity": "Mythic",
+    "multiplier": "15.15x",
+    "chance": "Crafted",
+    "price": "355.31$",
+    "trait": ""
+  },
+  {
+    "name": "Lucky Cat",
+    "location": "Holy Tree",
+    "rarity": "Epic",
+    "multiplier": "11.1x",
+    "chance": "1/1,111",
+    "price": "260.63$",
+    "trait": ""
+  },
+  {
+    "name": "Onite",
+    "location": "Holy Tree",
+    "rarity": "Epic",
+    "multiplier": "9.8x",
+    "chance": "1/333",
+    "price": "183.75$",
+    "trait": ""
+  },
+  {
+    "name": "Kyubite",
+    "location": "Holy Tree",
+    "rarity": "Divine",
+    "multiplier": "17x",
+    "chance": "1/100",
+    "price": "18.75$",
+    "trait": ""
+  },
+  {
+    "name": "Yin",
+    "location": "Jade Spirit Cave",
+    "rarity": "Epic",
+    "multiplier": "13x",
+    "chance": "1/333",
+    "price": "243.75$",
+    "trait": ""
+  },
+  {
+    "name": "Yang",
+    "location": "Jade Spirit Cave",
+    "rarity": "Epic",
+    "multiplier": "13x",
+    "chance": "1/333",
+    "price": "243.75$",
+    "trait": ""
+  },
+  {
+    "name": "Seedheart",
+    "location": "Jade Spirit Cave",
+    "rarity": "Rare",
+    "multiplier": "12.5x",
+    "chance": "1/385",
+    "price": "234.38$",
+    "trait": ""
+  },
+  {
+    "name": "Viridite",
+    "location": "Jade Spirit Cave",
+    "rarity": "Rare",
+    "multiplier": "13x",
+    "chance": "1/520",
+    "price": "243.75$",
+    "trait": ""
+  },
+  {
+    "name": "Oni Mask",
+    "location": "Jade Spirit Cave",
+    "rarity": "Epic",
+    "multiplier": "14.5x",
+    "chance": "1/666",
+    "price": "271.88$",
+    "trait": ""
+  },
+  {
+    "name": "Ancienite",
+    "location": "Jade Spirit Cave",
+    "rarity": "Epic",
+    "multiplier": "13.33x",
+    "chance": "1/950",
+    "price": "249.94$",
+    "trait": ""
+  },
+  {
+    "name": "Kyomutite",
+    "location": "Jade Spirit Cave",
+    "rarity": "Epic",
+    "multiplier": "13.9x",
+    "chance": "1/1,050",
+    "price": "260.63$",
+    "trait": ""
+  },
+  {
+    "name": "Takiseki",
+    "location": "Jade Spirit Cave",
+    "rarity": "Epic",
+    "multiplier": "14.7x",
+    "chance": "1/1,200",
+    "price": "275.63$",
+    "trait": ""
+  },
+  {
+    "name": "Dorabell",
+    "location": "Jade Spirit Cave",
+    "rarity": "Legendary",
+    "multiplier": "14x",
+    "chance": "1/2,100",
+    "price": "262.5$",
+    "trait": ""
+  },
+  {
+    "name": "Ryuseki",
+    "location": "Jade Spirit Cave",
+    "rarity": "Mythic",
+    "multiplier": "15.8x",
+    "chance": "1/2,400",
+    "price": "296.25$",
+    "trait": ""
+  },
+  {
+    "name": "Ceyite",
+    "location": "Jade Spirit Cave",
+    "rarity": "Mythic",
+    "multiplier": "16.5x",
+    "chance": "1/3,600",
+    "price": "309.38$",
+    "trait": ""
+  },
+  {
+    "name": "Marblite",
+    "location": "Jade Spirit Cave",
+    "rarity": "Mythic",
+    "multiplier": "18x",
+    "chance": "1/4,800",
+    "price": "337.5$",
+    "trait": ""
+  },
+  {
+    "name": "Kokorite",
+    "location": "Aurelia Hall",
+    "rarity": "Epic",
+    "multiplier": "14.75x",
+    "chance": "Crafted",
+    "price": "276.56$",
+    "trait": ""
+  },
+  {
+    "name": "Takenokoishi",
+    "location": "Aurelia Hall",
+    "rarity": "Legendary",
+    "multiplier": "13.75x",
+    "chance": "Crafted",
+    "price": "257.81$",
+    "trait": ""
+  },
+  {
+    "name": "Sakurite",
+    "location": "Aurelia Hall",
+    "rarity": "Mythic",
+    "multiplier": "14.2x",
+    "chance": "Crafted",
+    "price": "266.25$",
+    "trait": ""
+  },
+  {
+    "name": "Sentira",
+    "location": "Aurelia Hall",
+    "rarity": "Relic",
+    "multiplier": "16.3x",
+    "chance": "Crafted",
+    "price": "305.63$",
+    "trait": ""
+  },
+  {
+    "name": "Wolfarite",
+    "location": "Aurelia Hall",
+    "rarity": "Exotic",
+    "multiplier": "15.48x",
+    "chance": "Crafted",
+    "price": "290.25$",
+    "trait": ""
+  },
+  {
+    "name": "Yin-Yang",
+    "location": "Aurelia Hall",
+    "rarity": "Divine",
+    "multiplier": "13.5x",
+    "chance": "Crafted",
+    "price": "253.13$",
+    "trait": ""
+  },
+  {
+    "name": "Star Dust",
+    "location": "Void Cave",
+    "rarity": "Epic",
+    "multiplier": "2.5x",
+    "chance": "1/1",
+    "price": "46.88$",
+    "trait": ""
+  },
+  {
+    "name": "Starite",
+    "location": "Void Cave",
+    "rarity": "Mythic",
+    "multiplier": "4x",
+    "chance": "Crafted",
+    "price": "75$",
+    "trait": ""
+  },
+  {
+    "name": "Matter",
+    "location": "Void Cave",
+    "rarity": "Relic",
+    "multiplier": "8x",
+    "chance": "Crafted",
+    "price": "150$",
+    "trait": ""
+  },
+  {
+    "name": "Anti Matter",
+    "location": "Void Cave",
+    "rarity": "Relic",
+    "multiplier": "11.5x",
+    "chance": "Crafted",
+    "price": "215.63$",
+    "trait": ""
+  },
+  {
+    "name": "Singularity",
+    "location": "Void Cave",
+    "rarity": "Exotic",
+    "multiplier": "12.75x",
+    "chance": "Crafted",
+    "price": "239.06$",
+    "trait": ""
+  },
+  {
+    "name": "Supermassive Black Hole",
+    "location": "Void Cave",
+    "rarity": "Exotic",
+    "multiplier": "18x",
+    "chance": "Crafted",
+    "price": "337.5$",
+    "trait": ""
+  },
+  {
+    "name": "Galaxite",
+    "location": "Void Cave",
+    "rarity": "Divine",
+    "multiplier": "25x",
+    "chance": "Crafted",
+    "price": "468.75$",
+    "trait": ""
+  },
+  {
+    "name": "Fierce Jade",
+    "location": "Tower of Hell",
+    "rarity": "Rare",
+    "multiplier": "17x",
+    "chance": "1/5",
+    "price": "318.75$",
+    "trait": ""
+  },
+  {
+    "name": "Aether Lotus",
+    "location": "Tower of Hell",
+    "rarity": "Epic",
+    "multiplier": "18x",
+    "chance": "1/9",
+    "price": "270$",
+    "trait": ""
+  },
+  {
+    "name": "Zephyte",
+    "location": "Tower of Hell",
+    "rarity": "Legendary",
+    "multiplier": "18.5x",
+    "chance": "1/15",
+    "price": "277.5$",
+    "trait": ""
+  },
+  {
+    "name": "Vanegos",
+    "location": "Tower of Hell",
+    "rarity": "Mythic",
+    "multiplier": "19.5x",
+    "chance": "1/20",
+    "price": "292.5$",
+    "trait": ""
+  },
+  {
+    "name": "Vooite",
+    "location": "Tower of Hell",
+    "rarity": "Exotic",
+    "multiplier": "21x",
+    "chance": "1/30",
+    "price": "393.75$",
+    "trait": ""
+  },
+  {
+    "name": "Echotite",
+    "location": "Tower of Hell",
+    "rarity": "Mythic",
+    "multiplier": "22x",
+    "chance": "1/40",
+    "price": "412.5$",
+    "trait": ""
+  },
+  {
+    "name": "Fichilliumorite",
+    "location": "Tower of Hell",
+    "rarity": "Divine",
+    "multiplier": "1x",
+    "chance": "1/50",
+    "price": "15$",
+    "trait": ""
+  },
+  {
+    "name": "Frost Core",
+    "location": "Tower of Hell",
+    "rarity": "Relic",
+    "multiplier": "22.75x",
+    "chance": "1/50",
+    "price": "426.56$",
+    "trait": ""
+  },
+  {
+    "name": "Tetrinite",
+    "location": "Tower of Hell",
+    "rarity": "Relic",
+    "multiplier": "23.5x",
+    "chance": "1/60",
+    "price": "440.63$",
+    "trait": ""
+  },
+  {
+    "name": "Kitsunite",
+    "location": "Tower of Hell",
+    "rarity": "Divine",
+    "multiplier": "27.5x",
+    "chance": "1/75",
+    "price": "515.63$",
+    "trait": ""
+  },
+  {
+    "name": "Bizzarite",
+    "location": "Tower of Hell",
+    "rarity": "Exotic",
+    "multiplier": "25.5x",
+    "chance": "1/80",
+    "price": "478.13$",
+    "trait": ""
+  },
+  {
+    "name": "Frost Star",
+    "location": "Tower of Hell",
+    "rarity": "Exotic",
+    "multiplier": "27.75x",
+    "chance": "1/100",
+    "price": "520.31$",
+    "trait": ""
+  },
+  {
+    "name": "Pumpkinite",
+    "location": "Halloween event",
+    "rarity": "Rare",
+    "multiplier": "1.5x",
+    "chance": "1/1",
+    "price": "22.5$",
+    "trait": ""
+  },
+  {
+    "name": "Candy Ore",
+    "location": "Halloween event",
+    "rarity": "Legendary",
+    "multiplier": "1x",
+    "chance": "1/1",
+    "price": "0$",
+    "trait": ""
+  },
+  {
+    "name": "Bismuth",
+    "location": "Guild Island",
+    "rarity": "Divine",
+    "multiplier": "8x",
+    "chance": "1/1",
+    "price": "150$",
+    "trait": ""
+  },
+  {
+    "name": "North Star",
+    "location": "",
+    "rarity": "Unobtainable",
+    "multiplier": "1x",
+    "chance": "1/6,666",
+    "price": "18.75$",
+    "trait": ""
+  },
+  {
+    "name": "Verdantite",
+    "location": "",
+    "rarity": "Divine",
+    "multiplier": "1x",
+    "chance": "1/150",
+    "price": "18.75$",
+    "trait": ""
+  }
+]

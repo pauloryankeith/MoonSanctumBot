@@ -1,0 +1,754 @@
+[
+  {
+    "slug": "devils-deed",
+    "name": "Devil's Deed",
+    "base_damage": 30.8,
+    "price": 2506.75,
+    "molds_required": 165,
+    "attack_speed": null
+  },
+  {
+    "slug": "excalibur",
+    "name": "Excalibur",
+    "base_damage": 30.0,
+    "price": 2710.0,
+    "molds_required": 150,
+    "attack_speed": null
+  },
+  {
+    "slug": "sharktooth-odachi",
+    "name": "Sharktooth Odachi",
+    "base_damage": 27.0,
+    "price": 2032.5,
+    "molds_required": 70,
+    "attack_speed": null
+  },
+  {
+    "slug": "colossal-gemblade",
+    "name": "Colossal Gemblade",
+    "base_damage": 25.0,
+    "price": 1761.5,
+    "molds_required": 55,
+    "attack_speed": null
+  },
+  {
+    "slug": "otsuchi",
+    "name": "Otsuchi",
+    "base_damage": 25.0,
+    "price": 1355.0,
+    "molds_required": 55,
+    "attack_speed": null
+  },
+  {
+    "slug": "skull-crusher",
+    "name": "Skull Crusher",
+    "base_damage": 24.0,
+    "price": 1355.0,
+    "molds_required": 30,
+    "attack_speed": null
+  },
+  {
+    "slug": "kinmon-kamagatana",
+    "name": "Kinmon Kamagatana",
+    "base_damage": 23.4,
+    "price": 1355.0,
+    "molds_required": 65,
+    "attack_speed": null
+  },
+  {
+    "slug": "coffin-lid",
+    "name": "Coffin Lid",
+    "base_damage": 23.0,
+    "price": 1761.5,
+    "molds_required": 65,
+    "attack_speed": null
+  },
+  {
+    "slug": "hammer",
+    "name": "Hammer",
+    "base_damage": 22.0,
+    "price": 1355.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "dragon-slayer",
+    "name": "Dragon Slayer",
+    "base_damage": 22.0,
+    "price": 1490.5,
+    "molds_required": 40,
+    "attack_speed": null
+  },
+  {
+    "slug": "colossal-terrorblade",
+    "name": "Colossal Terrorblade",
+    "base_damage": 22.0,
+    "price": 1761.5,
+    "molds_required": 60,
+    "attack_speed": null
+  },
+  {
+    "slug": "royal-guardians-glaive",
+    "name": "Royal Guardian's Glaive",
+    "base_damage": 21.3996,
+    "price": 1402.5,
+    "molds_required": 80,
+    "attack_speed": null
+  },
+  {
+    "slug": "executioners-greataxe",
+    "name": "Executioner's Greataxe",
+    "base_damage": 20.0,
+    "price": 1105.0,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "great-sword",
+    "name": "Great Sword",
+    "base_damage": 20.0,
+    "price": 1355.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "sun-great-axe",
+    "name": "Sun Great Axe",
+    "base_damage": 19.5,
+    "price": 850.0,
+    "molds_required": 35,
+    "attack_speed": null
+  },
+  {
+    "slug": "batwing-reaver",
+    "name": "Batwing Reaver",
+    "base_damage": 19.5,
+    "price": 1105.0,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "wyvern-axe",
+    "name": "Wyvern Axe",
+    "base_damage": 18.75,
+    "price": 850.0,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "anchored-straight-blade",
+    "name": "Anchored Straight Blade",
+    "base_damage": 18.0,
+    "price": 1020.0,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "fangtian",
+    "name": "Fangtian",
+    "base_damage": 18.0,
+    "price": 1275.0,
+    "molds_required": 45,
+    "attack_speed": null
+  },
+  {
+    "slug": "comically-large-spoon",
+    "name": "Comically Large Spoon",
+    "base_damage": 18.0,
+    "price": 1490.5,
+    "molds_required": 30,
+    "attack_speed": null
+  },
+  {
+    "slug": "greater-battle-axe",
+    "name": "Greater Battle Axe",
+    "base_damage": 17.25,
+    "price": 850.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "spiked-halberd",
+    "name": "Spiked Halberd",
+    "base_damage": 17.04,
+    "price": 1207.0,
+    "molds_required": 40,
+    "attack_speed": null
+  },
+  {
+    "slug": "reaper-scythe",
+    "name": "Reaper Scythe",
+    "base_damage": 17.0,
+    "price": 892.5,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "halberd",
+    "name": "Halberd",
+    "base_damage": 16.8,
+    "price": 1190.0,
+    "molds_required": 40,
+    "attack_speed": null
+  },
+  {
+    "slug": "double-battle-axe",
+    "name": "Double Battle Axe",
+    "base_damage": 15.75,
+    "price": 850.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "dark-knights-greatsword",
+    "name": "Dark Knight's Greatsword",
+    "base_damage": 15.0,
+    "price": 485.0,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "jacks-crest",
+    "name": "Jack's Crest",
+    "base_damage": 14.9,
+    "price": 485.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "moon-crescent-spear",
+    "name": "Moon Crescent Spear",
+    "base_damage": 14.7,
+    "price": 210.0,
+    "molds_required": 80,
+    "attack_speed": null
+  },
+  {
+    "slug": "demonic-spear",
+    "name": "Demonic Spear",
+    "base_damage": 14.4232,
+    "price": 180.0,
+    "molds_required": 70,
+    "attack_speed": null
+  },
+  {
+    "slug": "zweihander",
+    "name": "Zweihander",
+    "base_damage": 14.4,
+    "price": 485.0,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "scythe",
+    "name": "Scythe",
+    "base_damage": 14.25,
+    "price": 892.5,
+    "molds_required": 10,
+    "attack_speed": null
+  },
+  {
+    "slug": "anchored-greatsword",
+    "name": "Anchored Greatsword",
+    "base_damage": 13.8,
+    "price": 485.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "the-carver",
+    "name": "The Carver",
+    "base_damage": 13.8,
+    "price": 485.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "angelic-spear",
+    "name": "Angelic Spear",
+    "base_damage": 13.1122,
+    "price": 162.0,
+    "molds_required": 70,
+    "attack_speed": null
+  },
+  {
+    "slug": "crusader-sword",
+    "name": "Crusader Sword",
+    "base_damage": 12.0,
+    "price": 485.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "long-sword",
+    "name": "Long Sword",
+    "base_damage": 12.0,
+    "price": 485.0,
+    "molds_required": 5,
+    "attack_speed": null
+  },
+  {
+    "slug": "hell-slayer",
+    "name": "Hell Slayer",
+    "base_damage": 11.125,
+    "price": 144.0,
+    "molds_required": 38,
+    "attack_speed": null
+  },
+  {
+    "slug": "rosethorn",
+    "name": "Rosethorn",
+    "base_damage": 11.1,
+    "price": 210.0,
+    "molds_required": 80,
+    "attack_speed": null
+  },
+  {
+    "slug": "thornspine",
+    "name": "Thornspine",
+    "base_damage": 10.875,
+    "price": 144.0,
+    "molds_required": 38,
+    "attack_speed": null
+  },
+  {
+    "slug": "naginata",
+    "name": "Naginata",
+    "base_damage": 10.875,
+    "price": 174.0,
+    "molds_required": 40,
+    "attack_speed": null
+  },
+  {
+    "slug": "dragon-blade",
+    "name": "Dragon Blade",
+    "base_damage": 10.5,
+    "price": 150.0,
+    "molds_required": 35,
+    "attack_speed": null
+  },
+  {
+    "slug": "compass-spear",
+    "name": "Compass Spear",
+    "base_damage": 10.5,
+    "price": 168.0,
+    "molds_required": 30,
+    "attack_speed": null
+  },
+  {
+    "slug": "bo-staff",
+    "name": "Bo Staff",
+    "base_damage": 10.5,
+    "price": 162.0,
+    "molds_required": 50,
+    "attack_speed": null
+  },
+  {
+    "slug": "washi-maru",
+    "name": "Washi-maru",
+    "base_damage": 10.2,
+    "price": 324.0,
+    "molds_required": 60,
+    "attack_speed": null
+  },
+  {
+    "slug": "knight-spear",
+    "name": "Knight Spear",
+    "base_damage": 10.125,
+    "price": 168.0,
+    "molds_required": 55,
+    "attack_speed": null
+  },
+  {
+    "slug": "sodegarami",
+    "name": "Sodegarami",
+    "base_damage": 10.125,
+    "price": 168.0,
+    "molds_required": 40,
+    "attack_speed": null
+  },
+  {
+    "slug": "dark-knights-gauntlets",
+    "name": "Dark Knight's Gauntlets",
+    "base_damage": 10.0,
+    "price": 287.0,
+    "molds_required": 70,
+    "attack_speed": null
+  },
+  {
+    "slug": "crystalized-broadsword",
+    "name": "Crystalized Broadsword",
+    "base_damage": 9.975,
+    "price": 150.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "relevator",
+    "name": "Relevator",
+    "base_damage": 9.6,
+    "price": 246.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "cutlass",
+    "name": "Cutlass",
+    "base_damage": 9.375,
+    "price": 120.0,
+    "molds_required": 12,
+    "attack_speed": null
+  },
+  {
+    "slug": "chaos",
+    "name": "Chaos",
+    "base_damage": 9.375,
+    "price": 132.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "straight-edge-katana",
+    "name": "Straight Edge Katana",
+    "base_damage": 9.35,
+    "price": 388.8,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "kurokiba-gatana",
+    "name": "Kurokiba-gatana",
+    "base_damage": 9.35,
+    "price": 356.4,
+    "molds_required": 38,
+    "attack_speed": null
+  },
+  {
+    "slug": "knights-bulwark",
+    "name": "Knight's Bulwark",
+    "base_damage": 9.1,
+    "price": 150.0,
+    "molds_required": 12,
+    "attack_speed": null
+  },
+  {
+    "slug": "tachi",
+    "name": "Tachi",
+    "base_damage": 8.925,
+    "price": 340.2,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "grave-maker",
+    "name": "Grave Maker",
+    "base_damage": 8.8,
+    "price": 266.5,
+    "molds_required": 18,
+    "attack_speed": null
+  },
+  {
+    "slug": "uchigatana",
+    "name": "Uchigatana",
+    "base_damage": 8.5,
+    "price": 324.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "juto-katana",
+    "name": "Juto Katana",
+    "base_damage": 8.5,
+    "price": 340.2,
+    "molds_required": 16,
+    "attack_speed": null
+  },
+  {
+    "slug": "ornate-short-axe",
+    "name": "Ornate Short Axe",
+    "base_damage": 8.4,
+    "price": 266.5,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "duskwing-cleaver",
+    "name": "Duskwing Cleaver",
+    "base_damage": 8.4,
+    "price": 266.5,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "hook-blade",
+    "name": "Hook Blade",
+    "base_damage": 8.25,
+    "price": 146.4,
+    "molds_required": 38,
+    "attack_speed": null
+  },
+  {
+    "slug": "hachiwari",
+    "name": "Hachiwari",
+    "base_damage": 8.25,
+    "price": 120.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "trident",
+    "name": "Trident",
+    "base_damage": 8.25,
+    "price": 144.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "shakujo",
+    "name": "Shakujo",
+    "base_damage": 8.25,
+    "price": 144.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "kanabo",
+    "name": "Kanabo",
+    "base_damage": 8.2,
+    "price": 246.0,
+    "molds_required": 12,
+    "attack_speed": null
+  },
+  {
+    "slug": "spade-armed-axe",
+    "name": "Spade Armed Axe",
+    "base_damage": 8.05,
+    "price": 235.75,
+    "molds_required": 20,
+    "attack_speed": null
+  },
+  {
+    "slug": "gladius",
+    "name": "Gladius",
+    "base_damage": 8.0,
+    "price": 120.0,
+    "molds_required": 4,
+    "attack_speed": null
+  },
+  {
+    "slug": "boxing-gloves",
+    "name": "Boxing Gloves",
+    "base_damage": 8.0,
+    "price": 205.0,
+    "molds_required": 25,
+    "attack_speed": null
+  },
+  {
+    "slug": "savage-claws",
+    "name": "Savage Claws",
+    "base_damage": 8.0,
+    "price": 307.5,
+    "molds_required": 40,
+    "attack_speed": null
+  },
+  {
+    "slug": "hammerhead-mace",
+    "name": "Hammerhead Mace",
+    "base_damage": 7.9,
+    "price": 235.75,
+    "molds_required": 12,
+    "attack_speed": null
+  },
+  {
+    "slug": "tetsubo",
+    "name": "Tetsubo",
+    "base_damage": 7.72,
+    "price": 225.5,
+    "molds_required": 10,
+    "attack_speed": null
+  },
+  {
+    "slug": "curved-handle-axe",
+    "name": "Curved Handle Axe",
+    "base_damage": 7.7,
+    "price": 225.5,
+    "molds_required": 10,
+    "attack_speed": null
+  },
+  {
+    "slug": "winged-mace",
+    "name": "Winged Mace",
+    "base_damage": 7.6,
+    "price": 225.5,
+    "molds_required": 12,
+    "attack_speed": null
+  },
+  {
+    "slug": "ironhand",
+    "name": "Ironhand",
+    "base_damage": 7.6,
+    "price": 194.75,
+    "molds_required": 3,
+    "attack_speed": null
+  },
+  {
+    "slug": "falchion",
+    "name": "Falchion",
+    "base_damage": 7.5,
+    "price": 120.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "rapier",
+    "name": "Rapier",
+    "base_damage": 7.5,
+    "price": 132.0,
+    "molds_required": 15,
+    "attack_speed": null
+  },
+  {
+    "slug": "candy-cane",
+    "name": "Candy Cane",
+    "base_damage": 7.5,
+    "price": 138.0,
+    "molds_required": 30,
+    "attack_speed": null
+  },
+  {
+    "slug": "chokuto",
+    "name": "Chokuto",
+    "base_damage": 7.5,
+    "price": 120.0,
+    "molds_required": 10,
+    "attack_speed": null
+  },
+  {
+    "slug": "spear",
+    "name": "Spear",
+    "base_damage": 7.5,
+    "price": 120.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "battleaxe",
+    "name": "Battleaxe",
+    "base_damage": 7.35,
+    "price": 215.25,
+    "molds_required": 5,
+    "attack_speed": null
+  },
+  {
+    "slug": "spiked-mace",
+    "name": "Spiked Mace",
+    "base_damage": 7.3,
+    "price": 215.25,
+    "molds_required": 5,
+    "attack_speed": null
+  },
+  {
+    "slug": "mace",
+    "name": "Mace",
+    "base_damage": 7.0,
+    "price": 205.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "axe",
+    "name": "Axe",
+    "base_damage": 7.0,
+    "price": 205.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "cultist-dagger",
+    "name": "Cultist Dagger",
+    "base_damage": 5.246,
+    "price": 81.6,
+    "molds_required": 3,
+    "attack_speed": null
+  },
+  {
+    "slug": "curved-dagger",
+    "name": "Curved Dagger",
+    "base_damage": 4.945,
+    "price": 74.8,
+    "molds_required": 5,
+    "attack_speed": null
+  },
+  {
+    "slug": "jitte",
+    "name": "Jitte",
+    "base_damage": 4.945,
+    "price": 68.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "tanto",
+    "name": "Tanto",
+    "base_damage": 4.945,
+    "price": 78.2,
+    "molds_required": 3,
+    "attack_speed": null
+  },
+  {
+    "slug": "hook",
+    "name": "Hook",
+    "base_damage": 4.73,
+    "price": 74.8,
+    "molds_required": 5,
+    "attack_speed": null
+  },
+  {
+    "slug": "damascus-dagger",
+    "name": "Damascus Dagger",
+    "base_damage": 4.73,
+    "price": 74.8,
+    "molds_required": 3,
+    "attack_speed": null
+  },
+  {
+    "slug": "gladius-dagger",
+    "name": "Gladius Dagger",
+    "base_damage": 4.6,
+    "price": 68.0,
+    "molds_required": 3,
+    "attack_speed": null
+  },
+  {
+    "slug": "falchion-knife",
+    "name": "Falchion Knife",
+    "base_damage": 4.45,
+    "price": 68.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "dagger",
+    "name": "Dagger",
+    "base_damage": 4.3,
+    "price": 68.0,
+    "molds_required": 2,
+    "attack_speed": null
+  },
+  {
+    "slug": "sharks-fangs",
+    "name": "Shark's Fangs",
+    "base_damage": 3.87,
+    "price": 78.2,
+    "molds_required": 5,
+    "attack_speed": null
+  },
+  {
+    "slug": "kunai",
+    "name": "Kunai",
+    "base_damage": 3.87,
+    "price": 68.0,
+    "molds_required": 2,
+    "attack_speed": null
+  }
+]
