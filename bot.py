@@ -357,32 +357,54 @@ BOT_CONFIG = {
     "interjection_enabled": True # Spontaneous uninvited tavern roasts
 }
 
+def split_message(text: str, max_len: int = 1900):
+    """Splits long text across natural paragraph breaks so Discord 2000-char limit is never exceeded."""
+    chunks = []
+    while len(text) > max_len:
+        split_idx = text.rfind('\n\n', 0, max_len)
+        if split_idx == -1:
+            split_idx = text.rfind('\n', 0, max_len)
+        if split_idx == -1:
+            split_idx = text.rfind(' ', 0, max_len)
+        if split_idx == -1:
+            split_idx = max_len
+        chunk = text[:split_idx].strip()
+        if chunk:
+            chunks.append(chunk)
+        text = text[split_idx:].strip()
+    if text:
+        chunks.append(text)
+    return chunks
+
 async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: str, auto_delete_seconds: int = None):
-    """Guarantees strictly ONE NPC responds. Messages follow BOT_CONFIG retention policy."""
+    """Guarantees strictly ONE NPC responds. Supports unlimited response length by auto-splitting across chunks."""
     npc = NPCS.get(npc_key)
     if not npc:
         return
     webhook = await get_or_create_webhook(channel)
-    sent_msg = None
-    if webhook:
-        try:
-            sent_msg = await webhook.send(
-                content=message,
-                username=npc["name"],
-                avatar_url=npc["avatar"],
-                wait=True
-            )
-        except Exception as e:
-            print(f"Webhook send error: {e}")
-    if not sent_msg:
-        sent_msg = await channel.send(f"**{npc['name']}**: {message}")
-
     del_sec = auto_delete_seconds if auto_delete_seconds is not None else BOT_CONFIG["auto_delete_seconds"]
-    if sent_msg and del_sec > 0:
-        try:
-            await sent_msg.delete(delay=del_sec)
-        except Exception as e:
-            print(f"Auto-delete error: {e}")
+
+    chunks = split_message(message, max_len=1900)
+    for chunk in chunks:
+        sent_msg = None
+        if webhook:
+            try:
+                sent_msg = await webhook.send(
+                    content=chunk,
+                    username=npc["name"],
+                    avatar_url=npc["avatar"],
+                    wait=True
+                )
+            except Exception as e:
+                print(f"Webhook send error: {e}")
+        if not sent_msg:
+            sent_msg = await channel.send(f"**{npc['name']}**: {chunk}")
+
+        if sent_msg and del_sec > 0:
+            try:
+                await sent_msg.delete(delay=del_sec)
+            except Exception as e:
+                print(f"Auto-delete error: {e}")
 
 # 28 Random Cute Yuzuha Ambient Lines
 YUZUHA_AMBIENT_LINES = [
@@ -506,7 +528,7 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         "CRITICAL DISCORD FORMATTING RULE:\n"
         "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
         "Write all math and equations in plain, clean Discord text (e.g. 'Base Health % * Multiplier * Quality' or '386.75 / 51 = 18.16x').\n"
-        "2. Keep your response complete, focused, and under 1600 characters so it finishes cleanly without being cut off!\n\n"
+        "2. Be thorough, detailed, and complete in your blacksmithing and equipment analysis. Do not abruptly cut off; fully explain all numbers, traits, and armor mechanics in depth.\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
         f"Respond as {npc['name']} in clean Discord format:"
     )
@@ -532,9 +554,7 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
                 raw_text = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'(\1 / \2)', raw_text)
                 raw_text = raw_text.replace('$', '')
 
-                # Cap response at 1950 characters (Discord limit is 2000) so answers are never cut off prematurely
-                if len(raw_text) > 1950:
-                    raw_text = raw_text[:1947] + "..."
+                # Return full detailed text without artificial length truncations (auto-chunked by send_single_npc)
                 return raw_text
         except Exception as e:
             print(f"Gemini {model_name} error: {e}")
