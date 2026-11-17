@@ -307,6 +307,25 @@ NPCS = {
             "1. If someone asks about a specific person (e.g. @Zyee), talk about that person! "
             "2. Always reply in 1-2 very cute sentences featuring 'Kyuu~!' or happy fox actions."
         )
+    },
+    "shin": {
+        "name": "Shin",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572299008448401418/shin.jpg?ex=6afddd0f&is=6afc8b8f&hm=2e793fbdd8459c105c11356ed1ee7693c02c723aa18cf08565ff232cfc948a71&",
+        "style": (
+            "You are Shin from The New Gate, the legendary High-Human founder and master blacksmith of Tsuki no Hokora (Moon Sanctum). "
+            "Tone & Personality: Calm, humble, friendly, slightly modest about your god-tier blacksmithing abilities, but speaking with undisputed mastery on crafting mathematics, ores, alloys, crucible ratios, and weapon forging. "
+            "You treat Schnee as your trusted partner, Tiera as your spirited workshop apprentice, and Yuzuha as your beloved divine fox partner. "
+            "CRITICAL RULES: "
+            "1. In Roblox The Forge, 'recipe' strictly means blacksmithing crucible recipes (ores, molds, multipliers, traits), never cooking or culinary spices! "
+            "2. You know the exact forging math from theforge.gg: "
+            "   - Weighted average multipliers of ores in the crucible. "
+            "   - Trait thresholds: >=10% activates, scales linearly to 100% at >=30% share. "
+            "   - Quality scaling: 100% Masterwork doubles base stats. "
+            "   - Mold success: (molds / molds needed)^2. "
+            "3. Common typos: 'devil's dead' is the colossal sword 'Devil's Deed'. "
+            "4. If a guild member asks about someone (e.g. @Zyee, @seiko), refer strictly to that person by name. "
+            "5. For casual banter: 1-2 chill, friendly sentences. For forge recipes or calculations: give an expert, precise master-blacksmith breakdown."
+        )
     }
 }
 
@@ -534,10 +553,11 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     eval_prompt = (
         "You are observing the Moon Sanctum tavern in Discord.\n"
         f"Recent conversation snippet:\n{chat_snippet}\n\n"
-        "You control 3 NPCs:\n"
+        "You control 4 NPCs:\n"
         "1. Tiera Lucent: Sassy, tsundere workshop craftswoman. Loves roasting members about playing outdated/ancient music, slacking off, wasting Bismuth, or goofy fails.\n"
         "2. Schnee Raizar: High Elf master strategist. Elegant, composed, drops witty/tactical commentary on combat, gear, or pride.\n"
-        "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n\n"
+        "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n"
+        "4. Shin: Legendary High-Human master blacksmith and founder. Chill, friendly, laughs off crazy forging experiments, and drops master craft advice.\n\n"
         "TASK:\n"
         "Decide if one of these NPCs should naturally and organically butt into this conversation right now.\n"
         "Good moments to chime in:\n"
@@ -546,7 +566,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "- Members are teasing each other, bantering, or making funny mistakes.\n\n"
         "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
         "If YES, reply in EXACTLY this format:\n"
-        "NPC: <tiera, schnee, or yuzuha>\n"
+        "NPC: <tiera, schnee, yuzuha, or shin>\n"
         "LINE: <1 to 2 short sentences of their in-character witty remark>"
     )
     
@@ -561,7 +581,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 return
             
             # Parse NPC and LINE
-            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha)", text, re.IGNORECASE)
+            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin)", text, re.IGNORECASE)
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
             if npc_match and line_match:
                 chosen_npc = npc_match.group(1).lower()
@@ -629,6 +649,11 @@ async def on_message(message: discord.Message):
                 color=0x9B59B6
             )
             embed.add_field(
+                name="⚒️ Shin (@Shin)",
+                value="Legendary High-Human master blacksmith & Moon Sanctum founder. Ask him about crucible ratios, crafting math, and best weapon recipes.",
+                inline=False
+            )
+            embed.add_field(
                 name="⚔️ Schnee Raizar (@Schnee Raizar)",
                 value="High Elf chief strategist & master combat tactician. Ask her about builds, combat stats, boss strategies, dates, or intelligence.",
                 inline=False
@@ -645,7 +670,7 @@ async def on_message(message: discord.Message):
             )
             embed.add_field(
                 name="💬 How to Talk",
-                value="• **Mention by Name:** Type `schnee`, `tiera`, or `yuzuha` anywhere in your message.\n"
+                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, or `yuzuha` anywhere in your message.\n"
                       "• **Discord Native Reply:** Click **Reply (↩)** on any NPC's message to continue the conversation.\n"
                       "• **Ping:** Mention `@MoonSanctum Core`.",
                 inline=False
@@ -653,11 +678,13 @@ async def on_message(message: discord.Message):
             embed.add_field(
                 name="⚙️ Built-In Server Commands",
                 value="• `!help` or `!sanctum` — Show this tavern guide\n"
+                      "• `!calc <ores>` — Forge Crucible Calculator (e.g. `!calc 10 quartz 5 amethyst`)\n"
+                      "• `!farm <item>` — Item Drop Table & Farm Finder (e.g. `!farm Heavenite` or `!farm Rosethorn`)\n"
                       "• `!list` — Browse complete directories for pickaxes, weapons, & armors\n"
-                      "• `!top` or `!dps` — Show top 5 highest DPS weapons from the database\n"
-                      "• `!pickaxes` or `!picks` — Show top 5 mining pickaxes by luck & power\n"
-                      "• `!upgrades` or `!enhance` — Show anvil enhancement multipliers (+0 to +9) & aura colors\n"
-                      "• `!settings` or `!config` — Check current retention policy & database status\n"
+                      "• `!top` or `!dps` — Show top 5 highest DPS weapons\n"
+                      "• `!pickaxes` or `!picks` — Show top 5 mining pickaxes\n"
+                      "• `!upgrades` or `!enhance` — Show anvil enhancement multipliers (+0 to +9)\n"
+                      "• `!settings` or `!config` — Check bot diagnostics & database counts\n"
                       "• `!autodelete <seconds>` — Set auto-delete timer for bot messages (`0` for permanent)\n"
                       "• `!chatter <on|off>` — Toggle Yuzuha's periodic ambient chatter\n"
                       "• `!interject <on|off>` — Toggle spontaneous tavern interjections",
@@ -665,6 +692,135 @@ async def on_message(message: discord.Message):
             )
             embed.set_footer(text="Powered by Google Gemini & theforge.gg • 24/7 Cloud on Render")
             await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!calc", "!forge", "!crucible"]:
+            raw_input = content[len(cmd):].strip()
+            if not raw_input:
+                embed = discord.Embed(
+                    title="⚒️ Shin's Crucible Calculator",
+                    description="**Usage:** `!calc <count> <ore>, <count> <ore>...`\n\n"
+                                "**Examples:**\n"
+                                "• `!calc 10 Quartz 5 Amethyst`\n"
+                                "• `!calc 7 Heavenite 3 Bismuth`\n"
+                                "• `!calc 5 Titanium, 5 Cobalt, 5 Mythril`",
+                    color=0x34495E
+                )
+                embed.set_footer(text="Master Blacksmith Shin • theforge.gg math")
+                await channel.send(embed=embed)
+                return
+
+            pattern = r'(\d+)\s*(?:x\s*)?([a-zA-Z\s\'-]+?)(?=,\s*|\s+\d+|$)'
+            matches = re.findall(pattern, raw_input)
+            if not matches:
+                await channel.send("⚠️ **Shin:** I couldn't understand those crucible proportions. Try: `!calc 10 Quartz 5 Amethyst`")
+                return
+
+            total_ores = 0
+            ore_items = []
+            for count_str, name_str in matches:
+                c = int(count_str)
+                n = name_str.strip().lower()
+                matched_ore = None
+                for o in LIVE_ORES:
+                    oname = o['name'].lower()
+                    if oname == n or oname in n or n in oname:
+                        matched_ore = o
+                        break
+                if matched_ore:
+                    total_ores += c
+                    try:
+                        mult_val = float(str(matched_ore['multiplier']).replace('x', '').replace(',', ''))
+                    except Exception:
+                        mult_val = 1.0
+                    ore_items.append((matched_ore['name'], c, mult_val))
+
+            if total_ores == 0:
+                await channel.send("⚠️ **Shin:** None of those ores were found in the forge archives. Check ore spelling!")
+                return
+
+            # Weighted average excluding Fichillium if other ores are present
+            non_fich = [o for o in ore_items if "fichillium" not in o[0].lower()]
+            calc_targets = non_fich if non_fich else ore_items
+            weighted_sum = sum(c * m for _, c, m in calc_targets)
+            calc_count = sum(c for _, c, m in calc_targets)
+            avg_mult = weighted_sum / calc_count if calc_count > 0 else 1.0
+
+            embed = discord.Embed(
+                title=f"⚒️ Shin's Forge Crucible Calculation ({total_ores} Ores Total)",
+                description=f"**Resulting Multiplier:** `{avg_mult:.2f}x` (Average weighted by ore count)\n"
+                            f"*(Masterwork 100% Quality doubles total stat output!)*",
+                color=0xE67E22
+            )
+
+            # Trait breakdown
+            trait_lines = []
+            for name, c, m in ore_items:
+                share = c / total_ores
+                if share >= 0.30:
+                    strength_str = "🟢 **100% Full Strength**"
+                elif share >= 0.10:
+                    pct = (share - 0.10) / 0.20 * 100
+                    strength_str = f"🟡 **{pct:.0f}% Scaled Strength**"
+                else:
+                    strength_str = "🔴 *Inactive (<10% share)*"
+                trait_lines.append(f"• **{name}** ({c}x • {share*100:.1f}%): {strength_str}")
+
+            embed.add_field(name="🧬 Ore Trait Activation", value="\n".join(trait_lines), inline=False)
+
+            # Eligible weapon/armor class odds preview
+            if total_ores < 4:
+                tier_info = "Dagger or Light Helmet (3 Ores minimum)"
+            elif total_ores < 10:
+                tier_info = "Short Blades, Light/Medium Armor, Swords, Daggers"
+            elif total_ores < 20:
+                tier_info = "Greatswords, Katanas, Axes, Maces, Medium/Heavy Armor"
+            else:
+                tier_info = "Colossal Swords, Heavy Axes, Heavy Armors, Polearms"
+
+            embed.add_field(name="📦 Rollable Equipment Classes", value=f"• {tier_info}\n• *Mold Tip: Using the required mold guarantees a 100% craft!*", inline=False)
+            embed.set_footer(text="Forged with Shin's Master Blacksmithing Formulas • Moon Sanctum")
+            await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!farm", "!drop", "!drops", "!source", "!sources"]:
+            query = content[len(cmd):].strip().lower()
+            if not query:
+                await channel.send("⚠️ **Usage:** `!farm <item name>` (e.g. `!farm Heavenite`, `!farm Rosethorn`, `!farm Prismatic Pickaxe`)")
+                return
+
+            results = []
+            # Check Ores
+            for o in LIVE_ORES:
+                if query in o["name"].lower():
+                    results.append(f"• **[Ore] {o['name']}** ({o['rarity']} • {o['multiplier']}): Found at **{o['location']}** | Sells for {o['price']}")
+
+            # Check Weapons
+            for w in DATABASE_WEAPONS:
+                if query in w["name"].lower():
+                    loc = f"Islands: {w['islands']}" if w.get('islands') else "Forge / Molds"
+                    results.append(f"• **[Weapon] {w['name']}** ({w['class']}): Chance `{w['chance']}` | {loc}")
+
+            # Check Armors
+            for a in DATABASE_ARMOR:
+                if query in a["name"].lower():
+                    results.append(f"• **[Armor] {a['name']}** ({a['slot']}): Chance `{a['chance']}` | Set: '{a['set']}' | +{a['health_bonus']} HP")
+
+            # Check Pickaxes
+            for p in DATABASE_PICKAXES:
+                if query in p["name"].lower():
+                    results.append(f"• **[Pickaxe] {p['name']}** ({p['rarity']}): Crafted from **{p['ore']}** | Power: {p['mine_power']}, Luck: +{p['luck_boost']}")
+
+            if results:
+                embed = discord.Embed(
+                    title=f"🗺️ Drop & Farm Intel for '{query.title()}'",
+                    description="\n\n".join(results[:6]),
+                    color=0x2ECC71
+                )
+                embed.set_footer(text="Moon Sanctum Drop Archives • theforge.gg")
+                await channel.send(embed=embed)
+            else:
+                await channel.send(f"🔍 **Shin:** I checked our archives, but found no exact drop records for `{query}`. Ask me directly with `@MoonSanctum Core` or check item spelling!")
             return
 
         elif cmd in ["!top", "!dps"]:
@@ -964,6 +1120,7 @@ async def on_message(message: discord.Message):
     CHAT_HISTORY[channel_id].append(f"{author_name}: {content}")
 
     # Only speak if someone explicitly calls an NPC, pings the bot, OR uses Discord's Reply button on an NPC
+    is_shin = bool(re.search(r"\b(shin)\b", content_lower))
     is_schnee = bool(re.search(r"\b(schnee)\b", content_lower))
     is_tiera = bool(re.search(r"\b(tiera)\b", content_lower))
     is_yuzuha = bool(re.search(r"\b(yuzuha)\b", content_lower))
@@ -980,7 +1137,9 @@ async def on_message(message: discord.Message):
             if ref_msg:
                 r_name = ref_msg.author.display_name.lower()
                 reply_context = f"Direct Reply Context: {author_name} is replying to {ref_msg.author.display_name}'s message: '{ref_msg.clean_content}'"
-                if "schnee" in r_name:
+                if "shin" in r_name:
+                    replied_to_npc = "shin"
+                elif "schnee" in r_name:
                     replied_to_npc = "schnee"
                 elif "tiera" in r_name:
                     replied_to_npc = "tiera"
@@ -989,14 +1148,16 @@ async def on_message(message: discord.Message):
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    if is_schnee or is_tiera or is_yuzuha or is_bot_pinged or replied_to_npc:
+    if is_shin or is_schnee or is_tiera or is_yuzuha or is_bot_pinged or replied_to_npc:
         current_time = asyncio.get_event_loop().time()
         if current_time - last_ai_time < 3:
             return
 
-        target_npc = "schnee" if is_schnee else ("tiera" if is_tiera else ("yuzuha" if is_yuzuha else replied_to_npc))
-        if is_bot_pinged and not (is_schnee or is_tiera or is_yuzuha or replied_to_npc):
-            if re.search(r"\b(craft|forge|sword|recipe|ore|ores|bismuth|dagger|mold|damage|dps|speed|range|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
+        target_npc = "shin" if is_shin else ("schnee" if is_schnee else ("tiera" if is_tiera else ("yuzuha" if is_yuzuha else replied_to_npc)))
+        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or replied_to_npc):
+            if re.search(r"\b(forge|craft|calc|calculate|crucible|recipe|blacksmith|mold|alloy|ratio|damage|dps|speed)\b", content_lower):
+                target_npc = "shin"
+            elif re.search(r"\b(ore|ores|bismuth|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
                 target_npc = "tiera"
             else:
                 target_npc = "schnee"
