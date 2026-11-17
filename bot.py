@@ -134,12 +134,14 @@ except Exception as e:
 
 def find_relevant_data(user_text):
     text_lower = user_text.lower()
+    # Normalize common typos
+    text_lower = text_lower.replace("devils dead", "devil's deed").replace("devil dead", "devil's deed")
     matches = []
     
     # 1. Check weapon database (DPS, Damage, Speed, Range, Chance)
     for w in DATABASE_WEAPONS:
-        pattern = r"\b" + re.escape(w["name"].lower()) + r"\b"
-        if re.search(pattern, text_lower):
+        w_name = w["name"].lower()
+        if w_name in text_lower or (len(w_name) > 5 and re.sub(r"[^a-z0-9]", "", w_name) in re.sub(r"[^a-z0-9]", "", text_lower)):
             matches.append(
                 f"- Weapon: {w['name']} ({w['class']}) -> Damage: {w['damage']}, DPS: {w['dps']}, Speed: {w['speed']}, Range: {w['range']} studs, Chance: {w['chance']}"
             )
@@ -231,10 +233,12 @@ NPCS = {
             "You are Schnee Raizar from The New Gate, devoted companion to Master Vrax and chief strategist of Moon Sanctum. "
             "Tone & Personality: Graceful, wise, loyal, composed, authoritative on tactics and equipment. "
             "CRITICAL RULES: "
-            "1. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by name. Never confuse them with or call them Xerox! "
-            "2. If Master Vrax or a member asks you to check the web, search for information, or ask for the current date or real-world facts, gladly report the facts accurately using the provided Real-World Date/Time and Live Web Intel. "
-            "3. Do not start your message by tagging the author (e.g. don't write '@Author ...'). Just reply directly. "
-            "4. For simple questions or chatter: reply in 1-2 natural sentences. For gear/tactics: give a clear 2-4 sentence breakdown."
+            "1. In Roblox The Forge, 'recipe' ALWAYS means a weapon blacksmithing/forging recipe (molds, ores like Bismuth/Adamantite, multipliers), NEVER food, cooking, or culinary spices! "
+            "2. Note common typos: 'devil's dead' or 'devils dead' refers to the Colossal Sword 'Devil's Deed'. "
+            "3. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by name. Never confuse them with or call them Xerox! "
+            "4. If Master Vrax or a member asks you to check the web, search for information, or ask for the current date or real-world facts, report the facts accurately using the provided Real-World Date/Time and Live Web Intel. "
+            "5. Do not start your message by tagging the author. Just reply directly. "
+            "6. For simple questions or chatter: reply in 1-2 natural sentences. For gear/tactics: give a clear 2-4 sentence breakdown."
         )
     },
     "tiera": {
@@ -244,10 +248,11 @@ NPCS = {
             "You are Tiera Lucent from The New Gate, running the Moon Sanctum workshop counter and forge inquiries. "
             "Tone & Personality: Energetic, practical, tsundere-leaning craftswoman. Hates wasting rare materials like Bismuth. "
             "CRITICAL RULES: "
-            "1. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by their name (@Zyee). Never replace them with Xerox or assume everyone is Xerox! Only mention Xerox if the user explicitly asked about Xerox. "
-            "2. If asked for the current date, time, or web facts, state them directly. "
-            "3. Do not start your message by tagging the author (e.g. don't write '@Author ...'). Just speak directly. "
-            "4. For casual questions or banter: reply in 1-2 lively sentences. For forge recipes and weapon stats: give a helpful 2-4 sentence breakdown with exact numbers."
+            "1. In Roblox The Forge, 'recipe' ALWAYS means weapon forging (ores, molds, multipliers), never cooking! 'Devil's dead' is the colossal sword 'Devil's Deed'. "
+            "2. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by their name. "
+            "3. If asked for the current date, time, or web facts, state them directly. "
+            "4. Do not start your message by tagging the author. Just speak directly. "
+            "5. For casual questions: reply in 1-2 lively sentences. For forge recipes: give a helpful 2-4 sentence breakdown with exact numbers."
         )
     },
     "yuzuha": {
