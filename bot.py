@@ -6,6 +6,7 @@ import os
 import sys
 import json
 import socket
+import datetime
 import urllib.request
 import urllib.parse
 import threading
@@ -189,8 +190,17 @@ def find_relevant_data(user_text):
     return "\n".join(matches[:3]) if matches else ""
 
 def live_web_search(query: str, max_results: int = 3):
-    """Searches the live web via DuckDuckGo for up-to-date Roblox The Forge intel."""
-    search_q = f"Roblox The Forge {query}"
+    """Searches the live web via DuckDuckGo with smart domain targeting."""
+    forge_keywords = ["forge", "ore", "ores", "sword", "weapon", "armor", "dps", "damage", "mold", "bismuth", "boss", "raid", "drop"]
+    query_lower = query.lower()
+    
+    # Prepend Roblox The Forge only if gaming/crafting is implied
+    if any(k in query_lower for k in forge_keywords):
+        search_q = f"Roblox The Forge {query}"
+    else:
+        # General open web queries (real world facts, news, calendar, dates, general topics)
+        search_q = query
+
     url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(search_q)}"
     req = urllib.request.Request(
         url,
@@ -205,7 +215,7 @@ def live_web_search(query: str, max_results: int = 3):
         for s in snippets[:max_results]:
             text = re.sub(r'<[^>]+>', '', s).strip()
             text = text.replace("&#x27;", "'").replace("&quot;", '"').replace("&amp;", '&')
-            if text and len(text) > 20:
+            if text and len(text) > 15:
                 clean.append(text)
         return clean
     except Exception as e:
@@ -222,8 +232,9 @@ NPCS = {
             "Tone & Personality: Graceful, wise, loyal, composed, authoritative on tactics and equipment. "
             "CRITICAL RULES: "
             "1. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by name. Never confuse them with or call them Xerox! "
-            "2. Do not start your message by tagging the author (e.g. don't write '@Author ...'). Just reply directly. "
-            "3. For simple questions or chatter: reply in 1-2 natural sentences. For gear/tactics: give a clear 2-4 sentence breakdown."
+            "2. If Master Vrax or a member asks you to check the web, search for information, or ask for the current date or real-world facts, gladly report the facts accurately using the provided Real-World Date/Time and Live Web Intel. "
+            "3. Do not start your message by tagging the author (e.g. don't write '@Author ...'). Just reply directly. "
+            "4. For simple questions or chatter: reply in 1-2 natural sentences. For gear/tactics: give a clear 2-4 sentence breakdown."
         )
     },
     "tiera": {
@@ -234,8 +245,9 @@ NPCS = {
             "Tone & Personality: Energetic, practical, tsundere-leaning craftswoman. Hates wasting rare materials like Bismuth. "
             "CRITICAL RULES: "
             "1. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by their name (@Zyee). Never replace them with Xerox or assume everyone is Xerox! Only mention Xerox if the user explicitly asked about Xerox. "
-            "2. Do not start your message by tagging the author (e.g. don't write '@Author ...'). Just speak directly. "
-            "3. For casual questions or banter: reply in 1-2 lively sentences. For forge recipes and weapon stats: give a helpful 2-4 sentence breakdown with exact numbers."
+            "2. If asked for the current date, time, or web facts, state them directly. "
+            "3. Do not start your message by tagging the author (e.g. don't write '@Author ...'). Just speak directly. "
+            "4. For casual questions or banter: reply in 1-2 lively sentences. For forge recipes and weapon stats: give a helpful 2-4 sentence breakdown with exact numbers."
         )
     },
     "yuzuha": {
@@ -377,6 +389,11 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
     npc = NPCS.get(npc_key)
     verified_data = find_relevant_data(user_text)
 
+    # Real-world date & clock (GMT+8)
+    tz_gmt8 = datetime.timezone(datetime.timedelta(hours=8))
+    now_gmt8 = datetime.datetime.now(tz_gmt8)
+    current_time_str = now_gmt8.strftime("%A, %B %d, %Y (%I:%M %p GMT+8)")
+
     # Format sliding chat history context (last few messages)
     recent_msgs = list(CHAT_HISTORY.get(channel_id, []))
     prior_lines = [m for m in recent_msgs[:-1] if m]
@@ -384,7 +401,10 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
 
     # If the user asks a question, run a quick live web search for extra fresh intel
     web_intel = ""
-    is_question = any(w in user_text.lower() for w in ["recipe", "how", "what", "where", "best", "which", "build", "why", "stats", "boss", "update", "code", "forge", "sword", "weapon", "armor"])
+    is_question = any(w in user_text.lower() for w in [
+        "recipe", "how", "what", "where", "best", "which", "build", "why", "stats", "boss", "update", "code", "forge", "sword", "weapon", "armor",
+        "date", "today", "time", "day", "search", "web", "news", "google"
+    ])
     if is_question or len(user_text.split()) > 2:
         try:
             # Run web search in executor so it doesn't block discord loop
@@ -397,6 +417,7 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
 
     full_prompt = (
         f"{npc['style']}\n\n"
+        f"Real-World Current Date & Time: {current_time_str}\n\n"
         f"Verified Local Data from theforge.gg:\n{verified_data if verified_data else 'None matched directly.'}\n\n"
         f"Live Web Search Intel:\n{web_intel if web_intel else 'None.'}\n\n"
         f"Recent Tavern Chat History (Sliding Context Window):\n{prior_context}\n\n"
