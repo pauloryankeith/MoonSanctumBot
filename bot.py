@@ -653,6 +653,7 @@ async def on_message(message: discord.Message):
             embed.add_field(
                 name="⚙️ Built-In Server Commands",
                 value="• `!help` or `!sanctum` — Show this tavern guide\n"
+                      "• `!list` — Browse complete directories for pickaxes, weapons, & armors\n"
                       "• `!top` or `!dps` — Show top 5 highest DPS weapons from the database\n"
                       "• `!pickaxes` or `!picks` — Show top 5 mining pickaxes by luck & power\n"
                       "• `!upgrades` or `!enhance` — Show anvil enhancement multipliers (+0 to +9) & aura colors\n"
@@ -731,6 +732,160 @@ async def on_message(message: discord.Message):
             embed.set_footer(text="Moon Sanctum Workshop Anvil")
             await channel.send(embed=embed)
             return
+
+        elif cmd in ["!list", "!catalog", "!items", "!weapons", "!swords", "!armors", "!armor", "!allpicks"]:
+            sub = cmd_parts[1].lower() if len(cmd_parts) > 1 else ""
+            
+            # 1. Pickaxes Directory
+            if sub in ["pick", "picks", "pickaxe", "pickaxes"] or cmd == "!allpicks":
+                embed = discord.Embed(
+                    title="⛏️ Complete Pickaxe Directory (44 Total)",
+                    description="All craftable, skin, and limited pickaxes from `ReplicatedStorage.Shared.Data.Equipments`:",
+                    color=0xF1C40F
+                )
+                embed.add_field(
+                    name="⚪ Common & Uncommon (5)",
+                    value="Stone Pickaxe, Bronze Pickaxe, Iron Pickaxe, Cobalt Pickaxe, Titanium Pickaxe",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🔵 Rare (7)",
+                    value="Gold Pickaxe, Platinum Pickaxe, Uranium Pickaxe, Mythril Pickaxe, Tungsten Pickaxe, Aqua Pickaxe, Bamboo Pickaxe",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🟣 Epic (8)",
+                    value="Stonewake's Pickaxe, Lightite Pickaxe, Mist Pickaxe, Snow Pickaxe, Frost Pickaxe, Sakura Pickaxe, Wolf Pickaxe, Holy Pickaxe",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🟡 Legendary (9)",
+                    value="Arcane Pickaxe, Magma Pickaxe, Void Pickaxe, Prismatic Pickaxe, Oni Pickaxe, Kitsune Pickaxe, Water Stone Pickaxe, Hexed Harvester, Bluemoon Crescent",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🔴 Mythic (7)",
+                    value="Demonic Pickaxe, Dragon Head Pickaxe, Angelite Pickaxe, Heavenly Pickaxe, Spirit Pickaxe, Yin-Yang Pickaxe, Crimson Count",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🌟 Event, Limited & Admin (8)",
+                    value="Christmas Pickaxe, Candy Cane Pickaxe, Pumpking, Infernal Pickaxe, Seraph Pickaxe, Medal Pickaxe, Dev's Bane Pickaxe, Moderator Pickaxe",
+                    inline=False
+                )
+                embed.set_footer(text="Ask 'tiera stats for <pickaxe>' for full power, luck & rune details!")
+                await channel.send(embed=embed)
+                return
+
+            # 2. Weapons Directory
+            elif sub in ["weapon", "weapons", "sword", "swords", "blade", "blades"] or cmd in ["!weapons", "!swords"]:
+                embed = discord.Embed(
+                    title="⚔️ Complete Weapon Directory (94 Total)",
+                    description="All 94 weapons in *The Forge* cataloged by class:",
+                    color=0xE67E22
+                )
+                embed.add_field(
+                    name="🗡️ Colossal Swords (13)",
+                    value="Devil's Deed, Excalibur, Sharktooth Odachi, Colossal Gemblade, Colossal Terrorblade, Kinmon Kamagatana, Coffin Lid, Otsuchi, etc.",
+                    inline=False
+                )
+                embed.add_field(
+                    name="⚔️ Straight Swords (13)",
+                    value="Hook Blade, Hell Slayer, Thornspine, Dragon Blade, Candy Cane, Crystalized Broadsword, Chaos, Cutlass, Rapier, Gladius, Falchion",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🗡️ Great Swords (7)",
+                    value="Jack's Crest, Anchored Greatsword, The Carver, Zweihander, Dark Knight's Greatsword, Long Sword, Crusader Sword",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🥷 Katanas (6)",
+                    value="Washi-maru, Kurokiba-gatana, Straight Edge Katana, Uchigatana, Juto Katana, Tachi",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🔪 Daggers & Short Blades (11)",
+                    value="Tanto, Curved Dagger, Cultist Dagger, Shark's Fangs, Damascus Dagger, Jitte, Gladius Dagger, Hook, Kunai, Falchion Knife, Dagger",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🔱 Spears & Polearms (11)",
+                    value="Moon Crescent Spear, Angelic Spear, Demonic Spear, Knight Spear, Bo Staff, Sodegarami, Naginata, Compass Spear, Trident, Shakujo, Spear",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🪓 Halberds & Glaives (4)",
+                    value="Royal Guardian's Glaive, Fangtian, Spiked Halberd, Halberd",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🪓 Axes & Great Axes (15)",
+                    value="Sun Great Axe, Wyvern Axe, Executioner's Greataxe, Batwing Reaver, Anchored Straight Blade, Reaper Scythe, Scythe, Double Battle Axe, Duskwing Cleaver, Ornate Short Axe, Spade Armed Axe, Curved Handle Axe, Battleaxe, Axe",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🔨 Maces & Blunt (12)",
+                    value="Grave Maker, Tetsubo, Hammerhead Mace, Winged Mace, Kanabo, Spiked Mace, Mace, Skull Crusher, Dragon Slayer, Great Sword, Hammer, Comically Large Spoon",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🥊 Gauntlets & Shield Weapons (7)",
+                    value="Dark Knight's Gauntlets, Savage Claws, Ironhand, Relevator, Boxing Gloves, Rosethorn, Knight's Bulwark",
+                    inline=False
+                )
+                embed.set_footer(text="Ask 'tiera stats for <weapon>' or 'schnee build for <weapon>' for numbers!")
+                await channel.send(embed=embed)
+                return
+
+            # 3. Armors Directory
+            elif sub in ["armor", "armors", "set", "sets"] or cmd in ["!armors", "!armor"]:
+                embed = discord.Embed(
+                    title="🛡️ Complete Armor Directory (48 Pieces • 17 Sets)",
+                    description="All armor sets and individual equipment pieces in *The Forge*:",
+                    color=0x3498DB
+                )
+                embed.add_field(
+                    name="👑 All 17 Armor Sets",
+                    value="Light, Ninja, Medium, Samurai, Viking, Rootguard, Voidstrider, Gloomwarden, Knight, Dark Knight, Wolf, Raven, Vanguard, Shogun, Juggernaut, Dreadhorn, Goblin's Crown",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🪖 Helmets (16)",
+                    value="Light, Medium, Samurai, Viking, Knight, Dark Knight, Raven's, Wolf, Goblin's Crown, Ninja's Headgear, Rootguard, Vanguard, Shogun's, Voidstrider's, Gloomwarden's, Dreadhorn's",
+                    inline=False
+                )
+                embed.add_field(
+                    name="🥋 Chestplates (16)",
+                    value="Light, Medium, Samurai, Viking, Knight, Dark Knight, Raven's, Wolf, Ninja's Armor, Rootguard, Vanguard, Shogun's, Juggernaut's, Voidstrider's, Gloomwarden's, Dreadhorn's",
+                    inline=False
+                )
+                embed.add_field(
+                    name="👖 Leggings (16)",
+                    value="Light, Medium, Samurai, Viking, Knight, Dark Knight, Raven's, Wolf, Ninja's Leggings, Rootguard, Vanguard, Shogun's, Juggernaut's, Voidstrider's, Gloomwarden's, Dreadhorn's",
+                    inline=False
+                )
+                embed.set_footer(text="Ask 'tiera stats for <armor>' to see HP bonuses & set abilities!")
+                await channel.send(embed=embed)
+                return
+
+            # Default: Directory Hub Menu
+            else:
+                embed = discord.Embed(
+                    title="📚 Moon Sanctum Equipment Directory Hub",
+                    description="Browse the complete catalog archives of *The Forge*:\n\n"
+                                "• **`!list pickaxes`** (or `!picks`) — Catalog of all 44 pickaxes grouped by Rarity\n"
+                                "• **`!list weapons`** (or `!swords`) — Catalog of all 94 weapons grouped by Weapon Class\n"
+                                "• **`!list armors`** (or `!armors`) — Catalog of all 48 armor pieces & 17 Armor Sets\n"
+                                "• **`!top`** / **`!dps`** — Top 5 highest DPS weapons\n"
+                                "• **`!pickaxes`** — Top 5 mining pickaxes by Luck & Power\n"
+                                "• **`!upgrades`** — Anvil upgrade enhancement multipliers (+0 to +9)\n\n"
+                                "💡 *Tip: Mention any item name in chat to get full stats from Tiera or Schnee!*",
+                    color=0x9B59B6
+                )
+                embed.set_footer(text="Moon Sanctum Weapon & Mining Archives")
+                await channel.send(embed=embed)
+                return
 
         elif cmd in ["!settings", "!config"]:
             retention_str = "Permanent (Never deleted)" if BOT_CONFIG["auto_delete_seconds"] == 0 else f"{BOT_CONFIG['auto_delete_seconds']} seconds"
