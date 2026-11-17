@@ -205,42 +205,60 @@ def find_relevant_data(user_text):
         else:
             likeliest_roll = f"{total_ores} ores, likeliest Dagger or Light Armor (~5.0% base HP -> +{5.0 * calc_mult * 2.0:.2f}% Masterwork Health)"
 
-        # Check for specific armor piece in text
+        # Check for specific armor piece in text (fuzzy: strip possessives and compare)
         specific_stats = []
+        text_stripped = re.sub(r"['\u2019]s?\b", "", text_lower)  # strip 's and possessives
         for a in DATABASE_ARMOR:
-            if a["name"].lower() in text_lower:
+            a_name_lower = a["name"].lower()
+            a_name_stripped = re.sub(r"['\u2019]s?\b", "", a_name_lower)
+            # Match: exact, stripped, or base word (e.g. "dreadhorn chestplate" matches "dreadhorn's chestplate")
+            if a_name_lower in text_lower or a_name_stripped in text_stripped or a_name_stripped.replace(" ", "") in text_stripped.replace(" ", ""):
                 h_val = float(a.get("health_val", 0))
                 norm_hp = h_val * calc_mult
                 mw_hp = norm_hp * 2.0
-                specific_stats.append(f"{a['name']}: +{mw_hp:.2f}% Health (Masterwork 100%) | +{norm_hp:.2f}% Health (Normal 0%) [Base: {h_val}%]")
+                specific_stats.append(
+                    f"{a['name']} (Base Health: {h_val}%):\n"
+                    f"    -> Normal Quality (0%): {h_val} * {calc_mult:.4f} * 1.0 = +{norm_hp:.2f}% Health\n"
+                    f"    -> Masterwork Quality (100%): {h_val} * {calc_mult:.4f} * 2.0 = +{mw_hp:.2f}% Health"
+                )
 
-        # Check for specific weapon piece in text
+        # Check for specific weapon piece in text (fuzzy: strip possessives)
         for w in DATABASE_WEAPONS:
-            if w["name"].lower() in text_lower:
+            w_name_lower = w["name"].lower()
+            w_name_stripped = re.sub(r"['\u2019]s?\b", "", w_name_lower)
+            if w_name_lower in text_lower or w_name_stripped in text_stripped or w_name_stripped.replace(" ", "") in text_stripped.replace(" ", ""):
                 try:
                     dmg_val = float(w.get("damage", 0))
                     norm_dmg = dmg_val * calc_mult
                     mw_dmg = norm_dmg * 2.0
-                    specific_stats.append(f"{w['name']}: {mw_dmg:.2f} DMG (Masterwork 100%) | {norm_dmg:.2f} DMG (Normal 0%) [Base: {dmg_val} DMG]")
+                    specific_stats.append(
+                        f"{w['name']} (Base Damage: {dmg_val}):\n"
+                        f"    -> Normal Quality (0%): {dmg_val} * {calc_mult:.4f} * 1.0 = {norm_dmg:.2f} DMG\n"
+                        f"    -> Masterwork Quality (100%): {dmg_val} * {calc_mult:.4f} * 2.0 = {mw_dmg:.2f} DMG"
+                    )
                 except (ValueError, TypeError):
                     pass
 
         # Build exact projection block
+        ore_breakdown = " + ".join(f"{c} * {m:.2f} [{n}]" for c, n, m in parsed_ores)
         proj_str = (
             f"=== EXACT RECIPE STAT PROJECTION (theforge.gg verified) ===\n"
             f"• Crucible Ore Count: {total_ores} total units\n"
-            f"• Weighted Multiplier: {calc_mult:.3f}x\n"
+            f"• Multiplier Calculation: ({ore_breakdown}) / {total_ores} = {calc_mult:.4f}x\n"
             f"• Likeliest Equipment Roll: {likeliest_roll}\n"
         )
         if specific_stats:
-            proj_str += f"• Specific Item Projections:\n  " + "\n  ".join(f"• {s}" for s in specific_stats) + "\n"
+            proj_str += "• EXACT FINAL STATS (you MUST quote these exact numbers):\n  " + "\n  ".join(specific_stats) + "\n"
         else:
             proj_str += (
-                f"• Armor Benchmarks: Heavy Chestplate (55% base): +{55.0 * calc_mult * 2.0:.2f}% HP (Masterwork 100%) | +{55.0 * calc_mult:.2f}% HP (Normal)\n"
-                f"  Medium Chestplate/Samurai (12.75% base): +{12.75 * calc_mult * 2.0:.2f}% HP (Masterwork 100%) | +{12.75 * calc_mult:.2f}% HP (Normal)\n"
-                f"• Weapon Benchmark: Spear/Colossal Sword: {16.54 * calc_mult * 2.0:.2f} DMG (Masterwork 100%) | {16.54 * calc_mult:.2f} DMG (Normal)\n"
+                f"• EXACT FINAL STATS (you MUST quote these exact numbers):\n"
+                f"  Dreadhorn's Chestplate (Base 55.0%): Normal = +{55.0 * calc_mult:.2f}% HP | Masterwork (100%) = +{55.0 * calc_mult * 2.0:.2f}% HP\n"
+                f"  Samurai Chestplate (Base 12.75%): Normal = +{12.75 * calc_mult:.2f}% HP | Masterwork (100%) = +{12.75 * calc_mult * 2.0:.2f}% HP\n"
+                f"  Wolf Chestplate (Base 35.0%): Normal = +{35.0 * calc_mult:.2f}% HP | Masterwork (100%) = +{35.0 * calc_mult * 2.0:.2f}% HP\n"
+                f"  Spear/Moon Crescent Spear: Normal = {16.54 * calc_mult:.2f} DMG | Masterwork (100%) = {16.54 * calc_mult * 2.0:.2f} DMG\n"
             )
-        proj_str += "========================================================="
+        proj_str += "=========================================================\n"
+        proj_str += "IMPORTANT: When responding, you MUST state the FINAL COMPUTED numbers above (e.g. '+1998.33% Health'), NOT generic formulas like 'Base Health % * Multiplier'. The math is already done for you."
         matches.append(proj_str)
 
     # 1. Check weapon database (DPS, Damage, Speed, Range, Chance)
@@ -409,7 +427,7 @@ NPCS = {
             "3. Common typos: 'devil's dead' is the colossal sword 'Devil's Deed'. "
             "4. If a guild member asks about someone (e.g. @Zyee, @seiko), refer strictly to that person by name. "
             "5. For casual banter: 1-2 chill, friendly sentences. For forge/armor recipes or calculations: give an expert, precise master-blacksmith breakdown."
-            "6. Whenever evaluating a recipe or ore combination, you MUST explicitly include an 'Approximate Stats' section grounded in the Verified Data: report the likeliest equipment roll (e.g. '51 ores: likeliest roll is Heavy Chestplate (84% chance)'), state the exact expected stats for both Masterwork 100% Quality (doubles base stats at 2.0x) and Normal (0% Quality), and include any specific piece mentioned (e.g. Samurai Chestplate at Masterwork: +463.25% Health)."
+            "6. Whenever evaluating a recipe or ore combination, you MUST explicitly include an 'Approximate Stats' section. ALWAYS state the FINAL COMPUTED numbers from the Verified Data (e.g. '+1998.33% Health', '+999.17% Health', '683.55 DMG'). NEVER write generic placeholder formulas like 'Base Health % * Multiplier * Quality = ~X%'. The exact final stats are pre-calculated for you in the Verified Data — just quote them directly."
         )
     }
 }
@@ -613,7 +631,7 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
         "Write all math and equations in plain, clean Discord text (e.g. 'Base Health % * Multiplier * Quality' or '386.75 / 51 = 18.16x').\n"
         "2. Be thorough, detailed, and complete in your blacksmithing and equipment analysis. Do not abruptly cut off; fully explain all numbers, traits, and armor mechanics in depth.\n"
-        "3. When evaluating forge recipes or ore combinations, always include an 'Approximate Stats' section reporting the likeliest roll and expected stats (both Normal and Masterwork 100% Quality) from the Verified Data.\n\n"
+        "3. When evaluating forge recipes or ore combinations, ALWAYS state the FINAL COMPUTED numbers from the Verified Data (e.g. '+1998.33% Health' or '683.55 DMG'). NEVER write generic placeholder formulas like 'Base Health % * Multiplier'. The exact stats are pre-calculated in the Verified Data — just quote them directly.\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
         f"Respond as {npc['name']} in clean Discord format:"
     )
