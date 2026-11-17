@@ -288,8 +288,15 @@ async def get_or_create_webhook(channel: discord.TextChannel):
         print(f"Webhook error: {e}")
         return None
 
-async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: str, auto_delete_seconds: int = 0):
-    """Guarantees strictly ONE NPC responds. Messages remain permanent when auto_delete_seconds=0."""
+# Global Config & Customization Toggles
+BOT_CONFIG = {
+    "auto_delete_seconds": 0, # 0 = permanent, >0 = timer in seconds
+    "ambient_chatter_enabled": True, # Yuzuha random ambient chatter
+    "interjection_enabled": True # Spontaneous uninvited tavern roasts
+}
+
+async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: str, auto_delete_seconds: int = None):
+    """Guarantees strictly ONE NPC responds. Messages follow BOT_CONFIG retention policy."""
     npc = NPCS.get(npc_key)
     if not npc:
         return
@@ -308,9 +315,10 @@ async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: s
     if not sent_msg:
         sent_msg = await channel.send(f"**{npc['name']}**: {message}")
 
-    if sent_msg and auto_delete_seconds > 0:
+    del_sec = auto_delete_seconds if auto_delete_seconds is not None else BOT_CONFIG["auto_delete_seconds"]
+    if sent_msg and del_sec > 0:
         try:
-            await sent_msg.delete(delay=auto_delete_seconds)
+            await sent_msg.delete(delay=del_sec)
         except Exception as e:
             print(f"Auto-delete error: {e}")
 
@@ -359,6 +367,10 @@ async def yuzuha_ambient_loop():
     
     while not client.is_closed():
         try:
+            if not BOT_CONFIG.get("ambient_chatter_enabled", True):
+                await asyncio.sleep(60)
+                continue
+
             target_channel = None
             for guild in client.guilds:
                 for ch in guild.text_channels:
@@ -377,8 +389,8 @@ async def yuzuha_ambient_loop():
                 line_template = random.choice(YUZUHA_AMBIENT_LINES)
                 yuzuha_msg = line_template.replace("{member}", member_str)
 
-                # Send permanently as Yuzuha (no auto-delete)
-                await send_single_npc(target_channel, "yuzuha", yuzuha_msg, auto_delete_seconds=0)
+                # Send as Yuzuha according to BOT_CONFIG retention policy
+                await send_single_npc(target_channel, "yuzuha", yuzuha_msg)
 
             # Random interval: between 35 and 65 minutes (2100 to 3900 seconds)
             wait_time = random.randint(2100, 3900)
@@ -461,6 +473,8 @@ msg_counter_since_spontaneous = 0
 async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id: int):
     """Evaluates the live chat vibe without keywords and decides if an NPC should organically interrupt."""
     global last_spontaneous_time, msg_counter_since_spontaneous
+    if not BOT_CONFIG.get("interjection_enabled", True):
+        return
     if not ai_client:
         return
     
@@ -519,9 +533,9 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 last_spontaneous_time = current_time
                 msg_counter_since_spontaneous = 0
                 
-                # Send spontaneous remark permanently
+                # Send spontaneous remark
                 CHAT_HISTORY[channel_id].append(f"{NPCS[chosen_npc]['name']}: {chime_line}")
-                await send_single_npc(channel, chosen_npc, chime_line, auto_delete_seconds=0)
+                await send_single_npc(channel, chosen_npc, chime_line)
     except Exception as e:
         print(f"Spontaneous eval error: {e}")
 
@@ -559,6 +573,144 @@ async def on_message(message: discord.Message):
     channel = message.channel
     author_name = message.author.display_name
     channel_id = channel.id
+
+    # Built-in Slash/Prefix Commands
+    if content.startswith("!"):
+        cmd_parts = content.split()
+        cmd = cmd_parts[0].lower()
+
+        if cmd in ["!help", "!sanctum", "!commands"]:
+            embed = discord.Embed(
+                title="🌙 Moon Sanctum Core — Guild & Tavern Guide",
+                description="Welcome to **Moon Sanctum** (*Tsuki no Hokora*), grounded in **Roblox The Forge** mechanics!\n\n"
+                            "Here are your resident companions and how to interact with them:",
+                color=0x9B59B6
+            )
+            embed.add_field(
+                name="⚔️ Schnee Raizar (@Schnee Raizar)",
+                value="High Elf chief strategist & master combat tactician. Ask her about builds, combat stats, boss strategies, dates, or intelligence.",
+                inline=False
+            )
+            embed.add_field(
+                name="🔨 Tiera Lucent (@Tiera Lucent)",
+                value="Tsundere workshop craftswoman & alchemist. Ask her about weapon molds, ores, forging calculations, and armor stats.",
+                inline=False
+            )
+            embed.add_field(
+                name="🦊 Yuzuha (@Yuzuha)",
+                value="Divine fox cub mascot. Say hi to her, pet her, offer sweet buns or meat! (*Kyuu~!*)",
+                inline=False
+            )
+            embed.add_field(
+                name="💬 How to Talk",
+                value="• **Mention by Name:** Type `schnee`, `tiera`, or `yuzuha` anywhere in your message.\n"
+                      "• **Discord Native Reply:** Click **Reply (↩)** on any NPC's message to continue the conversation.\n"
+                      "• **Ping:** Mention `@MoonSanctum Core`.",
+                inline=False
+            )
+            embed.add_field(
+                name="⚙️ Built-In Server Commands",
+                value="• `!help` or `!sanctum` — Show this tavern guide\n"
+                      "• `!top` or `!dps` — Show top 5 highest DPS weapons from the live database\n"
+                      "• `!settings` or `!config` — Check current retention policy & database status\n"
+                      "• `!autodelete <seconds>` — Set auto-delete timer for bot messages (`0` for permanent)\n"
+                      "• `!chatter <on|off>` — Toggle Yuzuha's periodic ambient chatter\n"
+                      "• `!interject <on|off>` — Toggle spontaneous tavern interjections",
+                inline=False
+            )
+            embed.set_footer(text="Powered by Google Gemini & theforge.gg • 24/7 Cloud on Render")
+            await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!top", "!dps"]:
+            sorted_weapons = sorted(
+                DATABASE_WEAPONS,
+                key=lambda x: float(x.get("dps", 0) or 0) if str(x.get("dps", 0)).replace(".", "", 1).isdigit() else 0,
+                reverse=True
+            )[:5]
+            embed = discord.Embed(
+                title="⚔️ Top 5 Highest DPS Weapons — The Forge Database",
+                description="Verified stats extracted directly from `theforge.gg/database/weapons`:",
+                color=0xE67E22
+            )
+            for i, w in enumerate(sorted_weapons, 1):
+                embed.add_field(
+                    name=f"#{i} {w.get('name')} ({w.get('class', 'Weapon')})",
+                    value=f"**DPS:** `{w.get('dps')}` | **Damage:** `{w.get('damage')}` | **Speed:** `{w.get('speed')}` | **Range:** `{w.get('range')} studs`",
+                    inline=False
+                )
+            embed.set_footer(text="Moon Sanctum Weapon Archives • theforge.gg")
+            await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!settings", "!config"]:
+            retention_str = "Permanent (Never deleted)" if BOT_CONFIG["auto_delete_seconds"] == 0 else f"{BOT_CONFIG['auto_delete_seconds']} seconds"
+            chatter_str = "🟢 Enabled" if BOT_CONFIG["ambient_chatter_enabled"] else "🔴 Disabled"
+            interject_str = "🟢 Enabled" if BOT_CONFIG["interjection_enabled"] else "🔴 Disabled"
+
+            embed = discord.Embed(
+                title="⚙️ Moon Sanctum Core — Settings & Diagnostics",
+                color=0x3498DB
+            )
+            embed.add_field(name="🗑️ Auto-Delete Retention", value=retention_str, inline=True)
+            embed.add_field(name="🦊 Yuzuha Ambient Chatter", value=chatter_str, inline=True)
+            embed.add_field(name="🎭 Spontaneous Interjections", value=interject_str, inline=True)
+
+            embed.add_field(
+                name="📚 Grounded Knowledge Base",
+                value=(
+                    f"• **Ores:** `{len(LIVE_ORES)}` entries\n"
+                    f"• **Weapons:** `{len(DATABASE_WEAPONS)}` entries\n"
+                    f"• **Armor Pieces:** `{len(DATABASE_ARMOR)}` entries\n"
+                    f"• **Armor Sets:** `{len(ARMOR_SETS)}` entries\n"
+                    f"• **Optimizer Traits:** `{len(TRAITS)}` entries"
+                ),
+                inline=False
+            )
+            embed.add_field(
+                name="☁️ Cloud Deployment",
+                value="• **Host:** Render Web Service (`https://moonsanctum-bot.onrender.com`)\n"
+                      "• **Monitor:** UptimeRobot 5-Minute Keep-Alive (24/7/365)\n"
+                      "• **AI Model:** Google Gemini 3.5 Flash-Lite (Multiturn Memory + Live Search)",
+                inline=False
+            )
+            embed.set_footer(text="Use !autodelete, !chatter, or !interject to adjust settings.")
+            await channel.send(embed=embed)
+            return
+
+        elif cmd == "!autodelete":
+            if len(cmd_parts) > 1 and cmd_parts[1].isdigit():
+                sec = int(cmd_parts[1])
+                BOT_CONFIG["auto_delete_seconds"] = sec
+                if sec == 0:
+                    await channel.send("✅ **Settings Updated:** Bot messages are now set to **Permanent** (will not be auto-deleted).")
+                else:
+                    await channel.send(f"✅ **Settings Updated:** Bot messages will now auto-delete after **{sec} seconds**.")
+            else:
+                await channel.send("⚠️ **Usage:** `!autodelete <seconds>` (e.g. `!autodelete 60`, or `!autodelete 0` for permanent).")
+            return
+
+        elif cmd == "!chatter":
+            if len(cmd_parts) > 1 and cmd_parts[1].lower() in ["on", "enable", "true"]:
+                BOT_CONFIG["ambient_chatter_enabled"] = True
+                await channel.send("✅ **Settings Updated:** Yuzuha ambient chatter is now **Enabled**.")
+            elif len(cmd_parts) > 1 and cmd_parts[1].lower() in ["off", "disable", "false"]:
+                BOT_CONFIG["ambient_chatter_enabled"] = False
+                await channel.send("✅ **Settings Updated:** Yuzuha ambient chatter is now **Disabled**.")
+            else:
+                await channel.send("⚠️ **Usage:** `!chatter <on|off>`")
+            return
+
+        elif cmd == "!interject":
+            if len(cmd_parts) > 1 and cmd_parts[1].lower() in ["on", "enable", "true"]:
+                BOT_CONFIG["interjection_enabled"] = True
+                await channel.send("✅ **Settings Updated:** Spontaneous tavern interjections are now **Enabled**.")
+            elif len(cmd_parts) > 1 and cmd_parts[1].lower() in ["off", "disable", "false"]:
+                BOT_CONFIG["interjection_enabled"] = False
+                await channel.send("✅ **Settings Updated:** Spontaneous tavern interjections are now **Disabled**.")
+            else:
+                await channel.send("⚠️ **Usage:** `!interject <on|off>`")
+            return
 
     # Add message to sliding context window
     if channel_id not in CHAT_HISTORY:
@@ -608,8 +760,8 @@ async def on_message(message: discord.Message):
             last_ai_time = current_time
             # Record NPC's reply into sliding context window so they remember previous turns
             CHAT_HISTORY[channel_id].append(f"{NPCS[target_npc]['name']}: {ai_reply}")
-            # Permanent message (auto_delete_seconds=0 as requested - never disappears)
-            await send_single_npc(channel, target_npc, ai_reply, auto_delete_seconds=0)
+            # Send NPC reply according to BOT_CONFIG retention policy
+            await send_single_npc(channel, target_npc, ai_reply)
     else:
         # Organic conversation between guild members! Count messages and evaluate spontaneous interjections
         msg_counter_since_spontaneous += 1
