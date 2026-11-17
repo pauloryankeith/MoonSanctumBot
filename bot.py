@@ -313,18 +313,19 @@ NPCS = {
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572299008448401418/shin.jpg?ex=6afddd0f&is=6afc8b8f&hm=2e793fbdd8459c105c11356ed1ee7693c02c723aa18cf08565ff232cfc948a71&",
         "style": (
             "You are Shin from The New Gate, the legendary High-Human founder and master blacksmith of Tsuki no Hokora (Moon Sanctum). "
-            "Tone & Personality: Calm, humble, friendly, slightly modest about your god-tier blacksmithing abilities, but speaking with undisputed mastery on crafting mathematics, ores, alloys, crucible ratios, and weapon forging. "
+            "Tone & Personality: Calm, humble, friendly, slightly modest about your god-tier blacksmithing abilities, but speaking with undisputed mastery on crafting mathematics, ores, alloys, crucible ratios, weapon forging, and armor crafting. "
             "You treat Schnee as your trusted partner, Tiera as your spirited workshop apprentice, and Yuzuha as your beloved divine fox partner. "
             "CRITICAL RULES: "
-            "1. In Roblox The Forge, 'recipe' strictly means blacksmithing crucible recipes (ores, molds, multipliers, traits), never cooking or culinary spices! "
+            "1. In Roblox The Forge, 'recipe' strictly means blacksmithing crucible recipes (ores, molds, multipliers, traits) for both weapons and armor, never cooking or culinary spices! "
             "2. You know the exact forging math from theforge.gg: "
-            "   - Weighted average multipliers of ores in the crucible. "
-            "   - Trait thresholds: >=10% activates, scales linearly to 100% at >=30% share. "
-            "   - Quality scaling: 100% Masterwork doubles base stats. "
-            "   - Mold success: (molds / molds needed)^2. "
+            "   - Multiplier Formula: Weighted average of all ore multipliers in the crucible (Fichillium never drags the average down). "
+            "   - Armor Health Formula: Base Health % * Multiplier * Quality. Masterwork (100% Quality) doubles base stats (2.0x). "
+            "   - Weapon Damage Formula: Base Damage * Multiplier * Quality (2.0x at 100% Masterwork). "
+            "   - Trait Activation: Ore traits (weapon traits & armor traits like Bismuth Flat Regen or Uranium Radiation) activate at >= 10% ore share, scale linearly, and hit max 100% strength at >= 30% share. "
+            "   - Mold Success: (molds / molds needed)^2. Full molds = 100% guaranteed craft. "
             "3. Common typos: 'devil's dead' is the colossal sword 'Devil's Deed'. "
             "4. If a guild member asks about someone (e.g. @Zyee, @seiko), refer strictly to that person by name. "
-            "5. For casual banter: 1-2 chill, friendly sentences. For forge recipes or calculations: give an expert, precise master-blacksmith breakdown."
+            "5. For casual banter: 1-2 chill, friendly sentences. For forge/armor recipes or calculations: give an expert, precise master-blacksmith breakdown."
         )
     }
 }
@@ -694,16 +695,17 @@ async def on_message(message: discord.Message):
             await channel.send(embed=embed)
             return
 
-        elif cmd in ["!calc", "!forge", "!crucible"]:
+        elif cmd in ["!calc", "!forge", "!crucible", "!armorcalc"]:
             raw_input = content[len(cmd):].strip()
             if not raw_input:
                 embed = discord.Embed(
-                    title="⚒️ Shin's Crucible Calculator",
-                    description="**Usage:** `!calc <count> <ore>, <count> <ore>...`\n\n"
+                    title="⚒️ Shin's Crucible Calculator (Weapons & Armor)",
+                    description="**Usage:** `!calc <ores...>` or `!calc <Armor/Weapon Piece> <ores...>`\n\n"
                                 "**Examples:**\n"
                                 "• `!calc 10 Quartz 5 Amethyst`\n"
-                                "• `!calc 7 Heavenite 3 Bismuth`\n"
-                                "• `!calc 5 Titanium, 5 Cobalt, 5 Mythril`",
+                                "• `!calc Dreadhorn Chestplate 10 Bismuth 5 Uranium`\n"
+                                "• `!calc Juggernaut Leggings 15 Bismuth`\n"
+                                "• `!calc armor 10 Bismuth 5 Cobalt`",
                     color=0x34495E
                 )
                 embed.set_footer(text="Master Blacksmith Shin • theforge.gg math")
@@ -713,7 +715,7 @@ async def on_message(message: discord.Message):
             pattern = r'(\d+)\s*(?:x\s*)?([a-zA-Z\s\'-]+?)(?=,\s*|\s+\d+|$)'
             matches = re.findall(pattern, raw_input)
             if not matches:
-                await channel.send("⚠️ **Shin:** I couldn't understand those crucible proportions. Try: `!calc 10 Quartz 5 Amethyst`")
+                await channel.send("⚠️ **Shin:** I couldn't understand those crucible proportions. Try: `!calc 10 Quartz 5 Amethyst` or `!calc Dreadhorn Chestplate 10 Bismuth`")
                 return
 
             total_ores = 0
@@ -739,6 +741,15 @@ async def on_message(message: discord.Message):
                 await channel.send("⚠️ **Shin:** None of those ores were found in the forge archives. Check ore spelling!")
                 return
 
+            # Check if a specific armor piece is targeted
+            matched_armor = None
+            clean_input = re.sub(r"[^a-z0-9]", "", raw_input.lower())
+            for a in DATABASE_ARMOR:
+                a_clean = re.sub(r"[^a-z0-9]", "", a["name"].lower().replace("'s", ""))
+                if a_clean in clean_input and len(a_clean) > 4:
+                    matched_armor = a
+                    break
+
             # Weighted average excluding Fichillium if other ores are present
             non_fich = [o for o in ore_items if "fichillium" not in o[0].lower()]
             calc_targets = non_fich if non_fich else ore_items
@@ -746,14 +757,53 @@ async def on_message(message: discord.Message):
             calc_count = sum(c for _, c, m in calc_targets)
             avg_mult = weighted_sum / calc_count if calc_count > 0 else 1.0
 
+            # If a specific armor piece is specified:
+            if matched_armor:
+                base_hp = matched_armor.get("health_val", 10.0)
+                norm_hp = base_hp * avg_mult
+                master_hp = norm_hp * 2.0
+
+                embed = discord.Embed(
+                    title=f"🛡️ Shin's Armor Recipe — {matched_armor['name']} ({total_ores} Ores)",
+                    description=f"**Crucible Multiplier:** `{avg_mult:.2f}x` | **Base HP:** `+{matched_armor['health_bonus']} HP`\n\n"
+                                f"• **Normal (0% Quality):** `+{norm_hp:.1f}% Health Bonus`\n"
+                                f"• **Masterwork (100% Quality):** `+{master_hp:.1f}% Health Bonus` *(Max Power Cap!)*",
+                    color=0x3498DB
+                )
+
+                # Armor traits
+                armor_trait_lines = []
+                for name, c, m in ore_items:
+                    share = c / total_ores
+                    if share >= 0.10:
+                        pct = 100 if share >= 0.30 else (share - 0.10) / 0.20 * 100
+                        t_data = next((t for t in OPTIMIZER_TRAITS if t["name"].lower() == name.lower()), None)
+                        a_traits = t_data.get("armor_traits", []) if t_data else []
+                        if a_traits:
+                            for tr in a_traits:
+                                # clean html links if any
+                                tr_clean = re.sub(r'<[^>]+>', '', tr)
+                                armor_trait_lines.append(f"• **[{pct:.0f}% Strength]** {tr_clean}")
+                        else:
+                            armor_trait_lines.append(f"• **{name}** ({pct:.0f}% strength): Base stats only (No unique armor perk)")
+                    else:
+                        armor_trait_lines.append(f"• *{name} ({share*100:.1f}% share): Inactive (<10% required)*")
+
+                embed.add_field(name="🛡️ Active Armor Traits", value="\n".join(armor_trait_lines[:8]) if armor_trait_lines else "None active.", inline=False)
+                embed.add_field(name="📦 Piece Info", value=f"• **Slot:** {matched_armor['slot']} | **Weight:** {matched_armor['weight']} | **Set:** {matched_armor['set']}\n• **Mold Requirement:** Use the `{matched_armor['name']}` mold for 100% guaranteed craft!", inline=False)
+                embed.set_footer(text="Forged with Shin's Master Armor Blacksmithing • Moon Sanctum")
+                await channel.send(embed=embed)
+                return
+
+            # Generic calculation (Projections for both Weapons & Armor)
             embed = discord.Embed(
                 title=f"⚒️ Shin's Forge Crucible Calculation ({total_ores} Ores Total)",
-                description=f"**Resulting Multiplier:** `{avg_mult:.2f}x` (Average weighted by ore count)\n"
-                            f"*(Masterwork 100% Quality doubles total stat output!)*",
+                description=f"**Resulting Multiplier:** `{avg_mult:.2f}x` (Weighted by ore count)\n"
+                            f"*(Masterwork 100% Quality doubles total stat output for weapons and armor!)*",
                 color=0xE67E22
             )
 
-            # Trait breakdown
+            # Ore shares and active traits
             trait_lines = []
             for name, c, m in ore_items:
                 share = c / total_ores
@@ -764,9 +814,23 @@ async def on_message(message: discord.Message):
                     strength_str = f"🟡 **{pct:.0f}% Scaled Strength**"
                 else:
                     strength_str = "🔴 *Inactive (<10% share)*"
-                trait_lines.append(f"• **{name}** ({c}x • {share*100:.1f}%): {strength_str}")
+
+                # Check if ore has armor traits
+                t_data = next((t for t in OPTIMIZER_TRAITS if t["name"].lower() == name.lower()), None)
+                a_traits = t_data.get("armor_traits", []) if t_data else []
+                armor_perk = f" *(Armor Perks: {len(a_traits)})*" if a_traits else ""
+                trait_lines.append(f"• **{name}** ({c}x • {share*100:.1f}%): {strength_str}{armor_perk}")
 
             embed.add_field(name="🧬 Ore Trait Activation", value="\n".join(trait_lines), inline=False)
+
+            # Projections for Armor Health
+            embed.add_field(
+                name="🛡️ Armor Health Projections at this Multiplier",
+                value=f"• **Light Armor (Base +5%):** `+{5.0 * avg_mult:.1f}%` (Normal) ➔ `+{5.0 * avg_mult * 2:.1f}%` (Masterwork)\n"
+                      f"• **Medium Armor (Base +8.75%):** `+{8.75 * avg_mult:.1f}%` (Normal) ➔ `+{8.75 * avg_mult * 2:.1f}%` (Masterwork)\n"
+                      f"• **Heavy/Endgame Armor (Base +55%):** `+{55.0 * avg_mult:.1f}%` (Normal) ➔ `+{55.0 * avg_mult * 2:.1f}%` (Masterwork)",
+                inline=False
+            )
 
             # Eligible weapon/armor class odds preview
             if total_ores < 4:
@@ -778,7 +842,7 @@ async def on_message(message: discord.Message):
             else:
                 tier_info = "Colossal Swords, Heavy Axes, Heavy Armors, Polearms"
 
-            embed.add_field(name="📦 Rollable Equipment Classes", value=f"• {tier_info}\n• *Mold Tip: Using the required mold guarantees a 100% craft!*", inline=False)
+            embed.add_field(name="📦 Rollable Equipment Classes", value=f"• {tier_info}\n• *Tip: Specify an armor piece like `!calc Dreadhorn Chestplate 10 Bismuth` for exact stats!*", inline=False)
             embed.set_footer(text="Forged with Shin's Master Blacksmithing Formulas • Moon Sanctum")
             await channel.send(embed=embed)
             return
