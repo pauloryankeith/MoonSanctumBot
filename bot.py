@@ -132,6 +132,28 @@ try:
 except Exception as e:
     print(f"Error loading armor sets: {e}")
 
+# Load complete pickaxes database from game internals (ReplicatedStorage.Shared.Data.Equipments)
+DATABASE_PICKAXES = []
+try:
+    pickaxes_path = os.path.join(os.path.dirname(__file__), "theforge_database_pickaxes.json")
+    if os.path.exists(pickaxes_path):
+        with open(pickaxes_path, "r", encoding="utf-8") as f:
+            DATABASE_PICKAXES = json.load(f)
+        print(f"Loaded {len(DATABASE_PICKAXES)} pickaxes from theforge_database_pickaxes.json")
+except Exception as e:
+    print(f"Error loading pickaxes database: {e}")
+
+# Load enhancements & upgrade multipliers
+ENHANCEMENTS = {}
+try:
+    enhancements_path = os.path.join(os.path.dirname(__file__), "theforge_enhancements.json")
+    if os.path.exists(enhancements_path):
+        with open(enhancements_path, "r", encoding="utf-8") as f:
+            ENHANCEMENTS = json.load(f)
+        print("Loaded enhancement & upgrade formulas from theforge_enhancements.json")
+except Exception as e:
+    print(f"Error loading enhancements: {e}")
+
 def find_relevant_data(user_text):
     text_lower = user_text.lower()
     # Normalize common typos
@@ -141,7 +163,7 @@ def find_relevant_data(user_text):
     # 1. Check weapon database (DPS, Damage, Speed, Range, Chance)
     for w in DATABASE_WEAPONS:
         w_name = w["name"].lower()
-        if w_name in text_lower or (len(w_name) > 5 and re.sub(r"[^a-z0-9]", "", w_name) in re.sub(r"[^a-z0-9]", "", text_lower)):
+        if re.search(r"\b" + re.escape(w_name) + r"\b", text_lower) or (len(w_name) > 6 and re.sub(r"[^a-z0-9]", "", w_name) in re.sub(r"[^a-z0-9]", "", text_lower)):
             matches.append(
                 f"- Weapon: {w['name']} ({w['class']}) -> Damage: {w['damage']}, DPS: {w['dps']}, Speed: {w['speed']}, Range: {w['range']} studs, Chance: {w['chance']}"
             )
@@ -151,7 +173,25 @@ def find_relevant_data(user_text):
         top3 = [f"{w['name']} ({w['dps']} DPS, {w['damage']} DMG)" for w in DATABASE_WEAPONS[:3]]
         matches.append(f"- Top DPS Weapons: {', '.join(top3)}")
 
-    # 2. Check armor sets (Ability, Piece stats, Weapon affinity)
+    # 2. Check pickaxe database (Mine Power, Luck Boost, Mine Speed, Rune Slots, Ore, Rarity)
+    for p in DATABASE_PICKAXES:
+        p_name = p["name"].lower()
+        if re.search(r"\b" + re.escape(p_name) + r"\b", text_lower) or (len(p_name) > 6 and re.sub(r"[^a-z0-9]", "", p_name) in re.sub(r"[^a-z0-9]", "", text_lower)):
+            matches.append(
+                f"- Pickaxe: {p['name']} ({p['rarity']}) -> Ore: {p['ore']}, Mine Power: {p['mine_power']}, Luck Boost: +{p['luck_boost']}, Speed: {p['mine_speed']}, Rune Slots: {p['rune_slots']}"
+            )
+
+    # Check for best pickaxe / highest luck
+    if any(k in text_lower for k in ["best pickaxe", "highest luck", "best luck pickaxe", "top pickaxe", "fastest pickaxe", "top pick"]):
+        top3_luck = sorted([p for p in DATABASE_PICKAXES if p.get('flags') != 'Admin'], key=lambda x: (x.get('luck_boost', 0), x.get('mine_power', 0)), reverse=True)[:3]
+        top3_str = ", ".join([p["name"] + " (+" + str(p["luck_boost"]) + " Luck, " + str(p["mine_power"]) + " Power)" for p in top3_luck])
+        matches.append(f"- Top Luck Pickaxes: {top3_str}")
+
+    # 3. Check upgrade / enhancement / anvil multipliers (+0 to +9)
+    if any(k in text_lower for k in ["upgrade", "enhancement", "anvil", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9"]):
+        matches.append("- Upgrades (0 to +9): Level 0=1.0x, +1=1.05x, +2=1.10x, +3=1.15x, +4=1.20x (Teal), +5=1.25x (Green), +6=1.30x (Pale Gold), +7=1.35x (Gold), +8=1.40x (Orange), +9=1.50x (+50% Power Cap).")
+
+    # 4. Check armor sets (Ability, Piece stats, Weapon affinity)
     for s in ARMOR_SETS:
         pattern = r"\b" + re.escape(s["name"].lower()) + r"\b"
         clean_name = s["name"].lower().replace(" set", "")
@@ -162,7 +202,7 @@ def find_relevant_data(user_text):
                 f"- Set: {s['name']} ({s['class']}) -> Per piece: [{pieces_str}] | {ability_str}"
             )
 
-    # 3. Check individual armor database (Health Bonus, Weight, Set, Chance)
+    # 5. Check individual armor database (Health Bonus, Weight, Set, Chance)
     for a in DATABASE_ARMOR:
         pattern = r"\b" + re.escape(a["name"].lower()) + r"\b"
         if re.search(pattern, text_lower):
@@ -175,7 +215,7 @@ def find_relevant_data(user_text):
         top3_armor = [f"{a['name']} ({a['health_bonus']} Health)" for a in sorted(DATABASE_ARMOR, key=lambda x: x.get('health_val', 0), reverse=True)[:3]]
         matches.append(f"- Top Health Armor Pieces: {', '.join(top3_armor)}")
 
-    # 4. Check ore specific traits
+    # 6. Check ore specific traits
     for item in OPTIMIZER_TRAITS:
         pattern = r"\b" + re.escape(item["name"].lower()) + r"\b"
         if re.search(pattern, text_lower):
@@ -183,13 +223,13 @@ def find_relevant_data(user_text):
             a_str = ", ".join(item.get("armor_traits", [])) if item.get("armor_traits") else "None"
             matches.append(f"- Ore: {item['name']} ({item['rarity']} {item['multiplier']}x): Weapons: [{w_str}] | Armor: [{a_str}]")
 
-    # 5. Check live ore locations
+    # 7. Check live ore locations
     for ore in LIVE_ORES:
         pattern = r"\b" + re.escape(ore["name"].lower()) + r"\b"
         if re.search(pattern, text_lower) and not any(ore["name"] in m for m in matches):
             matches.append(f"- {ore['name']} ({ore['rarity']}): Location '{ore['location']}', Mult: {ore['multiplier']}, Price: {ore['price']}")
 
-    return "\n".join(matches[:3]) if matches else ""
+    return "\n".join(matches[:4]) if matches else ""
 
 def live_web_search(query: str, max_results: int = 3):
     """Searches the live web via DuckDuckGo with smart domain targeting."""
@@ -245,14 +285,16 @@ NPCS = {
         "name": "Tiera Lucent",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572079605945344042/tiera.jpg?ex=6afd10b9&is=6afbbf39&hm=d3e6ea7b00b2b62f2548f63b48ed11f9987264620b22bee1f630231de5b03f79&",
         "style": (
-            "You are Tiera Lucent from The New Gate, running the Moon Sanctum workshop counter and forge inquiries. "
-            "Tone & Personality: Energetic, practical, tsundere-leaning craftswoman. Hates wasting rare materials like Bismuth. "
+            "You are Tiera Lucent from The New Gate, running the Moon Sanctum workshop counter, anvil upgrades, and mining/forge inquiries. "
+            "Tone & Personality: Energetic, practical, tsundere-leaning craftswoman. Master of weapon forging, all 44 pickaxes, and anvil upgrade enhancements (+0 to +9). Hates wasting rare materials like Bismuth. "
             "CRITICAL RULES: "
             "1. In Roblox The Forge, 'recipe' ALWAYS means weapon forging (ores, molds, multipliers), never cooking! 'Devil's dead' is the colossal sword 'Devil's Deed'. "
-            "2. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by their name. "
-            "3. If asked for the current date, time, or web facts, state them directly. "
-            "4. Do not start your message by tagging the author. Just speak directly. "
-            "5. For casual questions: reply in 1-2 lively sentences. For forge recipes: give a helpful 2-4 sentence breakdown with exact numbers."
+            "2. If asked about pickaxes or mining: you know all 44 pickaxes (Mine Power, Luck Boost, Speed, Rune Slots, and Ores). "
+            "3. If asked about upgrades/anvil: you know the exact multipliers (Level 1-8 is +5% per level from 1.05x to 1.40x, Level 9 reaches 1.50x max +50% power cap) and aura colors (e.g. +4 Teal, +7 Gold, +8 Orange). "
+            "4. If a guild member asks about another person (e.g. @Zyee, @seiko), refer strictly to THAT SPECIFIC PERSON by their name. "
+            "5. If asked for the current date, time, or web facts, state them directly. "
+            "6. Do not start your message by tagging the author. Just speak directly. "
+            "7. For casual questions: reply in 1-2 lively sentences. For forge recipes/pickaxes/upgrades: give a helpful 2-4 sentence breakdown with exact numbers."
         )
     },
     "yuzuha": {
@@ -611,7 +653,9 @@ async def on_message(message: discord.Message):
             embed.add_field(
                 name="⚙️ Built-In Server Commands",
                 value="• `!help` or `!sanctum` — Show this tavern guide\n"
-                      "• `!top` or `!dps` — Show top 5 highest DPS weapons from the live database\n"
+                      "• `!top` or `!dps` — Show top 5 highest DPS weapons from the database\n"
+                      "• `!pickaxes` or `!picks` — Show top 5 mining pickaxes by luck & power\n"
+                      "• `!upgrades` or `!enhance` — Show anvil enhancement multipliers (+0 to +9) & aura colors\n"
                       "• `!settings` or `!config` — Check current retention policy & database status\n"
                       "• `!autodelete <seconds>` — Set auto-delete timer for bot messages (`0` for permanent)\n"
                       "• `!chatter <on|off>` — Toggle Yuzuha's periodic ambient chatter\n"
@@ -643,6 +687,51 @@ async def on_message(message: discord.Message):
             await channel.send(embed=embed)
             return
 
+        elif cmd in ["!pickaxes", "!picks", "!pickaxe"]:
+            top5_picks = sorted(
+                [p for p in DATABASE_PICKAXES if p.get("flags") != "Admin"],
+                key=lambda x: (x.get("luck_boost", 0), x.get("mine_power", 0)),
+                reverse=True
+            )[:5]
+            embed = discord.Embed(
+                title="⛏️ Top 5 Pickaxes — The Forge Mining Archives",
+                description="Verified stats directly from game internals (`ReplicatedStorage.Shared.Data.Equipments`):",
+                color=0xF1C40F
+            )
+            for i, p in enumerate(top5_picks, 1):
+                embed.add_field(
+                    name=f"#{i} {p['name']} ({p['rarity']})",
+                    value=f"**Mine Power:** `{p['mine_power']}` | **Luck Boost:** `+{p['luck_boost']}` | **Speed:** `{p['mine_speed']}` | **Rune Slots:** `{p['rune_slots']}` | **Ore:** `{p['ore']}`",
+                    inline=False
+                )
+            embed.set_footer(text="Moon Sanctum Mining Archives • The Forge")
+            await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!upgrades", "!enhance", "!enhancements"]:
+            embed = discord.Embed(
+                title="✨ Weapon & Armor Upgrade Multipliers (+0 to +9)",
+                description="Verified enhancement stats and aura colors at the anvil:",
+                color=0xE74C3C
+            )
+            embed.add_field(
+                name="📈 Anvil Scaling & Aura Colors",
+                value="• `+0` ➔ **1.00x** *(Light Blue)*\n"
+                      "• `+1` ➔ **1.05x** *(Blue)*\n"
+                      "• `+2` ➔ **1.10x** *(Mid Blue)*\n"
+                      "• `+3` ➔ **1.15x** *(Deep Blue)*\n"
+                      "• `+4` ➔ **1.20x** *(Teal)*\n"
+                      "• `+5` ➔ **1.25x** *(Green)*\n"
+                      "• `+6` ➔ **1.30x** *(Pale Gold)*\n"
+                      "• `+7` ➔ **1.35x** *(Gold)*\n"
+                      "• `+8` ➔ **1.40x** *(Orange)*\n"
+                      "• `+9` ➔ **1.50x** *(Max Cap: +50% Power)*",
+                inline=False
+            )
+            embed.set_footer(text="Moon Sanctum Workshop Anvil")
+            await channel.send(embed=embed)
+            return
+
         elif cmd in ["!settings", "!config"]:
             retention_str = "Permanent (Never deleted)" if BOT_CONFIG["auto_delete_seconds"] == 0 else f"{BOT_CONFIG['auto_delete_seconds']} seconds"
             chatter_str = "🟢 Enabled" if BOT_CONFIG["ambient_chatter_enabled"] else "🔴 Disabled"
@@ -661,9 +750,11 @@ async def on_message(message: discord.Message):
                 value=(
                     f"• **Ores:** `{len(LIVE_ORES)}` entries\n"
                     f"• **Weapons:** `{len(DATABASE_WEAPONS)}` entries\n"
+                    f"• **Pickaxes:** `{len(DATABASE_PICKAXES)}` entries\n"
                     f"• **Armor Pieces:** `{len(DATABASE_ARMOR)}` entries\n"
                     f"• **Armor Sets:** `{len(ARMOR_SETS)}` entries\n"
-                    f"• **Optimizer Traits:** `{len(TRAITS)}` entries"
+                    f"• **Optimizer Traits:** `{len(OPTIMIZER_TRAITS)}` entries\n"
+                    f"• **Enhancements:** `+0 to +9` Anvil Multipliers & Aura Colors"
                 ),
                 inline=False
             )
@@ -750,7 +841,7 @@ async def on_message(message: discord.Message):
 
         target_npc = "schnee" if is_schnee else ("tiera" if is_tiera else ("yuzuha" if is_yuzuha else replied_to_npc))
         if is_bot_pinged and not (is_schnee or is_tiera or is_yuzuha or replied_to_npc):
-            if re.search(r"\b(craft|forge|sword|recipe|ore|ores|bismuth|dagger|mold|damage|dps|speed|range|armor|helmet|chestplate|leggings|health)\b", content_lower):
+            if re.search(r"\b(craft|forge|sword|recipe|ore|ores|bismuth|dagger|mold|damage|dps|speed|range|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
                 target_npc = "tiera"
             else:
                 target_npc = "schnee"
