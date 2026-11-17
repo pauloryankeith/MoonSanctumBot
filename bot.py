@@ -503,8 +503,12 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         f"{reply_context + chr(10) if reply_context else ''}"
         f"SPEAKER IDENTITY RULE: The person speaking to you right now is '{user_name}'. "
         f"You are responding directly to '{user_name}'. Never confuse '{user_name}' with other guild members from earlier messages!\n\n"
+        "CRITICAL DISCORD FORMATTING RULE:\n"
+        "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
+        "Write all math and equations in plain, clean Discord text (e.g. 'Base Health % * Multiplier * Quality' or '386.75 / 51 = 18.16x').\n"
+        "2. Keep your response complete, focused, and under 1600 characters so it finishes cleanly without being cut off!\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
-        f"Respond as {npc['name']} in Discord format (scale response naturally: short for greetings, clear & detailed for forge/game questions):"
+        f"Respond as {npc['name']} in clean Discord format:"
     )
 
     for model_name in ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]:
@@ -520,9 +524,17 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
                     raw_text = raw_text.strip("`").strip()
                 # Remove redundant leading @Author tag if AI prepends it
                 raw_text = re.sub(rf"^@{re.escape(user_name)}\s*[:,]?\s*", "", raw_text, flags=re.IGNORECASE)
-                # Cap response at 1200 characters to keep Discord clean
-                if len(raw_text) > 1200:
-                    raw_text = raw_text[:1197] + "..."
+                
+                # Sanitize any accidental LaTeX math notation into clean Discord text
+                raw_text = re.sub(r'\\text\{([^}]+)\}', r'\1', raw_text)
+                raw_text = re.sub(r'\\mathbf\{([^}]+)\}', r'**\1**', raw_text)
+                raw_text = re.sub(r'\\times', r'*', raw_text)
+                raw_text = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'(\1 / \2)', raw_text)
+                raw_text = raw_text.replace('$', '')
+
+                # Cap response at 1950 characters (Discord limit is 2000) so answers are never cut off prematurely
+                if len(raw_text) > 1950:
+                    raw_text = raw_text[:1947] + "..."
                 return raw_text
         except Exception as e:
             print(f"Gemini {model_name} error: {e}")
