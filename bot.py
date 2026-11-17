@@ -814,6 +814,7 @@ async def on_message(message: discord.Message):
             embed.add_field(
                 name="⚙️ Built-In Server Commands",
                 value="• `!help` or `!sanctum` — Show this tavern guide\n"
+                      "• `!shin` — **Shin's blacksmithing guide** (how to use him + all examples)\n"
                       "• `!calc <ores>` — Forge Crucible Calculator (e.g. `!calc 10 quartz 5 amethyst`)\n"
                       "• `!farm <item>` — Item Drop Table & Farm Finder (e.g. `!farm Heavenite` or `!farm Rosethorn`)\n"
                       "• `!list` — Browse complete directories for pickaxes, weapons, & armors\n"
@@ -827,6 +828,96 @@ async def on_message(message: discord.Message):
                 inline=False
             )
             embed.set_footer(text="Powered by Google Gemini & theforge.gg • 24/7 Cloud on Render")
+            await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!shin", "!shinhelp", "!shinguide"]:
+            embed = discord.Embed(
+                title="⚒️ Shin — Master Blacksmith Guide",
+                description=(
+                    "Shin is the legendary **High-Human founder** of Moon Sanctum and a Level 255 master blacksmith.\n"
+                    "He knows every crafting formula, ore multiplier, and armor stat from **theforge.gg**.\n\n"
+                    "**How to talk to Shin:** Just type `shin` anywhere in your message!"
+                ),
+                color=0xE67E22
+            )
+            embed.add_field(
+                name="⚒️ 1. Recipe Calculator (Free-Chat)",
+                value=(
+                    "Ask Shin directly about any ore combination — he auto-calculates the multiplier, "
+                    "traits, and **exact final stats** for both Normal and Masterwork quality.\n\n"
+                    "**Examples:**\n"
+                    "• `shin how about i make an armor using 17 frost core, 17 fierce jade, 17 kokorite`\n"
+                    "• `shin what if i use 10 bismuth and 5 uranium for a weapon?`\n"
+                    "• `shin can you calculate 20 heavenite and 10 starite for a dreadhorn chestplate`\n\n"
+                    "**What Shin gives you:**\n"
+                    "✅ Weighted multiplier (e.g. `18.167x`)\n"
+                    "✅ Likeliest equipment roll + drop odds (e.g. `Heavy Chestplate 84%`)\n"
+                    "✅ Exact Health% at **Normal (0%)** and **Masterwork (100%)** quality\n"
+                    "✅ All active ore traits at 100% strength (if share ≥ 30%)"
+                ),
+                inline=False
+            )
+            embed.add_field(
+                name="🧮 2. `!calc` — Instant Crucible Calculator",
+                value=(
+                    "The dedicated command version. Gives a clean embed with exact stats.\n\n"
+                    "**Usage:** `!calc <ores>` or `!calc <Armor Piece> <ores>`\n\n"
+                    "**Examples:**\n"
+                    "• `!calc 17 frost core, 17 fierce jade, 17 kokorite`\n"
+                    "• `!calc Dreadhorn Chestplate 10 bismuth 5 uranium`\n"
+                    "• `!calc Samurai Chestplate 20 heavenite 10 starite`\n"
+                    "• `!calc 15 bismuth 15 uranium 15 kokorite`\n\n"
+                    "**Returns:** Multiplier, Normal HP%, Masterwork HP%, active traits"
+                ),
+                inline=False
+            )
+            embed.add_field(
+                name="⚔️ 3. Weapon Recipe Questions",
+                value=(
+                    "Ask Shin about weapon crafting math too.\n\n"
+                    "**Examples:**\n"
+                    "• `shin what damage would a moon crescent spear get with 15 frost star, 15 galaxite, 15 fierce jade?`\n"
+                    "• `shin best ore combo for max damage spear?`\n"
+                    "• `shin compare devil's deed vs angelic spear for my build`"
+                ),
+                inline=False
+            )
+            embed.add_field(
+                name="🗡️ 4. Build & Gear Advice",
+                value=(
+                    "Shin can give expert blacksmithing opinions on gear and loadouts.\n\n"
+                    "**Examples:**\n"
+                    "• `shin which armor set is best for a berserker build?`\n"
+                    "• `shin what's the best armor piece for maximum health?`\n"
+                    "• `shin is dreadhorn chestplate worth crafting over juggernaut?`"
+                ),
+                inline=False
+            )
+            embed.add_field(
+                name="📊 5. Ore & Trait Analysis",
+                value=(
+                    "Ask Shin about specific ores and what traits they give on armor vs weapons.\n\n"
+                    "**Examples:**\n"
+                    "• `shin what traits does bismuth give on armor?`\n"
+                    "• `shin explain kokorite's traits and negatives`\n"
+                    "• `shin which ore gives the highest multiplier for armor?`"
+                ),
+                inline=False
+            )
+            embed.add_field(
+                name="🔢 Quick Reference — Armor Formula",
+                value=(
+                    "```\n"
+                    "Final Health% = Base Health% × Multiplier × Quality\n"
+                    "Quality: 1.0x (Normal) or 2.0x (Masterwork 100%)\n"
+                    "Multiplier = Weighted avg of all ore mults in crucible\n"
+                    "Trait activates at ≥10% share, full at ≥30% share\n"
+                    "```"
+                ),
+                inline=False
+            )
+            embed.set_footer(text="Moon Sanctum Master Forge • theforge.gg verified math • Ask Shin anything!")
             await channel.send(embed=embed)
             return
 
