@@ -455,10 +455,80 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
             continue
     return None
 
+last_spontaneous_time = 0
+msg_counter_since_spontaneous = 0
+
+async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id: int):
+    """Evaluates the live chat vibe without keywords and decides if an NPC should organically interrupt."""
+    global last_spontaneous_time, msg_counter_since_spontaneous
+    if not ai_client:
+        return
+    
+    current_time = asyncio.get_event_loop().time()
+    # At least 15 minutes (900s) between uninvited interruptions and at least 4 human messages
+    if current_time - last_spontaneous_time < 900 or msg_counter_since_spontaneous < 4:
+        return
+    
+    recent_msgs = list(CHAT_HISTORY.get(channel_id, []))
+    if len(recent_msgs) < 3:
+        return
+    
+    chat_snippet = "\n".join(f"- {m}" for m in recent_msgs)
+    
+    eval_prompt = (
+        "You are observing the Moon Sanctum tavern in Discord.\n"
+        f"Recent conversation snippet:\n{chat_snippet}\n\n"
+        "You control 3 NPCs:\n"
+        "1. Tiera Lucent: Sassy, tsundere workshop craftswoman. Loves roasting members about playing outdated/ancient music, slacking off, wasting Bismuth, or goofy fails.\n"
+        "2. Schnee Raizar: High Elf master strategist. Elegant, composed, drops witty/tactical commentary on combat, gear, or pride.\n"
+        "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n\n"
+        "TASK:\n"
+        "Decide if one of these NPCs should naturally and organically butt into this conversation right now.\n"
+        "Good moments to chime in:\n"
+        "- Someone is listening to, queuing, or talking about outdated/ancient/weird music.\n"
+        "- Someone is flexing rare loot, or crying about dying in a raid.\n"
+        "- Members are teasing each other, bantering, or making funny mistakes.\n\n"
+        "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
+        "If YES, reply in EXACTLY this format:\n"
+        "NPC: <tiera, schnee, or yuzuha>\n"
+        "LINE: <1 to 2 short sentences of their in-character witty remark>"
+    )
+    
+    try:
+        response = ai_client.models.generate_content(
+            model="gemini-3.5-flash-lite",
+            contents=eval_prompt
+        )
+        if response and response.text:
+            text = response.text.strip()
+            if "PASS" in text.upper() and not "NPC:" in text:
+                return
+            
+            # Parse NPC and LINE
+            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha)", text, re.IGNORECASE)
+            line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
+            if npc_match and line_match:
+                chosen_npc = npc_match.group(1).lower()
+                chime_line = line_match.group(1).strip().strip('"').strip("'")
+                
+                # Cap line length
+                if len(chime_line) > 300:
+                    chime_line = chime_line[:297] + "..."
+                
+                # Reset counters
+                last_spontaneous_time = current_time
+                msg_counter_since_spontaneous = 0
+                
+                # Send spontaneous remark permanently
+                CHAT_HISTORY[channel_id].append(f"{NPCS[chosen_npc]['name']}: {chime_line}")
+                await send_single_npc(channel, chosen_npc, chime_line, auto_delete_seconds=0)
+    except Exception as e:
+        print(f"Spontaneous eval error: {e}")
+
 @client.event
 async def on_ready():
     print(f"=== MoonSanctum Bot is ONLINE as {client.user} ===")
-    print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + YUZUHA AMBIENT LOADED!")
+    print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + YUZUHA AMBIENT + VIBE EAVESDROPPING LOADED!")
     # Start Yuzuha's ambient random chatter loop in the background!
     asyncio.create_task(yuzuha_ambient_loop())
 
@@ -477,7 +547,7 @@ async def on_member_join(member: discord.Member):
 
 @client.event
 async def on_message(message: discord.Message):
-    global last_ai_time
+    global last_ai_time, msg_counter_since_spontaneous
 
     # Ignore bots and webhooks
     if message.author.bot or message.webhook_id:
@@ -540,6 +610,10 @@ async def on_message(message: discord.Message):
             CHAT_HISTORY[channel_id].append(f"{NPCS[target_npc]['name']}: {ai_reply}")
             # Permanent message (auto_delete_seconds=0 as requested - never disappears)
             await send_single_npc(channel, target_npc, ai_reply, auto_delete_seconds=0)
+    else:
+        # Organic conversation between guild members! Count messages and evaluate spontaneous interjections
+        msg_counter_since_spontaneous += 1
+        asyncio.create_task(maybe_chime_in_spontaneously(channel, channel_id))
 
 if __name__ == "__main__":
     client.run(TOKEN)
