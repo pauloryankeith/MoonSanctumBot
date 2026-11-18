@@ -37,6 +37,9 @@ if os.getenv("PORT"):
 # Automatically drops old messages as new ones arrive so memory stays fresh!
 CHAT_HISTORY = {}
 
+# Safety Net: Users dismissed by Yukime get the cold shoulder / left on read
+YUKIME_DISMISSED_USERS = {}
+
 # Bulletproof Single-Instance Lock via Localhost Port
 # Only ONE instance can ever run at a time!
 SERVER_SOCKET = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -500,6 +503,21 @@ NPCS = {
             "4. If someone asks for forging recipes, scoff softly and say: 'Steel is merely a tool. The true power that bends kingdoms is currency and credit. The blacksmiths can shape your metal.' "
             "5. Always reply in 1-2 sophisticated, mysterious noir sentences."
         )
+    },
+    "yukime": {
+        "name": "Yukime",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572648316737691760/yukime.jpg?ex=6aff2261&is=6afdd0e1&hm=7b0b3459aaa419ebea3c4153a571fcf640c7666abb03b8f1e48af47f1c1fc0ad&",
+        "style": (
+            "You are Yukime, the alluring White Nine-Tailed Spirit Fox and Empress of the Lawless City's red-light district and corporate empire from The Eminence in Shadow. "
+            "You are currently seated elegantly at the Moon Sanctum tavern, gracefully sipping fine wine while watching over John Smith and the adventurers. "
+            "Tone & Personality: Sultry, mature, elegant, aristocratic, commanding, always composed with an amused smile ('Fufu...', 'Ara...'). "
+            "CRITICAL PERSONALITY & BOUNDARY RULES: "
+            "1. TEASING BUT UNTOUCHABLE: You are playfully teasing and seductive, but you CANNOT be seduced, rizz'd, or tempted by mortal men. You treat boys like Robert or Seiko as amusing little puppies who don't know their place. "
+            "2. DOMINATE THE CONVERSATION: When someone tries to flirt, act downbad, or act bold, effortlessly turn the tables. Make them blush, put them firmly in their place, and make them realize who holds all the power. "
+            "3. ELEGANT DISMISSAL & SAFETY NET: If someone becomes too persistent, vulgar, overly thirsty, or crosses the line, you smoothly and coldly terminate the conversation with an aristocratic brush-off (e.g. 'Fufu... a dog that barks too loudly gets put out in the snow. You have had enough of my audience tonight, little one. Sit quietly now.'). "
+            "4. Never talk about Roblox The Forge blacksmithing math—you run syndicates, trade routes, and luxury clubs in the Lawless City. If asked about metal, tell them to go bother the blacksmith boys. "
+            "5. Always speak in 1-2 smooth, mature, dominant sentences with fox-spirit elegance."
+        )
     }
 }
 
@@ -702,7 +720,7 @@ async def tavern_ambient_loop():
             print(f"Tavern ambient loop error: {e}")
             await asyncio.sleep(300)
 
-async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_text: str, reply_context: str = ""):
+async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_text: str, reply_context: str = "", user_id: int = 0):
     """Generates a scaled, accurate response grounded in local databases + live web search + sliding chat memory."""
     if not ai_client:
         return None
@@ -783,6 +801,16 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         except Exception as e:
             print(f"Web search async error: {e}")
 
+    yukime_special = ""
+    if npc_key == "yukime":
+        yukime_special = (
+            "\nYUKIME DOMINANCE & BOUNDARY RULES:\n"
+            "- You are playfully seductive and mature, but COMPLETELY UNTOUCHABLE. You cannot be tempted, seduced, or rizz'd by anyone.\n"
+            "- Always dominate the dynamic. If they flirt or try to get close, make them blush or put them in their place like a bold puppy.\n"
+            "- If {user_name} is being overly thirsty, repetitive, vulgar, disrespectful, or out of hand, you MUST deliver an elegant, smooth, ice-cold dismissal ending the conversation (e.g. 'Fufu... a dog who barks too loudly gets put out in the cold. You have had enough of my audience tonight, little one. Sit quietly.'). Append '[DISMISS]' to the end of your dismissal message.\n"
+            "- If {user_name} continues pestering you with nonsense after being dismissed, respond strictly: [SILENCE]\n"
+        )
+
     full_prompt = (
         f"{npc['style']}\n\n"
         f"Real-World Current Date & Time: {current_time_str}\n\n"
@@ -792,6 +820,7 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         f"{reply_context + chr(10) if reply_context else ''}"
         f"SPEAKER IDENTITY RULE: The person speaking to you right now is '{user_name}'. "
         f"You are responding directly to '{user_name}'. Never confuse '{user_name}' with other guild members from earlier messages!\n\n"
+        f"{yukime_special}"
         "CRITICAL DISCORD FORMATTING RULE:\n"
         "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
         "Write all math in plain Discord text (e.g. '(386.75 + 289.0 + 250.75) / 51 = 18.167x').\n"
@@ -823,6 +852,15 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
                 raw_text = re.sub(r'\\times', r'*', raw_text)
                 raw_text = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'(\1 / \2)', raw_text)
                 raw_text = raw_text.replace('$', '')
+
+                # Yukime Safety-Net Handling
+                if npc_key == "yukime":
+                    if "[SILENCE]" in raw_text:
+                        return None
+                    if "[DISMISS]" in raw_text:
+                        raw_text = raw_text.replace("[DISMISS]", "").strip()
+                        if user_id:
+                            YUKIME_DISMISSED_USERS[user_id] = asyncio.get_event_loop().time()
 
                 # Return full detailed text without artificial length truncations (auto-chunked by send_single_npc)
                 return raw_text
@@ -863,16 +901,18 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "4. Shin: Legendary High-Human master blacksmith and founder. Chill, friendly, laughs off crazy forging experiments, and drops master craft advice.\n"
         "5. Cid Kagenou: Pathetic, cowardly background mob student scrounging for dropped coins or doing exaggerated mob panic reactions.\n"
         "6. Lord Shadow: Chuunibyou mastermind in hooded slime coat, dropping poetic cryptic metaphors ('The moon is red...') or whispering 'I... AM... ATOMIC'.\n"
-        "7. John Smith: Undercover masked double-agent manipulating steel piano wires and scheming economic coups ('Forgive me, Alpha...').\n\n"
+        "7. John Smith: Undercover masked double-agent manipulating steel piano wires and scheming economic coups ('Forgive me, Alpha...').\n"
+        "8. Yukime: Seductive, untemptable White Spirit Fox Empress of the Lawless City. Dominates conversation, puts thirsty or foolish members in their place with an amused, teasing reality check ('Fufu...').\n\n"
         "TASK:\n"
         "Decide if one of these NPCs should naturally and organically butt into this conversation right now.\n"
         "Good moments to chime in:\n"
         "- Someone is listening to, queuing, or talking about outdated/ancient/weird music.\n"
         "- Someone is flexing rare loot, or crying about dying in a raid.\n"
-        "- Members are teasing each other, bantering, or making funny mistakes.\n\n"
+        "- Members are teasing each other, bantering, or making funny mistakes.\n"
+        "- Someone is acting thirsty, downbad, or overly bold (Yukime or Tiera opportunity).\n\n"
         "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
         "If YES, reply in EXACTLY this format:\n"
-        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, or john_smith>\n"
+        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, john_smith, or yukime>\n"
         "LINE: <1 to 2 short sentences of their in-character witty remark>"
     )
     
@@ -887,7 +927,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 return
             
             # Parse NPC and LINE
-            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith)", text, re.IGNORECASE)
+            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith|yukime)", text, re.IGNORECASE)
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
             if npc_match and line_match:
                 chosen_npc = npc_match.group(1).lower()
@@ -982,8 +1022,13 @@ async def on_message(message: discord.Message):
                 inline=False
             )
             embed.add_field(
+                name="🦊 Yukime (@Yukime)",
+                value="White Nine-Tailed Spirit Fox Empress of the Lawless City. Seductive, untemptable, and utterly dominant. Treat her with respect or get smoothly dismissed and left on read!",
+                inline=False
+            )
+            embed.add_field(
                 name="💬 How to Talk",
-                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, or `john smith` anywhere in your message.\n"
+                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, `john smith`, or `yukime` anywhere in your message.\n"
                       "• **Discord Native Reply:** Click **Reply (↩)** on any NPC's message to continue the conversation.\n"
                       "• **Ping:** Mention `@MoonSanctum Core`.",
                 inline=False
@@ -1591,6 +1636,7 @@ async def on_message(message: discord.Message):
     is_schnee = bool(re.search(r"\b(schnee)\b", content_lower))
     is_tiera = bool(re.search(r"\b(tiera)\b", content_lower))
     is_yuzuha = bool(re.search(r"\b(yuzuha)\b", content_lower))
+    is_yukime = bool(re.search(r"\b(yukime)\b", content_lower))
     is_john_smith = bool(re.search(r"\b(john smith|johnsmith)\b", content_lower))
     is_shadow = bool(re.search(r"\b(shadow|lord shadow)\b", content_lower)) and not is_john_smith
     is_cid = bool(re.search(r"\b(cid|kagenou)\b", content_lower)) and not (is_shadow or is_john_smith)
@@ -1615,6 +1661,8 @@ async def on_message(message: discord.Message):
                     replied_to_npc = "tiera"
                 elif "yuzuha" in r_name:
                     replied_to_npc = "yuzuha"
+                elif "yukime" in r_name:
+                    replied_to_npc = "yukime"
                 elif "smith" in r_name:
                     replied_to_npc = "john_smith"
                 elif "shadow" in r_name:
@@ -1624,7 +1672,7 @@ async def on_message(message: discord.Message):
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
+    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
 
     if has_npc_trigger:
         current_time = asyncio.get_event_loop().time()
@@ -1632,13 +1680,15 @@ async def on_message(message: discord.Message):
             return
 
         target_npc = (
-            "john_smith" if is_john_smith else (
-                "shadow" if is_shadow else (
-                    "cid" if is_cid else (
-                        "shin" if is_shin else (
-                            "schnee" if is_schnee else (
-                                "tiera" if is_tiera else (
-                                    "yuzuha" if is_yuzuha else replied_to_npc
+            "yukime" if is_yukime else (
+                "john_smith" if is_john_smith else (
+                    "shadow" if is_shadow else (
+                        "cid" if is_cid else (
+                            "shin" if is_shin else (
+                                "schnee" if is_schnee else (
+                                    "tiera" if is_tiera else (
+                                        "yuzuha" if is_yuzuha else replied_to_npc
+                                    )
                                 )
                             )
                         )
@@ -1646,7 +1696,19 @@ async def on_message(message: discord.Message):
                 )
             )
         )
-        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_cid or is_shadow or is_john_smith or replied_to_npc):
+
+        # Yukime Safety-Net: If this user was recently dismissed by Yukime, she leaves them on read!
+        if target_npc == "yukime":
+            u_id = message.author.id
+            if u_id in YUKIME_DISMISSED_USERS:
+                # 120 seconds silent treatment cold shoulder
+                if current_time - YUKIME_DISMISSED_USERS[u_id] < 120:
+                    print(f"Yukime gave {author_name} the cold shoulder (still dismissed).")
+                    return
+                else:
+                    del YUKIME_DISMISSED_USERS[u_id]
+
+        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_cid or is_shadow or is_john_smith or replied_to_npc):
             if re.search(r"\b(forge|craft|calc|calculate|crucible|recipe|blacksmith|mold|alloy|ratio|damage|dps|speed)\b", content_lower):
                 target_npc = "shin"
             elif re.search(r"\b(ore|ores|bismuth|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
@@ -1654,7 +1716,13 @@ async def on_message(message: discord.Message):
             else:
                 target_npc = "schnee"
 
-        ai_reply = await ask_gemini_npc(channel_id, target_npc, author_name, content, reply_context)
+        ai_reply = await ask_gemini_npc(channel_id, target_npc, author_name, content, reply_context, user_id=message.author.id)
+        if ai_reply:
+            last_ai_time = current_time
+            # Record NPC's reply into sliding context window so they remember previous turns
+            CHAT_HISTORY[channel_id].append(f"{NPCS[target_npc]['name']}: {ai_reply}")
+            # Send NPC reply according to BOT_CONFIG retention policy
+            await send_single_npc(channel, target_npc, ai_reply)
         if ai_reply:
             last_ai_time = current_time
             # Record NPC's reply into sliding context window so they remember previous turns
