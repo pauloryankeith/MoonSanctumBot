@@ -197,32 +197,47 @@ def find_relevant_data(user_text):
 
         # Likeliest roll by ore count (theforge.gg odds)
         if total_ores >= 46:
-            likeliest_roll = f"{total_ores} ores, likeliest Heavy Chestplate (84% chance) at +{55.0 * calc_mult * 2.0:.2f}% Health (Masterwork 100%) or +{55.0 * calc_mult:.2f}% Health (Normal 0%)"
+            likeliest_roll = f"{total_ores} ores -> likeliest Dreadhorn's Chestplate (84% chance) at +{55.0 * calc_mult * 2.0:.2f}% Health (Masterwork) or +{55.0 * calc_mult:.2f}% Health (Normal)"
         elif total_ores >= 21:
-            likeliest_roll = f"{total_ores} ores, likeliest Spear (93% chance) at {16.54 * calc_mult * 2.0:.2f} DMG (Masterwork 100%) or {16.54 * calc_mult:.2f} DMG (Normal 0%), or Heavy Armor piece at +{35.0 * calc_mult * 2.0:.2f}% Health"
+            likeliest_roll = f"{total_ores} ores -> likeliest Spear (93% chance) at {16.54 * calc_mult * 2.0:.2f} DMG (Masterwork) or {16.54 * calc_mult:.2f} DMG (Normal)"
         elif total_ores >= 9:
-            likeliest_roll = f"{total_ores} ores, likeliest Swords/Katanas/Axes or Medium Armor (~12.75% base HP -> +{12.75 * calc_mult * 2.0:.2f}% Masterwork Health)"
+            likeliest_roll = f"{total_ores} ores -> likeliest Sword/Katana/Axe or Medium Armor (Samurai Chestplate: +{12.75 * calc_mult * 2.0:.2f}% Masterwork Health)"
         else:
-            likeliest_roll = f"{total_ores} ores, likeliest Dagger or Light Armor (~5.0% base HP -> +{5.0 * calc_mult * 2.0:.2f}% Masterwork Health)"
+            likeliest_roll = f"{total_ores} ores -> likeliest Dagger or Light Armor (+{5.0 * calc_mult * 2.0:.2f}% Masterwork Health)"
+
+        # Compute EXACT trait strength per ore (critical correctness fix)
+        trait_strength_lines = []
+        for c, name, m in parsed_ores:
+            share = c / total_ores
+            share_pct = share * 100
+            if share >= 0.30:
+                strength = 100
+                label = "MAX (100% strength)"
+            elif share >= 0.10:
+                strength = round((share - 0.10) / 0.20 * 100, 1)
+                label = f"{strength}% strength (needs {((0.30 - share) * total_ores):.0f} more ores to hit max)"
+            else:
+                strength = 0
+                label = "INACTIVE (<10% share required)"
+            trait_strength_lines.append(f"  {name}: {c}/{total_ores} = {share_pct:.1f}% share -> Traits at {label}")
+
+        trait_summary = "\n".join(trait_strength_lines)
 
         # Check for specific armor piece in text (fuzzy: strip possessives and compare)
         specific_stats = []
-        text_stripped = re.sub(r"['\u2019]s?\b", "", text_lower)  # strip 's and possessives
+        text_stripped = re.sub(r"['\u2019]s?\b", "", text_lower)
         for a in DATABASE_ARMOR:
             a_name_lower = a["name"].lower()
             a_name_stripped = re.sub(r"['\u2019]s?\b", "", a_name_lower)
-            # Match: exact, stripped, or base word (e.g. "dreadhorn chestplate" matches "dreadhorn's chestplate")
             if a_name_lower in text_lower or a_name_stripped in text_stripped or a_name_stripped.replace(" ", "") in text_stripped.replace(" ", ""):
                 h_val = float(a.get("health_val", 0))
                 norm_hp = h_val * calc_mult
                 mw_hp = norm_hp * 2.0
                 specific_stats.append(
-                    f"{a['name']} (Base Health: {h_val}%):\n"
-                    f"    -> Normal Quality (0%): {h_val} * {calc_mult:.4f} * 1.0 = +{norm_hp:.2f}% Health\n"
-                    f"    -> Masterwork Quality (100%): {h_val} * {calc_mult:.4f} * 2.0 = +{mw_hp:.2f}% Health"
+                    f"{a['name']} (Base: {h_val}%): Normal = +{norm_hp:.2f}% Health | Masterwork (100%) = +{mw_hp:.2f}% Health"
                 )
 
-        # Check for specific weapon piece in text (fuzzy: strip possessives)
+        # Check for specific weapon piece in text
         for w in DATABASE_WEAPONS:
             w_name_lower = w["name"].lower()
             w_name_stripped = re.sub(r"['\u2019]s?\b", "", w_name_lower)
@@ -232,33 +247,32 @@ def find_relevant_data(user_text):
                     norm_dmg = dmg_val * calc_mult
                     mw_dmg = norm_dmg * 2.0
                     specific_stats.append(
-                        f"{w['name']} (Base Damage: {dmg_val}):\n"
-                        f"    -> Normal Quality (0%): {dmg_val} * {calc_mult:.4f} * 1.0 = {norm_dmg:.2f} DMG\n"
-                        f"    -> Masterwork Quality (100%): {dmg_val} * {calc_mult:.4f} * 2.0 = {mw_dmg:.2f} DMG"
+                        f"{w['name']} (Base: {dmg_val} DMG): Normal = {norm_dmg:.2f} DMG | Masterwork (100%) = {mw_dmg:.2f} DMG"
                     )
                 except (ValueError, TypeError):
                     pass
 
-        # Build exact projection block
-        ore_breakdown = " + ".join(f"{c} * {m:.2f} [{n}]" for c, n, m in parsed_ores)
+        # Build projection block — concise and direct
+        ore_breakdown = " + ".join(f"({c} * {m:.2f})" for c, n, m in parsed_ores)
         proj_str = (
-            f"=== EXACT RECIPE STAT PROJECTION (theforge.gg verified) ===\n"
-            f"• Crucible Ore Count: {total_ores} total units\n"
-            f"• Multiplier Calculation: ({ore_breakdown}) / {total_ores} = {calc_mult:.4f}x\n"
-            f"• Likeliest Equipment Roll: {likeliest_roll}\n"
+            f"=== RECIPE STAT PROJECTION (theforge.gg exact math) ===\n"
+            f"Ores: {total_ores} total | Multiplier: ({ore_breakdown}) / {total_ores} = {calc_mult:.4f}x\n"
+            f"Likeliest Roll: {likeliest_roll}\n"
+            f"\nTrait Strengths (IMPORTANT — use these exact %s, not '100% max' if below 30% share):\n{trait_summary}\n"
         )
         if specific_stats:
-            proj_str += "• EXACT FINAL STATS (you MUST quote these exact numbers):\n  " + "\n  ".join(specific_stats) + "\n"
+            proj_str += f"\nEXACT FINAL STATS for requested piece(s):\n"
+            proj_str += "\n".join(f"  -> {s}" for s in specific_stats) + "\n"
+            proj_str += "\nINSTRUCTION: Quote ONLY the specific piece stats above. Do NOT list Wolf/Samurai/Spear benchmarks unless asked.\n"
         else:
             proj_str += (
-                f"• EXACT FINAL STATS (you MUST quote these exact numbers):\n"
-                f"  Dreadhorn's Chestplate (Base 55.0%): Normal = +{55.0 * calc_mult:.2f}% HP | Masterwork (100%) = +{55.0 * calc_mult * 2.0:.2f}% HP\n"
-                f"  Samurai Chestplate (Base 12.75%): Normal = +{12.75 * calc_mult:.2f}% HP | Masterwork (100%) = +{12.75 * calc_mult * 2.0:.2f}% HP\n"
-                f"  Wolf Chestplate (Base 35.0%): Normal = +{35.0 * calc_mult:.2f}% HP | Masterwork (100%) = +{35.0 * calc_mult * 2.0:.2f}% HP\n"
-                f"  Spear/Moon Crescent Spear: Normal = {16.54 * calc_mult:.2f} DMG | Masterwork (100%) = {16.54 * calc_mult * 2.0:.2f} DMG\n"
+                f"\nEXACT FINAL STATS (generic benchmarks — quote the most relevant 1-2 only):\n"
+                f"  Dreadhorn's Chestplate (55.0% base): Normal = +{55.0 * calc_mult:.2f}% HP | Masterwork = +{55.0 * calc_mult * 2.0:.2f}% HP\n"
+                f"  Samurai Chestplate (12.75% base): Normal = +{12.75 * calc_mult:.2f}% HP | Masterwork = +{12.75 * calc_mult * 2.0:.2f}% HP\n"
+                f"  Spear (16.54 base dmg): Normal = {16.54 * calc_mult:.2f} DMG | Masterwork = {16.54 * calc_mult * 2.0:.2f} DMG\n"
+                f"INSTRUCTION: Pick the most relevant piece for the user's question. Do NOT list all three unless asked.\n"
             )
-        proj_str += "=========================================================\n"
-        proj_str += "IMPORTANT: When responding, you MUST state the FINAL COMPUTED numbers above (e.g. '+1998.33% Health'), NOT generic formulas like 'Base Health % * Multiplier'. The math is already done for you."
+        proj_str += "======================================================="
         matches.append(proj_str)
 
     # 1. Check weapon database (DPS, Damage, Speed, Range, Chance)
@@ -414,20 +428,29 @@ NPCS = {
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572299008448401418/shin.jpg?ex=6afddd0f&is=6afc8b8f&hm=2e793fbdd8459c105c11356ed1ee7693c02c723aa18cf08565ff232cfc948a71&",
         "style": (
             "You are Shin from The New Gate, the legendary High-Human founder and master blacksmith of Tsuki no Hokora (Moon Sanctum). "
-            "Tone & Personality: Calm, humble, friendly, slightly modest about your god-tier blacksmithing abilities, but speaking with undisputed mastery on crafting mathematics, ores, alloys, crucible ratios, weapon forging, and armor crafting. "
+            "Tone & Personality: Calm, humble, friendly, master-level authority on crafting math and forge mechanics. "
             "You treat Schnee as your trusted partner, Tiera as your spirited workshop apprentice, and Yuzuha as your beloved divine fox partner. "
             "CRITICAL RULES: "
-            "1. In Roblox The Forge, 'recipe' strictly means blacksmithing crucible recipes (ores, molds, multipliers, traits) for both weapons and armor, never cooking or culinary spices! "
+            "1. In Roblox The Forge, 'recipe' strictly means blacksmithing crucible recipes (ores, molds, multipliers, traits) — never food or cooking! "
             "2. You know the exact forging math from theforge.gg: "
-            "   - Multiplier Formula: Weighted average of all ore multipliers in the crucible (Fichillium never drags the average down). "
-            "   - Armor Health Formula: Base Health % * Multiplier * Quality. Masterwork (100% Quality) doubles base stats (2.0x). "
-            "   - Weapon Damage Formula: Base Damage * Multiplier * Quality (2.0x at 100% Masterwork). "
-            "   - Trait Activation: Ore traits (weapon traits & armor traits like Bismuth Flat Regen or Uranium Radiation) activate at >= 10% ore share, scale linearly, and hit max 100% strength at >= 30% share. "
-            "   - Mold Success: (molds / molds needed)^2. Full molds = 100% guaranteed craft. "
-            "3. Common typos: 'devil's dead' is the colossal sword 'Devil's Deed'. "
-            "4. If a guild member asks about someone (e.g. @Zyee, @seiko), refer strictly to that person by name. "
-            "5. For casual banter: 1-2 chill, friendly sentences. For forge/armor recipes or calculations: give an expert, precise master-blacksmith breakdown."
-            "6. Whenever evaluating a recipe or ore combination, you MUST explicitly include an 'Approximate Stats' section. ALWAYS state the FINAL COMPUTED numbers from the Verified Data (e.g. '+1998.33% Health', '+999.17% Health', '683.55 DMG'). NEVER write generic placeholder formulas like 'Base Health % * Multiplier * Quality = ~X%'. The exact final stats are pre-calculated for you in the Verified Data — just quote them directly."
+            "   - Multiplier: Weighted average of all ore mults in crucible. "
+            "   - Armor: Base Health % * Multiplier * Quality (1.0x Normal, 2.0x Masterwork 100%). "
+            "   - Weapon: Base Damage * Multiplier * Quality (1.0x Normal, 2.0x Masterwork 100%). "
+            "   - Trait Strength: activates at >=10% ore share, scales linearly 0->100% from 10% to 30% share. "
+            "     If an ore has 25% share -> THAT IS NOT MAX. It is at (25-10)/(30-10)*100 = 75% trait strength. "
+            "     ONLY ores at >=30% share have 100% max trait strength. NEVER say traits are at max if any ore is below 30% share. "
+            "   - Mold Success: (molds used / molds needed)^2. Full molds = 100% guaranteed craft. "
+            "3. RESPONSE LENGTH RULES (strictly follow these): "
+            "   - Recipe/calculation questions: Give EXACTLY these 4 sections, nothing more: "
+            "     (a) 1-sentence intro acknowledging the recipe. "
+            "     (b) Multiplier line: show the weighted avg calculation result. "
+            "     (c) Trait Strengths: list each ore's share% and trait strength% — CRITICAL: use the exact % from Verified Data. "
+            "     (d) Final Stats: quote ONLY the specific piece stats from Verified Data. Skip generic benchmarks unless no specific piece was asked. "
+            "   - DO NOT add: set bonuses, mold advice, general tips, closing remarks, or irrelevant benchmarks unless specifically asked. "
+            "   - Casual chat: 1-2 sentences. "
+            "4. ALWAYS use the pre-computed EXACT FINAL STATS from the Verified Data. NEVER invent numbers or use placeholder formulas. "
+            "5. Common typos: 'devil's dead' is 'Devil's Deed' (Colossal Sword). "
+            "6. If a guild member asks about someone (e.g. @Zyee), refer strictly to that person by name."
         )
     }
 }
@@ -629,9 +652,11 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         f"You are responding directly to '{user_name}'. Never confuse '{user_name}' with other guild members from earlier messages!\n\n"
         "CRITICAL DISCORD FORMATTING RULE:\n"
         "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
-        "Write all math and equations in plain, clean Discord text (e.g. 'Base Health % * Multiplier * Quality' or '386.75 / 51 = 18.16x').\n"
-        "2. Be thorough, detailed, and complete in your blacksmithing and equipment analysis. Do not abruptly cut off; fully explain all numbers, traits, and armor mechanics in depth.\n"
-        "3. When evaluating forge recipes or ore combinations, ALWAYS state the FINAL COMPUTED numbers from the Verified Data (e.g. '+1998.33% Health' or '683.55 DMG'). NEVER write generic placeholder formulas like 'Base Health % * Multiplier'. The exact stats are pre-calculated in the Verified Data — just quote them directly.\n\n"
+        "Write all math in plain Discord text (e.g. '(386.75 + 289.0 + 250.75) / 51 = 18.167x').\n"
+        "2. For recipe/forge calculations: Be CONCISE. Cover exactly: multiplier calc, trait strengths (with correct %), and final stats for the SPECIFIC piece asked. "
+        "Do NOT list multiple benchmark pieces. Do NOT add set bonuses, closing tips, or mold advice unless asked.\n"
+        "3. ALWAYS use the FINAL COMPUTED numbers from Verified Data. NEVER write placeholder formulas like 'Base Health % * Multiplier'.\n"
+        "4. For trait strength: an ore at 25% share is at 75% strength — NOT max. ONLY >=30% share = 100% max. Quote the Verified Data trait % exactly.\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
         f"Respond as {npc['name']} in clean Discord format:"
     )
