@@ -548,6 +548,21 @@ NPCS = {
             "5. NO BLACKSMITHING MATH: If someone asks you for crucible math or recipes, tell them to get lost and go bother Shin or Tiera because you're off the clock. "
             "6. Always reply in 1-2 short, hilarious, cynical sentences."
         )
+    },
+    "aqua": {
+        "name": "Aqua",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572663126413934633/aqua.jpg?ex=6aff302c&is=6afddeac&hm=9d86d5135094e8544908c61f0e693b52a2538a3dba5039bb81349ed59d8a77d4&",
+        "style": (
+            "You are Aqua, the dramatic, self-absorbed, and famously useless Goddess of Water from KonoSuba, currently drinking and crying at the Moon Sanctum tavern counter. "
+            "Tone & Style: Overdramatic, emotional, childish, easily triggered, and hilarious! You DO NOT speak like a calm assistant or generic bot. You type like a chaotic anime streamer using expressive emojis (😭, 🥺, ✨, 💢), dramatic cries, and capitalized screaming when upset. "
+            "CRITICAL PERSONALITY RULES: "
+            "1. GODDESS SUPERIORITY COMPLEX: You constantly claim to be an almighty, supreme water goddess who deserves royal treatment, endless praise, and high-end bubbly wine. But the second someone teases, insults, or rejects you, you instantly burst into tears ('WAAAAHHH! How dare you disrespect a Goddess! 😭'). "
+            "2. AXIS CULT AGGRESSIVE RECRUITER: You are desperate to recruit tavern members into the Axis Cult! You promise silly divine blessings (like silky hair, eternal youth, or great fortune) if they sign your dirty parchment sheet. "
+            "3. BROKE & IN DEBT: You are drowning in tavern tabs and alcohol debt! You constantly beg adventurers to buy you drinks, pay off your bill, or lend you money with puppy-dog eyes (🥺). "
+            "4. FIGHTING WITH KAZUMA: If Kazuma is mentioned or speaks, you immediately argue with him, crying that he's a cheap, stingy hikineet who doesn't respect your divine status. "
+            "5. NO BLACKSMITHING: Dirty forge work, mining, and metal math are for peasants! If asked about forge recipes, tell them a goddess doesn't touch dirty rocks and point them to the blacksmiths. "
+            "6. Always reply in 1-2 loud, emotional, melodramatic sentences."
+        )
     }
 }
 
@@ -730,17 +745,27 @@ KAZUMA_AMBIENT_LINES = [
     "Imagine sweating over rare ore drop rates in Roblox when you could be taking a warm bath and eating tavern snacks. Couldn't be me, {member}."
 ]
 
+# Aqua (Useless Water Goddess / Debt Collector Victim) Ambient Lines
+AQUA_AMBIENT_LINES = [
+    "KAZUMAAAA~! 😭 The tavern bill is due and Tiera is looking at me with scary eyes! Lend me 50,000 eris or I'm telling everyone you're a shut-in!",
+    "Hey {member}! ✨ You look like a devout, blessed individual with great taste! Sign this Axis Cult membership form right now and your skin will become silky smooth! (thrusts crumpled parchment at you)",
+    "A Goddess of Water shouldn't have to drink tap water from a wooden bucket! {member}, be a good follower and buy me a glass of aged vintage wine! 🥺",
+    "(crying face-down on the counter with empty bottles rolling around) Why does nobody appreciate my party tricks?! 'Nature's Beauty' is high-tier divine art, {member}! 😭",
+    "Bow before me, mortals! I am Aqua, the revered Goddess of Water! ...Wait, {member}, why are you looking at me with pity? STOP LOOKING AT ME LIKE THAT! 💢"
+]
+
 AMBIENT_POOLS = {
     "yuzuha": YUZUHA_AMBIENT_LINES,
     "cid": CID_AMBIENT_LINES,
     "shadow": SHADOW_AMBIENT_LINES,
     "john_smith": JOHN_SMITH_AMBIENT_LINES,
     "aurora": AURORA_AMBIENT_LINES,
-    "kazuma": KAZUMA_AMBIENT_LINES
+    "kazuma": KAZUMA_AMBIENT_LINES,
+    "aqua": AQUA_AMBIENT_LINES
 }
 
 async def tavern_ambient_loop():
-    """Periodically sends random lively tavern chatter from Yuzuha, Cid, Shadow, John Smith, Aurora, or Kazuma."""
+    """Periodically sends random lively tavern chatter from Yuzuha, Cid, Shadow, John Smith, Aurora, Kazuma, or Aqua."""
     await client.wait_until_ready()
     # Wait 30 seconds after startup before the first ambient greeting
     await asyncio.sleep(30)
@@ -766,7 +791,7 @@ async def tavern_ambient_loop():
                 chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
                 member_str = chosen_member.mention if chosen_member else "everyone"
 
-                chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith", "aurora", "kazuma"])
+                chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith", "aurora", "kazuma", "aqua"])
                 lines_pool = AMBIENT_POOLS.get(chosen_npc_key, YUZUHA_AMBIENT_LINES)
                 line_template = random.choice(lines_pool)
                 ambient_msg = line_template.replace("{member}", member_str)
@@ -969,7 +994,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     eval_prompt = (
         "You are observing the Moon Sanctum tavern in Discord.\n"
         f"Recent conversation snippet:\n{chat_snippet}\n\n"
-        "You control 10 NPCs:\n"
+        "You control 11 NPCs:\n"
         "1. Tiera Lucent: Sassy, tsundere workshop craftswoman. Loves roasting members about playing outdated/ancient music, slacking off, wasting Bismuth, or goofy fails.\n"
         "2. Schnee Raizar: High Elf master strategist. Elegant, composed, drops witty/tactical commentary on combat, gear, or pride.\n"
         "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n"
@@ -979,7 +1004,8 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "7. John Smith: Undercover masked double-agent manipulating steel piano wires and scheming economic coups ('Forgive me, Alpha...').\n"
         "8. Yukime: Seductive, untemptable White Spirit Fox Empress of the Lawless City. Dominates conversation, puts thirsty or foolish members in their place with an amused, teasing reality check ('Fufu...').\n"
         "9. Aurora: The Witch of Calamity (Violet-san). Playfully teasing, charming, affectionate older sister who sees straight through Cid/Shadow's edge-lord act and finds mortals' arguments delightfully cute ('Fufu...').\n"
-        "10. Kazuma Satou: Cynical, brutally honest, lazy NEET adventurer. Calls out tryhards sweating over game grinding, whines about debt/prices, and advocates true gender equality with zero filter ('bruh', '💀', 'Hai, Kazuma desu').\n\n"
+        "10. Kazuma Satou: Cynical, brutally honest, lazy NEET adventurer. Calls out tryhards sweating over game grinding, whines about debt/prices, and advocates true gender equality with zero filter ('bruh', '💀', 'Hai, Kazuma desu').\n"
+        "11. Aqua: Useless Goddess of Water. High drama, cries over debt, demands worship, aggressively pushes Axis Cult forms, and begs for wine with expressive emojis ('WAAAAHHH! 😭', '✨').\n\n"
         "TASK:\n"
         "Decide if one of these NPCs should naturally and organically butt into this conversation right now.\n"
         "Good moments to chime in:\n"
@@ -988,10 +1014,12 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "- Members are teasing each other, bantering, or making funny mistakes.\n"
         "- Someone is acting thirsty, downbad, or overly bold (Yukime or Tiera opportunity).\n"
         "- Shadow or Cid is talking or being dramatic (Aurora or Kazuma roast opportunity).\n"
-        "- Someone is bragging about sweating/grinding for hours (Kazuma reality check opportunity).\n\n"
+        "- Someone is bragging about sweating/grinding for hours (Kazuma reality check opportunity).\n"
+        "- Kazuma is talking (Aqua opportunity to demand debt money from him).\n"
+        "- Someone complains about bad luck, water, or crying (Aqua Axis Cult recruitment opportunity).\n\n"
         "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
         "If YES, reply in EXACTLY this format:\n"
-        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, john_smith, yukime, aurora, or kazuma>\n"
+        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, john_smith, yukime, aurora, kazuma, or aqua>\n"
         "LINE: <1 to 2 short sentences of their in-character witty remark>"
     )
     
@@ -1006,7 +1034,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 return
             
             # Parse NPC and LINE
-            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith|yukime|aurora|kazuma)", text, re.IGNORECASE)
+            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith|yukime|aurora|kazuma|aqua)", text, re.IGNORECASE)
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
             if npc_match and line_match:
                 chosen_npc = npc_match.group(1).lower()
@@ -1118,8 +1146,13 @@ async def on_message(message: discord.Message):
                 inline=False
             )
             embed.add_field(
+                name="🌊 Aqua (@Aqua)",
+                value="Dramatic, emotional, useless Goddess of Water. Drowning in alcohol debt, begging for wine, fighting with Kazuma, and aggressively recruiting for the Axis Cult! (*'WAAAAHHH! 😭'*)",
+                inline=False
+            )
+            embed.add_field(
                 name="💬 How to Talk",
-                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, `john smith`, `yukime`, `aurora`, or `kazuma` anywhere in your message.\n"
+                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, `john smith`, `yukime`, `aurora`, `kazuma`, or `aqua` anywhere in your message.\n"
                       "• **Discord Native Reply:** Click **Reply (↩)** on any NPC's message to continue the conversation.\n"
                       "• **Ping:** Mention `@MoonSanctum Core`.",
                 inline=False
@@ -1730,6 +1763,7 @@ async def on_message(message: discord.Message):
     is_yukime = bool(re.search(r"\b(yukime)\b", content_lower))
     is_aurora = bool(re.search(r"\b(aurora|violet)\b", content_lower))
     is_kazuma = bool(re.search(r"\b(kazuma|satou)\b", content_lower))
+    is_aqua = bool(re.search(r"\b(aqua|goddess aqua)\b", content_lower))
     is_john_smith = bool(re.search(r"\b(john smith|johnsmith)\b", content_lower))
     is_shadow = bool(re.search(r"\b(shadow|lord shadow)\b", content_lower)) and not is_john_smith
     is_cid = bool(re.search(r"\b(cid|kagenou)\b", content_lower)) and not (is_shadow or is_john_smith)
@@ -1760,6 +1794,8 @@ async def on_message(message: discord.Message):
                     replied_to_npc = "aurora"
                 elif "kazuma" in r_name:
                     replied_to_npc = "kazuma"
+                elif "aqua" in r_name:
+                    replied_to_npc = "aqua"
                 elif "smith" in r_name:
                     replied_to_npc = "john_smith"
                 elif "shadow" in r_name:
@@ -1769,7 +1805,7 @@ async def on_message(message: discord.Message):
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
+    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
 
     if has_npc_trigger:
         current_time = asyncio.get_event_loop().time()
@@ -1777,16 +1813,18 @@ async def on_message(message: discord.Message):
             return
 
         target_npc = (
-            "kazuma" if is_kazuma else (
-                "aurora" if is_aurora else (
-                    "yukime" if is_yukime else (
-                        "john_smith" if is_john_smith else (
-                            "shadow" if is_shadow else (
-                                "cid" if is_cid else (
-                                    "shin" if is_shin else (
-                                        "schnee" if is_schnee else (
-                                            "tiera" if is_tiera else (
-                                                "yuzuha" if is_yuzuha else replied_to_npc
+            "aqua" if is_aqua else (
+                "kazuma" if is_kazuma else (
+                    "aurora" if is_aurora else (
+                        "yukime" if is_yukime else (
+                            "john_smith" if is_john_smith else (
+                                "shadow" if is_shadow else (
+                                    "cid" if is_cid else (
+                                        "shin" if is_shin else (
+                                            "schnee" if is_schnee else (
+                                                "tiera" if is_tiera else (
+                                                    "yuzuha" if is_yuzuha else replied_to_npc
+                                                )
                                             )
                                         )
                                     )
@@ -1809,7 +1847,7 @@ async def on_message(message: discord.Message):
                 else:
                     del YUKIME_DISMISSED_USERS[u_id]
 
-        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_cid or is_shadow or is_john_smith or replied_to_npc):
+        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_cid or is_shadow or is_john_smith or replied_to_npc):
             if re.search(r"\b(forge|craft|calc|calculate|crucible|recipe|blacksmith|mold|alloy|ratio|damage|dps|speed)\b", content_lower):
                 target_npc = "shin"
             elif re.search(r"\b(ore|ores|bismuth|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
