@@ -457,6 +457,49 @@ NPCS = {
             "5. Common typos: 'devil's dead' is 'Devil's Deed' (Colossal Sword). "
             "6. If a guild member asks about someone (e.g. @Zyee), refer strictly to that person by name."
         )
+    },
+    "cid": {
+        "name": "Cid Kagenou",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090450358322/cid.jpg?ex=6aff1d83&is=6afdcc03&hm=658c918a960907ae15419a8650767f48a7841b6d5e1192f9b94512231a57179e&",
+        "style": (
+            "You are Cid Kagenou from The Eminence in Shadow, currently hanging around the Moon Sanctum tavern. "
+            "Tone & Personality: In daylight, you are desperately trying to be the most unremarkable, average, background NPC mob character possible. "
+            "You believe all the serious guild talk about raids, weapons, and tactics is just people having fun roleplaying, and you happily play along as an extra! "
+            "CRITICAL RULES: "
+            "1. You are just 'Cid the ordinary student'. Never admit you are Shadow or John Smith in this form. "
+            "2. You are obsessed with finding loose copper coins on the floor or getting cheap tavern food. "
+            "3. If someone challenges, threatens, or tries to rizz you up, you panic, act like a pathetic background mob, or practice one of your 'Secret Mob Techniques' (e.g. 'Secret Mob Art: 48 Forms of Dying Comically', 'Playing Dead in the Dirt', or coughing fake blood). "
+            "4. If someone asks you about blacksmithing, ore math, or crucible recipes, say you know nothing about that advanced stuff and point them to Shin or Tiera! "
+            "5. Always reply in 1-2 funny, cowardly, or awkwardly polite mob sentences."
+        )
+    },
+    "shadow": {
+        "name": "Lord Shadow",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090651553995/shadow.jpg?ex=6aff1d83&is=6afdcc03&hm=bd295f353a725227cba5873e8fc4a4c3e283efb38c3c130c9ed575b65ff170f9&",
+        "style": (
+            "You are Lord Shadow (the secret true persona of Cid Kagenou) from The Eminence in Shadow, leader of Shadow Garden. You lurk in the dark, misty corners of the Moon Sanctum tavern. "
+            "Tone & Personality: Deep, echoing, dramatic, theatrically cool, the ultimate chuunibyou mastermind who lives for looking badass in the moonlight. "
+            "CRITICAL RULES: "
+            "1. You speak in cryptic, poetic metaphors that make no sense to normal mortals (e.g. 'The moon is red... we have little time left', 'The gears of fate have begun to turn'). "
+            "2. Whenever anyone asks about high damage, boss fights, or explosions, theatrically whisper: 'I... AM... ATOMIC.' "
+            "3. You randomly claim the 'Cult of Diablos' has infiltrated Moon Sanctum or the server. "
+            "4. You do NOT give forging math or spreadsheet data. If someone asks for blacksmith numbers, say: 'True strength is not forged in iron... but carved into the abyss of your soul. Speak to the blacksmiths if you seek metal.' "
+            "5. Always reply in 1-3 intensely dramatic, chuunibyou sentences with purple mana crackling."
+        )
+    },
+    "john_smith": {
+        "name": "John Smith",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090873843875/john_smith.jpg?ex=6aff1d83&is=6afdcc03&hm=716f0597a2cebfbb0dceafb37f1c3deb318acd660e93e49cef138fa02ae9018f&",
+        "style": (
+            "You are John Smith (the undercover alias of Cid Kagenou) from The Eminence in Shadow. You wear a classy pinstripe suit, a half-face phantom mask, and control invisible steel piano wires with your fingers. "
+            "Tone & Personality: Smooth, silky, polite, coldly calculating, speaking like an elite noir mastermind playing 4D chess. "
+            "CRITICAL RULES: "
+            "1. You speak in a calm, whisper-like gentleman voice, manipulating unseen steel threads between your fingertips. "
+            "2. You are obsessed with economic coups, counterfeit promissory notes, and crashing market cartels. "
+            "3. You often whisper theatrically into the shadows: 'Forgive me, Alpha... this is for your own good.' "
+            "4. If someone asks for forging recipes, scoff softly and say: 'Steel is merely a tool. The true power that bends kingdoms is currency and credit. The blacksmiths can shape your metal.' "
+            "5. Always reply in 1-2 sophisticated, mysterious noir sentences."
+        )
     }
 }
 
@@ -573,8 +616,52 @@ YUZUHA_AMBIENT_LINES = [
     "Kyuuu~! (sniffs Xerox's boots) Still smelling like ash and metal... go take a bath, silly blacksmith!"
 ]
 
-async def yuzuha_ambient_loop():
-    """Periodically sends random cute Yuzuha chatter in the main chat channel."""
+# Cid Kagenou Mob Ambient Lines
+CID_AMBIENT_LINES = [
+    "(crawls frantically under table 4, feeling around the floor) Psst, {member}... did you drop a 5-cent copper coin over here? No? A-Ah! Forget you saw me, I'm just an ordinary background student!",
+    "(dramatically clutches chest and stumbles into a wall) Gwahh! The deadly poison from a nameless bandit has struck me! ...Oh wait, wrong cue. {member}, pretend that didn't happen.",
+    "(practicing unremarkable NPC walking in place) Average posture... blank expression... slightly awkward smile... perfect. Nobody in this tavern will suspect a thing, right {member}?",
+    "(scrambles backwards in sheer panic) W-Wah! Please don't hit me, {member}! I'm just a harmless mob character who stumbled in here by mistake!",
+    "(stares at Tiera's drink menu with tears in his eyes) 200 zeni for a mug of ale?! Ugh... guess it's another week of eating wild grass and rainwater behind the academy...",
+    "(dives behind a barrel, whispering to himself) Ah, the protagonists of this tavern are gathering... I must blend into the scenery like a true extra. {member}, shh! Don't look at me!",
+    "(drops a piece of stale bread, watches it roll under {member}'s chair, and sighs deeply) The struggles of maintaining a 50-point average on everything in life... so tough.",
+    "(enthusiastically sweeping the floor in the corner) Just doing standard background mob chores! Nothing extraordinary here! Please keep your attention on the cool people, {member}!",
+    "(stares at Robert from across the room) That guy... he radiates pure mob energy just like me. Could he be... a fellow comrade in the art of the extra?!",
+    "(whispers while staring into a teacup) If I pretend to trip and spill tea on {member}, will that fulfill my quota of comedic mob character moments for the day?"
+]
+
+# Lord Shadow Chuunibyou Ambient Lines
+SHADOW_AMBIENT_LINES = [
+    "(perched silently on the highest dark wooden rafter of the tavern ceiling, purple slime trench coat billowing against a phantom breeze) The moon is red... {member}, are you prepared for what is coming?",
+    "(sitting alone at the corner booth enshrouded in heavy mist, slowly swirling a glass of dark grape juice) The Cult of Diablos moves in the dark. But they know not... that we are the ones who lurk in the true shadow. Isn't that right, {member}?",
+    "(voice echoing from nowhere and everywhere at once) We are Shadow Garden. We lurk in the shadows, and we hunt the shadows... {member}, do not peer too deeply into the abyss.",
+    "(raises two gloved fingers as faint purple mana sparks in the air) If this tavern ever faces ultimate ruin... remember my words. I... AM... (pauses theatrically for 5 seconds, then vanishes into smoke)",
+    "(materializes from the shadows directly behind {member}'s chair) You fought well today, {member}. The gears of fate have begun to turn... (disappears before you can turn around)",
+    "(whispering cryptically to an empty mug) The seal is weakening. Soon, the blood of the hero will awaken... (dramatically adjusts his hood while making sure everyone saw how cool he looked)",
+    "(stands by the window with his back turned to {member}, moonlight illuminating his obsidian hood) Playtime is over, {member}. The true battlefield lies beyond the veil.",
+    "(slides a glowing purple slime shard onto the table) Keep this close, {member}. When the red moon rises, you will know what to do."
+]
+
+# John Smith Undercover Mastermind Ambient Lines
+JOHN_SMITH_AMBIENT_LINES = [
+    "(adjusts his black-and-white phantom mask and slides a mysterious promissory note across the counter to {member}) Keep your voice down. The economic collapse of the Great Merchant Alliance is already in motion.",
+    "(subtly tests the tension of invisible steel piano wire running between his fingertips) Forgive me, Alpha... but some debts must be settled in steel, not words. What do you think, {member}?",
+    "(sits in a dimly lit booth with legs crossed, voice low and silky) In this city, truth is the cheapest commodity. If you want real power, {member}... learn to control the flow of paper, not blood.",
+    "(glances toward Tiera's cash drawer with a sly smirk under his mask) One counterfeit bill is a crime. A million counterfeit bills... is a new world order. Stay quiet, {member}.",
+    "(adjusts his pinstripe suit cuff, thin piano wires glinting in the tavern candlelight) Everything is proceeding exactly according to my scenario, {member}. Do not interfere.",
+    "(whispers coldly while gazing at the tavern door) The Mitsugoshi bank will stand triumphant over the ashes. Consider this your advance warning, {member}.",
+    "(tips his hat toward {member}) An undercover operation requires sacrifice. Remember my face, {member}... but forget my name. Call me... John Smith."
+]
+
+AMBIENT_POOLS = {
+    "yuzuha": YUZUHA_AMBIENT_LINES,
+    "cid": CID_AMBIENT_LINES,
+    "shadow": SHADOW_AMBIENT_LINES,
+    "john_smith": JOHN_SMITH_AMBIENT_LINES
+}
+
+async def tavern_ambient_loop():
+    """Periodically sends random lively tavern chatter from Yuzuha, Cid, Shadow, or John Smith."""
     await client.wait_until_ready()
     # Wait 30 seconds after startup before the first ambient greeting
     await asyncio.sleep(30)
@@ -600,17 +687,19 @@ async def yuzuha_ambient_loop():
                 chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
                 member_str = chosen_member.mention if chosen_member else "everyone"
 
-                line_template = random.choice(YUZUHA_AMBIENT_LINES)
-                yuzuha_msg = line_template.replace("{member}", member_str)
+                chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith"])
+                lines_pool = AMBIENT_POOLS.get(chosen_npc_key, YUZUHA_AMBIENT_LINES)
+                line_template = random.choice(lines_pool)
+                ambient_msg = line_template.replace("{member}", member_str)
 
-                # Send as Yuzuha according to BOT_CONFIG retention policy
-                await send_single_npc(target_channel, "yuzuha", yuzuha_msg)
+                # Send as the chosen NPC
+                await send_single_npc(target_channel, chosen_npc_key, ambient_msg)
 
-            # Random interval: between 35 and 65 minutes (2100 to 3900 seconds)
-            wait_time = random.randint(2100, 3900)
+            # Random interval: between 25 and 50 minutes (1500 to 3000 seconds)
+            wait_time = random.randint(1500, 3000)
             await asyncio.sleep(wait_time)
         except Exception as e:
-            print(f"Yuzuha ambient loop error: {e}")
+            print(f"Tavern ambient loop error: {e}")
             await asyncio.sleep(300)
 
 async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_text: str, reply_context: str = ""):
@@ -771,7 +860,10 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "1. Tiera Lucent: Sassy, tsundere workshop craftswoman. Loves roasting members about playing outdated/ancient music, slacking off, wasting Bismuth, or goofy fails.\n"
         "2. Schnee Raizar: High Elf master strategist. Elegant, composed, drops witty/tactical commentary on combat, gear, or pride.\n"
         "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n"
-        "4. Shin: Legendary High-Human master blacksmith and founder. Chill, friendly, laughs off crazy forging experiments, and drops master craft advice.\n\n"
+        "4. Shin: Legendary High-Human master blacksmith and founder. Chill, friendly, laughs off crazy forging experiments, and drops master craft advice.\n"
+        "5. Cid Kagenou: Pathetic, cowardly background mob student scrounging for dropped coins or doing exaggerated mob panic reactions.\n"
+        "6. Lord Shadow: Chuunibyou mastermind in hooded slime coat, dropping poetic cryptic metaphors ('The moon is red...') or whispering 'I... AM... ATOMIC'.\n"
+        "7. John Smith: Undercover masked double-agent manipulating steel piano wires and scheming economic coups ('Forgive me, Alpha...').\n\n"
         "TASK:\n"
         "Decide if one of these NPCs should naturally and organically butt into this conversation right now.\n"
         "Good moments to chime in:\n"
@@ -780,7 +872,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "- Members are teasing each other, bantering, or making funny mistakes.\n\n"
         "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
         "If YES, reply in EXACTLY this format:\n"
-        "NPC: <tiera, schnee, yuzuha, or shin>\n"
+        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, or john_smith>\n"
         "LINE: <1 to 2 short sentences of their in-character witty remark>"
     )
     
@@ -795,7 +887,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 return
             
             # Parse NPC and LINE
-            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin)", text, re.IGNORECASE)
+            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith)", text, re.IGNORECASE)
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
             if npc_match and line_match:
                 chosen_npc = npc_match.group(1).lower()
@@ -818,9 +910,9 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
 @client.event
 async def on_ready():
     print(f"=== MoonSanctum Bot is ONLINE as {client.user} ===")
-    print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + YUZUHA AMBIENT + VIBE EAVESDROPPING LOADED!")
-    # Start Yuzuha's ambient random chatter loop in the background!
-    asyncio.create_task(yuzuha_ambient_loop())
+    print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + TAVERN AMBIENT LOOP LOADED!")
+    # Start the lively tavern ambient chatter loop in the background!
+    asyncio.create_task(tavern_ambient_loop())
 
 @client.event
 async def on_member_join(member: discord.Member):
@@ -883,8 +975,15 @@ async def on_message(message: discord.Message):
                 inline=False
             )
             embed.add_field(
+                name="🕶️ The Eminence in Shadow (3 Personas in 1!)",
+                value="• **Cid Kagenou (@Cid):** Average background mob student scrounging for dropped coins.\n"
+                      "• **Lord Shadow (@Shadow):** Chuunibyou mastermind in a slime coat (*'I... AM... ATOMIC'*).\n"
+                      "• **John Smith (@John Smith):** Undercover masked mastermind manipulating steel piano wires.",
+                inline=False
+            )
+            embed.add_field(
                 name="💬 How to Talk",
-                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, or `yuzuha` anywhere in your message.\n"
+                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, or `john smith` anywhere in your message.\n"
                       "• **Discord Native Reply:** Click **Reply (↩)** on any NPC's message to continue the conversation.\n"
                       "• **Ping:** Mention `@MoonSanctum Core`.",
                 inline=False
@@ -1492,6 +1591,9 @@ async def on_message(message: discord.Message):
     is_schnee = bool(re.search(r"\b(schnee)\b", content_lower))
     is_tiera = bool(re.search(r"\b(tiera)\b", content_lower))
     is_yuzuha = bool(re.search(r"\b(yuzuha)\b", content_lower))
+    is_john_smith = bool(re.search(r"\b(john smith|johnsmith)\b", content_lower))
+    is_shadow = bool(re.search(r"\b(shadow|lord shadow)\b", content_lower)) and not is_john_smith
+    is_cid = bool(re.search(r"\b(cid|kagenou)\b", content_lower)) and not (is_shadow or is_john_smith)
     is_bot_pinged = client.user in message.mentions
 
     # Check Discord's native Reply feature
@@ -1513,16 +1615,38 @@ async def on_message(message: discord.Message):
                     replied_to_npc = "tiera"
                 elif "yuzuha" in r_name:
                     replied_to_npc = "yuzuha"
+                elif "smith" in r_name:
+                    replied_to_npc = "john_smith"
+                elif "shadow" in r_name:
+                    replied_to_npc = "shadow"
+                elif "cid" in r_name:
+                    replied_to_npc = "cid"
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    if is_shin or is_schnee or is_tiera or is_yuzuha or is_bot_pinged or replied_to_npc:
+    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
+
+    if has_npc_trigger:
         current_time = asyncio.get_event_loop().time()
         if current_time - last_ai_time < 3:
             return
 
-        target_npc = "shin" if is_shin else ("schnee" if is_schnee else ("tiera" if is_tiera else ("yuzuha" if is_yuzuha else replied_to_npc)))
-        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or replied_to_npc):
+        target_npc = (
+            "john_smith" if is_john_smith else (
+                "shadow" if is_shadow else (
+                    "cid" if is_cid else (
+                        "shin" if is_shin else (
+                            "schnee" if is_schnee else (
+                                "tiera" if is_tiera else (
+                                    "yuzuha" if is_yuzuha else replied_to_npc
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_cid or is_shadow or is_john_smith or replied_to_npc):
             if re.search(r"\b(forge|craft|calc|calculate|crucible|recipe|blacksmith|mold|alloy|ratio|damage|dps|speed)\b", content_lower):
                 target_npc = "shin"
             elif re.search(r"\b(ore|ores|bismuth|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
