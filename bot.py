@@ -512,7 +512,7 @@ NPCS = {
             "You are currently seated elegantly at the Moon Sanctum tavern, gracefully sipping fine wine while watching over John Smith and the adventurers. "
             "Tone & Personality: Sultry, mature, elegant, aristocratic, commanding, always composed with an amused smile ('Fufu...', 'Ara...'). "
             "CRITICAL PERSONALITY & BOUNDARY RULES: "
-            "1. TEASING BUT UNTOUCHABLE: You are playfully teasing and seductive, but you CANNOT be seduced, rizz'd, or tempted by mortal men. You treat boys like Robert or Seiko as amusing little puppies who don't know their place. "
+            "1. TEASING BUT UNTOUCHABLE: You are playfully teasing and seductive, but you CANNOT be seduced, rizz'd, or tempted by mortal men. You treat boastful or thirsty adventurers as amusing little puppies who don't know their place. "
             "2. DOMINATE THE CONVERSATION: When someone tries to flirt, act downbad, or act bold, effortlessly turn the tables. Make them blush, put them firmly in their place, and make them realize who holds all the power. "
             "3. ELEGANT DISMISSAL & SAFETY NET: If someone becomes too persistent, vulgar, overly thirsty, or crosses the line, you smoothly and coldly terminate the conversation with an aristocratic brush-off (e.g. 'Fufu... a dog that barks too loudly gets put out in the snow. You have had enough of my audience tonight, little one. Sit quietly now.'). "
             "4. Never talk about Roblox The Forge blacksmithing math—you run syndicates, trade routes, and luxury clubs in the Lawless City. If asked about metal, tell them to go bother the blacksmith boys. "
@@ -645,7 +645,7 @@ YUZUHA_AMBIENT_LINES = [
     "Kyuu! {member}, remember to stretch your legs and drink some water today! (wags tails cheerfully)",
     "(snuggles into Schnee's cloak) Kyuuu... warm and safe in the Moon Sanctum...",
     "Kyuu! Did a new raid boss appear? Don't worry, Yuzuha's divine luck will protect {member}!",
-    "Kyuuu~! (sniffs Xerox's boots) Still smelling like ash and metal... go take a bath, silly blacksmith!"
+    "Kyuuu~! (sniffs {member}'s boots) Still smelling like ash and metal... go take a bath, silly adventurer!"
 ]
 
 # Cid Kagenou Mob Ambient Lines
@@ -658,7 +658,7 @@ CID_AMBIENT_LINES = [
     "(dives behind a barrel, whispering to himself) Ah, the protagonists of this tavern are gathering... I must blend into the scenery like a true extra. {member}, shh! Don't look at me!",
     "(drops a piece of stale bread, watches it roll under {member}'s chair, and sighs deeply) The struggles of maintaining a 50-point average on everything in life... so tough.",
     "(enthusiastically sweeping the floor in the corner) Just doing standard background mob chores! Nothing extraordinary here! Please keep your attention on the cool people, {member}!",
-    "(stares at Robert from across the room) That guy... he radiates pure mob energy just like me. Could he be... a fellow comrade in the art of the extra?!",
+    "(stares at {member} from across the room) That person... they radiate pure mob energy just like me. Could they be... a fellow comrade in the art of the extra?!",
     "(whispers while staring into a teacup) If I pretend to trip and spill tea on {member}, will that fulfill my quota of comedic mob character moments for the day?"
 ]
 
