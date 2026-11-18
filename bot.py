@@ -783,11 +783,25 @@ AMBIENT_POOLS = {
 }
 
 async def tavern_ambient_loop():
-    """Periodically sends random lively tavern chatter from Yuzuha, Cid, Shadow, John Smith, Aurora, Kazuma, Aqua, or Gintoki."""
+    """Periodically generates dynamic mini-conversations between 2-3 tavern NPCs every ~25-35 minutes."""
     await client.wait_until_ready()
-    # Wait 30 seconds after startup before the first ambient greeting
-    await asyncio.sleep(30)
+    # Wait 45 seconds after startup before the first background event
+    await asyncio.sleep(45)
     
+    # Pre-defined fun NPC pairings with hilarious comedic chemistry
+    PAIRINGS = [
+        ("kazuma", "aqua", "Aqua is crying to Kazuma about her overdue tavern drink tab and begging for money; Kazuma sighs and tells her to get a job."),
+        ("gintoki", "shadow", "Gintoki is picking his nose telling Lord Shadow to get down from the tavern rafters before he breaks a chair; Shadow replies with over-the-top dark chuunibyou poetry."),
+        ("tiera", "cid", "Tiera yells at Cid for slacking off near the counter instead of mining ores; Cid panics and plays the pathetic, innocent background mob."),
+        ("aurora", "shadow", "Aurora playfully teases Lord Shadow about his dramatic purple cape and edgy poses; Shadow tries desperately to stay mysterious."),
+        ("kazuma", "gintoki", "Kazuma and Gintoki bond over being broke, complaining about tryhard players sweating 10 hours for digital pickaxes, and wanting to take a nap."),
+        ("aqua", "yukime", "Aqua arrogantly claims she is a supreme water goddess who deserves free wine; Yukime gives her an amused, elegant reality check."),
+        ("shin", "tiera", "Shin and Tiera casually chat about crafting experiments, melted ores, or reckless adventurers trying to forge without molds."),
+        ("aurora", "kazuma", "Aurora finds Kazuma's cynical complaints about true gender equality and useless party members delightfully funny; Kazuma wearily sighs."),
+        ("gintoki", "cid", "Gintoki asks Cid if he has any spare yen for strawberry milk; Cid acts broke and tries to play dead on the floor to avoid paying."),
+        ("schnee", "shin", "Schnee and Shin share a peaceful moment talking about the guild's recent dungeon expeditions and keeping the tavern warm.")
+    ]
+
     while not client.is_closed():
         try:
             if not BOT_CONFIG.get("ambient_chatter_enabled", True):
@@ -803,22 +817,69 @@ async def tavern_ambient_loop():
                 if target_channel:
                     break
 
-            if target_channel:
-                guild_members = [m for m in target_channel.guild.members if not m.bot]
-                online_members = [m for m in guild_members if m.status != discord.Status.offline]
-                chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
-                member_str = chosen_member.mention if chosen_member else "everyone"
+            if target_channel and ai_client:
+                # Pick a random pairing and topic
+                npc1_key, npc2_key, scenario = random.choice(PAIRINGS)
+                npc1_name = NPCS[npc1_key]["name"]
+                npc2_name = NPCS[npc2_key]["name"]
 
-                chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith", "aurora", "kazuma", "aqua", "gintoki"])
-                lines_pool = AMBIENT_POOLS.get(chosen_npc_key, YUZUHA_AMBIENT_LINES)
-                line_template = random.choice(lines_pool)
-                ambient_msg = line_template.replace("{member}", member_str)
+                skit_prompt = (
+                    f"Write a short, realistic, and funny 3 to 5 message Discord conversation between {npc1_name} and {npc2_name} at the Moon Sanctum tavern.\n"
+                    f"Scenario: {scenario}\n\n"
+                    f"NPC 1: {npc1_name}\nStyle: {NPCS[npc1_key]['style']}\n\n"
+                    f"NPC 2: {npc2_name}\nStyle: {NPCS[npc2_key]['style']}\n\n"
+                    "RULES:\n"
+                    "1. EXACTLY 3, 4, or 5 lines total alternating between the two characters.\n"
+                    "2. The conversation MUST naturally and smoothly conclude by line 4 or 5 (e.g. someone sighs, gives up, walks away, or goes back to their drink/nap).\n"
+                    "3. NO ROLEPLAY STAGE DIRECTIONS IN PARENTHESES OR ASTERISKS! (Do NOT write '(slides drink)' or '*sighs*'). Write 100% direct spoken chat dialogue!\n"
+                    "4. Ground the dialogue in Roblox The Forge, tavern life, or relatable gamer humor.\n"
+                    "5. Output FORMAT must be exactly like this (one per line):\n"
+                    f"{npc1_key.upper()}: <message>\n"
+                    f"{npc2_key.upper()}: <message>\n"
+                    f"{npc1_key.upper()}: <message>\n"
+                    f"..."
+                )
 
-                # Send as the chosen NPC
-                await send_single_npc(target_channel, chosen_npc_key, ambient_msg)
+                try:
+                    res = ai_client.models.generate_content(
+                        model="gemini-3.5-flash-lite",
+                        contents=skit_prompt
+                    )
+                    if res and res.text:
+                        lines = [l.strip() for l in res.text.strip().split("\n") if l.strip()]
+                        valid_msgs = []
+                        for line in lines:
+                            match = re.match(r"^([A-Z_]+):\s*(.+)$", line)
+                            if match:
+                                raw_npc = match.group(1).lower()
+                                msg_content = match.group(2).strip().strip('"')
+                                if raw_npc in NPCS:
+                                    # Clean any accidental action brackets
+                                    cleaned = re.sub(r'^\s*[\(\*][^\)\*]+[\)\*]\s*', '', msg_content).strip()
+                                    cleaned = re.sub(r'\s*[\(\*][^\)\*]+[\)\*]\s*$', '', cleaned).strip()
+                                    if cleaned:
+                                        msg_content = cleaned
+                                    else:
+                                        msg_content = msg_content.strip("()[]*").strip()
+                                    valid_msgs.append((raw_npc, msg_content))
 
-            # Random interval: between 25 and 50 minutes (1500 to 3000 seconds)
-            wait_time = random.randint(1500, 3000)
+                        # Cap to between 3 and 5 messages
+                        if len(valid_msgs) > 5:
+                            valid_msgs = valid_msgs[:5]
+
+                        # Send the skit with realistic human typing delays
+                        if len(valid_msgs) >= 3:
+                            for speaker_key, text_content in valid_msgs:
+                                # Realistic typing pause between 2.2 and 4.2 seconds
+                                await asyncio.sleep(random.uniform(2.2, 4.2))
+                                CHAT_HISTORY[target_channel.id].append(f"{NPCS[speaker_key]['name']}: {text_content}")
+                                await send_single_npc(target_channel, speaker_key, text_content)
+
+                except Exception as skit_err:
+                    print(f"Error generating tavern skit: {skit_err}")
+
+            # Wait roughly 25 to 35 minutes (1500 to 2100 seconds) before the next spontaneous skit
+            wait_time = random.randint(1500, 2100)
             await asyncio.sleep(wait_time)
         except Exception as e:
             print(f"Tavern ambient loop error: {e}")
