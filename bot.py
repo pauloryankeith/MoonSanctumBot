@@ -586,6 +586,15 @@ async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: s
     npc = NPCS.get(npc_key)
     if not npc:
         return
+
+    # Realistic human typing simulation so NPCs don't instantly blurt out responses
+    try:
+        typing_delay = min(max(len(message) * 0.015, 1.8), 3.8)
+        async with channel.typing():
+            await asyncio.sleep(typing_delay)
+    except Exception:
+        await asyncio.sleep(1.8)
+
     webhook = await get_or_create_webhook(channel)
     del_sec = auto_delete_seconds if auto_delete_seconds is not None else BOT_CONFIG["auto_delete_seconds"]
 
@@ -919,8 +928,8 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         return
     
     current_time = asyncio.get_event_loop().time()
-    # At least 15 minutes (900s) between uninvited interruptions and at least 4 human messages
-    if current_time - last_spontaneous_time < 900 or msg_counter_since_spontaneous < 4:
+    # At least 25 minutes (1500s) between uninvited interruptions and at least 8 human messages
+    if current_time - last_spontaneous_time < 1500 or msg_counter_since_spontaneous < 8:
         return
     
     recent_msgs = list(CHAT_HISTORY.get(channel_id, []))
@@ -989,6 +998,8 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
 
 @client.event
 async def on_ready():
+    global last_spontaneous_time
+    last_spontaneous_time = asyncio.get_event_loop().time()
     print(f"=== MoonSanctum Bot is ONLINE as {client.user} ===")
     print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + TAVERN AMBIENT LOOP LOADED!")
     # Start the lively tavern ambient chatter loop in the background!
