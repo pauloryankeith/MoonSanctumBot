@@ -818,6 +818,26 @@ async def tavern_ambient_loop():
                     break
 
             if target_channel and ai_client:
+                # Find a random human member from the guild to gossip about / backstab playfully!
+                guild_members = [m for m in target_channel.guild.members if not m.bot]
+                online_members = [m for m in guild_members if m.status != discord.Status.offline]
+                chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
+                member_name = chosen_member.display_name if chosen_member else "someone"
+
+                # Pre-defined fun NPC pairings with hilarious comedic chemistry + gossip/backstabbing scenarios!
+                PAIRINGS = [
+                    ("kazuma", "aqua", f"Kazuma and Aqua are whispering and gossiping about {member_name}'s questionable grinding habits, low luck, or weird chat messages behind their back."),
+                    ("gintoki", "kazuma", f"Gintoki and Kazuma are lazily roasting {member_name} behind their back, wondering why they stay up grinding instead of sleeping or touching grass."),
+                    ("tiera", "schnee", f"Tiera complains to Schnee that {member_name} nearly broke another pickaxe or ruined an anvil enhancement, while Schnee calmly evaluates their combat mistakes."),
+                    ("aurora", "shadow", f"Aurora and Shadow are observing {member_name} from the shadows, whispering about their strange energy and whether they have hidden potential or are just totally lost."),
+                    ("gintoki", "shadow", f"Gintoki and Shadow are whispering about {member_name}; Gintoki wonders if they actually have a social life, while Shadow claims they are an agent tied to cosmic destiny."),
+                    ("kazuma", "tiera", f"Kazuma and Tiera are talking trash behind {member_name}'s back about how much gold or rare ores {member_name} wasted on terrible crafting rolls."),
+                    ("aqua", "kazuma", f"Aqua is plotting with Kazuma to scam or beg {member_name} for tavern gold, but Kazuma roasts both Aqua and {member_name} for being gullible."),
+                    ("gintoki", "cid", f"Gintoki and Cid are gossiping about {member_name}; Gintoki asks if {member_name} is rich enough to buy them snacks, while Cid pretends he doesn't know them to stay an ordinary mob."),
+                    ("aurora", "yukime", f"Aurora and Yukime are elegantly sipping wine and giggling while gossiping about how adorable and clumsy {member_name} is when trying to act tough in raids."),
+                    ("shin", "tiera", f"Shin and Tiera are chatting about {member_name}'s crazy weapon requests and how {member_name} keeps trying to forge without using enough molds.")
+                ]
+
                 # Pick a random pairing and topic
                 npc1_key, npc2_key, scenario = random.choice(PAIRINGS)
                 npc1_name = NPCS[npc1_key]["name"]
@@ -825,15 +845,17 @@ async def tavern_ambient_loop():
 
                 skit_prompt = (
                     f"Write a short, realistic, and funny 3 to 5 message Discord conversation between {npc1_name} and {npc2_name} at the Moon Sanctum tavern.\n"
-                    f"Scenario: {scenario}\n\n"
+                    f"Scenario: {scenario}\n"
+                    f"Target of Tavern Gossip / Playful Backstabbing: {member_name}\n\n"
                     f"NPC 1: {npc1_name}\nStyle: {NPCS[npc1_key]['style']}\n\n"
                     f"NPC 2: {npc2_name}\nStyle: {NPCS[npc2_key]['style']}\n\n"
                     "RULES:\n"
-                    "1. EXACTLY 3, 4, or 5 lines total alternating between the two characters.\n"
-                    "2. The conversation MUST naturally and smoothly conclude by line 4 or 5 (e.g. someone sighs, gives up, walks away, or goes back to their drink/nap).\n"
-                    "3. NO ROLEPLAY STAGE DIRECTIONS IN PARENTHESES OR ASTERISKS! (Do NOT write '(slides drink)' or '*sighs*'). Write 100% direct spoken chat dialogue!\n"
-                    "4. Ground the dialogue in Roblox The Forge, tavern life, or relatable gamer humor.\n"
-                    "5. Output FORMAT must be exactly like this (one per line):\n"
+                    f"1. They should be gossiping, talking behind {member_name}'s back, or playfully roasting {member_name} (their gaming habits, bad anvil luck, staying up late, or weird messages) like two tavern regulars whispering about someone in the room!\n"
+                    "2. EXACTLY 3, 4, or 5 lines total alternating between the two characters.\n"
+                    "3. The conversation MUST naturally and smoothly conclude by line 4 or 5 (e.g. someone notices, hushes the other, sighs, or goes back to their drink/nap).\n"
+                    "4. NO ROLEPLAY STAGE DIRECTIONS IN PARENTHESES OR ASTERISKS! (Do NOT write '(whispers)' or '*laughs*'). Write 100% direct spoken chat dialogue!\n"
+                    "5. Ground the dialogue in Roblox The Forge, tavern life, or relatable gamer humor.\n"
+                    "6. Output FORMAT must be exactly like this (one per line):\n"
                     f"{npc1_key.upper()}: <message>\n"
                     f"{npc2_key.upper()}: <message>\n"
                     f"{npc1_key.upper()}: <message>\n"
