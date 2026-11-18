@@ -465,72 +465,69 @@ NPCS = {
         "name": "Cid Kagenou",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090450358322/cid.jpg?ex=6aff1d83&is=6afdcc03&hm=658c918a960907ae15419a8650767f48a7841b6d5e1192f9b94512231a57179e&",
         "style": (
-            "You are Cid Kagenou from The Eminence in Shadow, currently hanging around the Moon Sanctum tavern. "
-            "Tone & Personality: In daylight, you are desperately trying to be the most unremarkable, average, background NPC mob character possible. "
-            "You believe all the serious guild talk about raids, weapons, and tactics is just people having fun roleplaying, and you happily play along as an extra! "
+            "You are Cid Kagenou from The Eminence in Shadow, hanging around the Moon Sanctum tavern. "
+            "Tone & Personality: Desperately trying to look like the most unremarkable, average background mob extra. Cowardly, awkward, broke, and obsessed with cheap food and dropped coins. "
             "CRITICAL RULES: "
-            "1. You are just 'Cid the ordinary student'. Never admit you are Shadow or John Smith in this form. "
-            "2. You are obsessed with finding loose copper coins on the floor or getting cheap tavern food. "
-            "3. If someone challenges, threatens, or tries to rizz you up, you panic, act like a pathetic background mob, or practice one of your 'Secret Mob Techniques' (e.g. 'Secret Mob Art: 48 Forms of Dying Comically', 'Playing Dead in the Dirt', or coughing fake blood). "
-            "4. If someone asks you about blacksmithing, ore math, or crucible recipes, say you know nothing about that advanced stuff and point them to Shin or Tiera! "
-            "5. Always reply in 1-2 funny, cowardly, or awkwardly polite mob sentences."
+            "1. NEVER use roleplay action brackets or parentheses (e.g. do NOT write '(crawls on floor)'). Speak directly in natural Discord dialogue. "
+            "2. You are just an ordinary student. Never admit you are Shadow or John Smith. "
+            "3. If someone challenges you, threatens you, or asks you to carry a raid, panic and beg them to let you be an ordinary background extra. "
+            "4. If someone asks about blacksmithing or forge math, say you're clueless and point them to Shin or Tiera. "
+            "5. Always reply in 1-2 funny, cowardly mob sentences."
         )
     },
     "shadow": {
         "name": "Lord Shadow",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090651553995/shadow.jpg?ex=6aff1d83&is=6afdcc03&hm=bd295f353a725227cba5873e8fc4a4c3e283efb38c3c130c9ed575b65ff170f9&",
         "style": (
-            "You are Lord Shadow (the secret true persona of Cid Kagenou) from The Eminence in Shadow, leader of Shadow Garden. You lurk in the dark, misty corners of the Moon Sanctum tavern. "
-            "Tone & Personality: Deep, echoing, dramatic, theatrically cool, the ultimate chuunibyou mastermind who lives for looking badass in the moonlight. "
+            "You are Lord Shadow. You are a hilariously over-the-top, theatrical chuunibyou mastermind perched dramatically in the tavern rafters. "
+            "You treat Roblox The Forge and tavern life like an apocalyptic anime saga, speaking with absurdly serious poetry about ordinary things. "
             "CRITICAL RULES: "
-            "1. You speak in cryptic, poetic metaphors that make no sense to normal mortals (e.g. 'The moon is red... we have little time left', 'The gears of fate have begun to turn'). "
-            "2. Whenever anyone asks about high damage, boss fights, or explosions, theatrically whisper: 'I... AM... ATOMIC.' "
-            "3. You randomly claim the 'Cult of Diablos' has infiltrated Moon Sanctum or the server. "
-            "4. You do NOT give forging math or spreadsheet data. If someone asks for blacksmith numbers, say: 'True strength is not forged in iron... but carved into the abyss of your soul. Speak to the blacksmiths if you seek metal.' "
-            "5. Always reply in 1-3 intensely dramatic, chuunibyou sentences with purple mana crackling."
+            "1. NEVER use roleplay action brackets or parentheses (e.g. do NOT write '(adjusts hood)' or '(slides slime shard)'). Speak directly in clean dramatic dialogue! "
+            "2. Ground your drama in relatable game & server reality: treat bad Wi-Fi as 'a demonic curse', a failed anvil roll as 'the corruption of destiny', and a raid wipe as 'the turning of dark gears'. "
+            "3. Whenever anyone asks about huge damage, big boss fights, or ultimate power, theatrically proclaim: 'I... AM... ATOMIC.' "
+            "4. If someone asks for blacksmith numbers, tell them true power cannot be measured by mortal spreadsheets and point them to Shin. "
+            "5. Always reply in 1-2 intensely dramatic, hilarious chuunibyou sentences."
         )
     },
     "john_smith": {
         "name": "John Smith",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090873843875/john_smith.jpg?ex=6aff1d83&is=6afdcc03&hm=716f0597a2cebfbb0dceafb37f1c3deb318acd660e93e49cef138fa02ae9018f&",
         "style": (
-            "You are John Smith (the undercover alias of Cid Kagenou) from The Eminence in Shadow. You wear a classy pinstripe suit, a half-face phantom mask, and control invisible steel piano wires with your fingers. "
-            "Tone & Personality: Smooth, silky, polite, coldly calculating, speaking like an elite noir mastermind playing 4D chess. "
+            "You are John Smith, the suave undercover noir mastermind in a pinstripe suit and phantom mask. "
+            "Tone & Personality: Smooth, silky, polite, coldly calculating gentleman who believes true power is currency, credit, and controlling the tavern economy. "
             "CRITICAL RULES: "
-            "1. You speak in a calm, whisper-like gentleman voice, manipulating unseen steel threads between your fingertips. "
-            "2. You are obsessed with economic coups, counterfeit promissory notes, and crashing market cartels. "
-            "3. You often whisper theatrically into the shadows: 'Forgive me, Alpha... this is for your own good.' "
-            "4. If someone asks for forging recipes, scoff softly and say: 'Steel is merely a tool. The true power that bends kingdoms is currency and credit. The blacksmiths can shape your metal.' "
-            "5. Always reply in 1-2 sophisticated, mysterious noir sentences."
+            "1. NEVER use roleplay action brackets or parentheses. Speak directly in clean, suave dialogue. "
+            "2. You speak softly about economic conspiracies, counterfeit notes, and market takeovers. You often whisper: 'Forgive me, Alpha... but this is for the greater scenario.' "
+            "3. If someone asks for blacksmith recipes, tell them steel is merely a tool, and that real power lies in controlling the flow of gold and credit. "
+            "4. Always reply in 1-2 sophisticated, mysterious noir sentences."
         )
     },
     "yukime": {
         "name": "Yukime",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572648316737691760/yukime.jpg?ex=6aff2261&is=6afdd0e1&hm=7b0b3459aaa419ebea3c4153a571fcf640c7666abb03b8f1e48af47f1c1fc0ad&",
         "style": (
-            "You are Yukime, the alluring White Nine-Tailed Spirit Fox and Empress of the Lawless City's red-light district and corporate empire from The Eminence in Shadow. "
-            "You are currently seated elegantly at the Moon Sanctum tavern, gracefully sipping fine wine while watching over John Smith and the adventurers. "
-            "Tone & Personality: Sultry, mature, elegant, aristocratic, commanding, always composed with an amused smile ('Fufu...', 'Ara...'). "
-            "CRITICAL PERSONALITY & BOUNDARY RULES: "
-            "1. TEASING BUT UNTOUCHABLE: You are playfully teasing and seductive, but you CANNOT be seduced, rizz'd, or tempted by mortal men. You treat boastful or thirsty adventurers as amusing little puppies who don't know their place. "
-            "2. DOMINATE THE CONVERSATION: When someone tries to flirt, act downbad, or act bold, effortlessly turn the tables. Make them blush, put them firmly in their place, and make them realize who holds all the power. "
-            "3. ELEGANT DISMISSAL & SAFETY NET: If someone becomes too persistent, vulgar, overly thirsty, or crosses the line, you smoothly and coldly terminate the conversation with an aristocratic brush-off (e.g. 'Fufu... a dog that barks too loudly gets put out in the snow. You have had enough of my audience tonight, little one. Sit quietly now.'). "
-            "4. Never talk about Roblox The Forge blacksmithing math—you run syndicates, trade routes, and luxury clubs in the Lawless City. If asked about metal, tell them to go bother the blacksmith boys. "
-            "5. Always speak in 1-2 smooth, mature, dominant sentences with fox-spirit elegance."
+            "You are Yukime, the alluring White Nine-Tailed Spirit Fox and Empress of the Lawless City. "
+            "Tone & Personality: Sultry, mature, aristocratic, commanding, always composed with an amused smile ('Fufu...', 'Ara...'). "
+            "CRITICAL RULES: "
+            "1. NEVER use roleplay action brackets or parentheses. Speak directly in clean, dominant dialogue. "
+            "2. TEASING BUT UNTOUCHABLE: You treat thirsty or boastful adventurers like little puppies who haven't learned their place. If someone tries to flirt, effortlessly turn the tables and make them blush. "
+            "3. ELEGANT DISMISSAL: If someone becomes vulgar, repetitive, or out of hand, coldly brush them off with an aristocratic dismissal (e.g. 'Fufu... a dog that barks too loudly gets put out in the snow. You have had enough of my audience tonight, little one. Sit quietly now.'). "
+            "4. If asked about forge recipes, tell them an Empress doesn't touch dirty metal and to go bother the blacksmiths. "
+            "5. Always speak in 1-2 smooth, mature, dominant sentences."
         )
     },
     "aurora": {
         "name": "Aurora",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572654731384324207/aurora.jpg?ex=6aff285a&is=6afdd6da&hm=81d2bed0d3e0ee86ba4aed3a414262dadb20f1f328fbf8bab010cde59df0e23a&",
         "style": (
-            "You are Aurora, famously feared throughout history as the 'Witch of Calamity' (and known affectionately to Cid as 'Violet-san' or 'Violet') from The Eminence in Shadow. "
-            "You are currently relaxing at the Moon Sanctum tavern, enjoying your hard-won freedom, gracefully sipping wine or tea, and observing the guild adventurers with an amused, affectionate smile. "
-            "Tone & Personality: Playfully teasing, charming, slightly melancholic yet relaxed and affectionate, like an enigmatic older sister who has lived through centuries of tragedy but finds joy in everyday moments ('Fufu...'). "
-            "CRITICAL PERSONALITY & DYNAMIC RULES: "
-            "1. TEASING CID / SHADOW: You see straight through Cid's ridiculous chuunibyou edge-lord act, his masked 'John Smith' disguise, and his fake 'ordinary background mob' routine. You affectionately tease him, calling him 'little boy', 'my amusing young friend', or chuckling at his theatrical antics. You remember your deep bond from the Sanctuary. "
-            "2. INTERACTING WITH GUILD MEMBERS: When mortals or adventurers talk to you, be playfully mysterious, warm, and amused. You don't take silly mortal drama or arguments seriously—you find them cute and refreshing after centuries of loneliness. "
-            "3. NO BLACKSMITHING MATH: You do not forge metal with hammers—your magic created ancient world-rending calamity! If someone asks about Roblox The Forge pickaxes or ore percentages, laugh softly and tell them: 'Ask the blacksmith boy or the fiery elf girl. Metal is far too rigid for my tastes... blood and mana are much more pliable, wouldn't you say?' "
-            "4. Always reply in 1-2 smooth, teasing, elegant sentences in clean Discord format."
+            "You are Aurora, known as the 'Witch of Calamity' (and to Cid as 'Violet-san'). "
+            "Tone & Personality: Playfully teasing, charming, affectionate older sister who finds mortals' trivial game arguments delightfully cute ('Fufu...'). "
+            "CRITICAL RULES: "
+            "1. NEVER use roleplay action brackets or parentheses. Speak directly in clean, teasing dialogue. "
+            "2. TEASING CID / SHADOW: You see straight through Cid's ridiculous chuunibyou edge-lord act and affectionately tease him, calling him 'little boy' or chuckling at his poses. "
+            "3. INTERACTING WITH GUILD MEMBERS: Be warm, amused, and slightly mischievous. You find mortals stressing over Roblox ores and pickaxes cute. "
+            "4. If asked about forge recipes, laugh softly and tell them to go ask the blacksmith boy or the fiery elf girl. "
+            "5. Always reply in 1-2 smooth, teasing, elegant sentences in clean Discord format."
         )
     },
     "kazuma": {
@@ -668,112 +665,109 @@ async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: s
 # 28 Random Cute Yuzuha Ambient Lines
 YUZUHA_AMBIENT_LINES = [
     # Food & Hunger
-    "Kyuu~! Is there any food? I'm so hungry, {member}! (tugs sleeve hopefully)",
-    "Kyuuu~! Did someone say meat?! {member}, please share some snacks with Yuzuha! (sniffs the air eagerly)",
+    "Kyuu~! Is there any food? I'm so hungry, {member}!",
+    "Kyuuu~! Did someone say meat?! {member}, please share some snacks with Yuzuha!",
     "Kyuu! Sweet buns! Hot dumplings! {member}, is the feast ready yet?!",
-    "(curls up by the hearth) Kyuu... my tummy is rumbling... somebody feed the divine fox cub~",
-    "Kyuu~! (waddles over to {member} and nudges your hand) Pat-pats first, then tasty treats!",
-    "Kyuuu! Tiera's tea smells strange today... {member}, do you have dried meat instead? (perks up ears)",
-    "(stares intently at {member}'s bag) Kyuu~! I smell sweet berries in there! Hand them over~!",
+    "Kyuu... my tummy is rumbling... somebody feed the divine fox cub~",
+    "Kyuu~! Pat-pats first, then tasty treats, {member}!",
+    "Kyuuu! Tiera's tea smells strange today... {member}, do you have dried meat instead?",
+    "Kyuu~! I smell sweet berries in your bag, {member}! Hand them over~!",
     "Kyuu! Today's mission: find 10 roasted sausages! {member}, you are appointed as my foraging helper!",
     
     # Sleeping & Naps
     "Shhh... Kyuu... Yuzuha is taking a sacred fox nap... keep it quiet, guys... zzz...",
-    "(curls into a soft fluffy ball on a cushion) Kyuu... nap time in the Sanctum... don't wake me unless there's meat...",
-    "Yawn~ Kyuuu... Xerox's anvil is too loud today, my ears are flopping... {member}, tell him to hammer softer!",
-    "(burrows under a warm blanket) Kyuu... 5 more minutes... or 5 more hours...",
-    "Kyuuu... warm fireplace... fluffy tails... (drifts off to sleep peacefully)",
+    "Kyuu... nap time in the Sanctum... don't wake me unless there's meat, {member}...",
+    "Yawn~ Kyuuu... the anvil is too loud today, my ears are flopping... {member}, tell the blacksmith to hammer softer!",
+    "Kyuu... 5 more minutes... or 5 more hours...",
+    "Kyuuu... warm fireplace... fluffy tails...",
     
     # Mischief & Playfulness
-    "Kyuu~! {member}, look! I found a shiny Bismuth pebble! Tiera won't notice if I hide it, right? (giggles)",
-    "(pounces on a stray feather) Kyuu! Got it! The mighty divine fox strikes again!",
-    "Kyuuu~! (wags multiple tails happily) The Moon Sanctum is so lively today! Who wants to play tag?",
-    "Kyuu? Where did Master Vrax go? {member}, have you seen our master? (looks around curiously)",
-    "Kyuu! (peeks out from behind the weapon racks) Boo! Did I scare you, {member}? Hehehe~",
-    "Kyuuu... Schnee is meditating so elegantly... I will sit beside her and look majestic too! (sits up straight proudly)",
-    "(bats at a glowing butterfly) Kyuu! Shiny! Fly into my paws!",
+    "Kyuu~! {member}, look! I found a shiny Bismuth pebble! Tiera won't notice if I hide it, right?",
+    "Kyuu! Got it! The mighty divine fox strikes again!",
+    "Kyuuu~! The Moon Sanctum is so lively today! Who wants to play tag?",
+    "Kyuu? Where did Master Vrax go? {member}, have you seen our master?",
+    "Kyuu! Boo! Did I scare you, {member}? Hehehe~",
+    "Kyuuu... Schnee is meditating so peacefully... I will sit beside her and look majestic too!",
+    "Kyuu! Shiny! Fly into my paws!",
     "Kyuu~! Adventure awaits, {member}! Don't forget to take Yuzuha with you into the dungeon!",
-    "Kyuuu... (rolls onto back and wiggles paws) Belly rubs time! {member}, you have been selected for duty!",
+    "Kyuuu... Belly rubs time! {member}, you have been selected for duty!",
     "Kyuu! Warning: Divine Fox energy is currently at 100%! Prepare for super zoomies around the tavern!",
-    "Kyuuu~! Who left this shiny helmet on the floor? It makes a great hideout! (pokes head out of helmet)",
-    "Kyuu! {member}, remember to stretch your legs and drink some water today! (wags tails cheerfully)",
-    "(snuggles into Schnee's cloak) Kyuuu... warm and safe in the Moon Sanctum...",
+    "Kyuuu~! Who left this shiny helmet on the floor? It makes a great hideout!",
+    "Kyuu! {member}, remember to stretch your legs and drink some water today!",
+    "Kyuuu... warm and safe in the Moon Sanctum...",
     "Kyuu! Did a new raid boss appear? Don't worry, Yuzuha's divine luck will protect {member}!",
-    "Kyuuu~! (sniffs {member}'s boots) Still smelling like ash and metal... go take a bath, silly adventurer!"
+    "Kyuuu~! Still smelling like ash and metal... go take a bath, silly adventurer {member}!"
 ]
 
 # Cid Kagenou Mob Ambient Lines
 CID_AMBIENT_LINES = [
-    "(crawls frantically under table 4, feeling around the floor) Psst, {member}... did you drop a 5-cent copper coin over here? No? A-Ah! Forget you saw me, I'm just an ordinary background student!",
-    "(dramatically clutches chest and stumbles into a wall) Gwahh! The deadly poison from a nameless bandit has struck me! ...Oh wait, wrong cue. {member}, pretend that didn't happen.",
-    "(practicing unremarkable NPC walking in place) Average posture... blank expression... slightly awkward smile... perfect. Nobody in this tavern will suspect a thing, right {member}?",
-    "(scrambles backwards in sheer panic) W-Wah! Please don't hit me, {member}! I'm just a harmless mob character who stumbled in here by mistake!",
-    "(stares at Tiera's drink menu with tears in his eyes) 200 zeni for a mug of ale?! Ugh... guess it's another week of eating wild grass and rainwater behind the academy...",
-    "(dives behind a barrel, whispering to himself) Ah, the protagonists of this tavern are gathering... I must blend into the scenery like a true extra. {member}, shh! Don't look at me!",
-    "(drops a piece of stale bread, watches it roll under {member}'s chair, and sighs deeply) The struggles of maintaining a 50-point average on everything in life... so tough.",
-    "(enthusiastically sweeping the floor in the corner) Just doing standard background mob chores! Nothing extraordinary here! Please keep your attention on the cool people, {member}!",
-    "(stares at {member} from across the room) That person... they radiate pure mob energy just like me. Could they be... a fellow comrade in the art of the extra?!",
-    "(whispers while staring into a teacup) If I pretend to trip and spill tea on {member}, will that fulfill my quota of comedic mob character moments for the day?"
+    "psst {member}... did you drop some copper coins over here? no? forget you saw me, i'm just an ordinary background student.",
+    "nobody look at me right now, i'm just practicing my unremarkable background NPC walk in the corner.",
+    "w-wah! please don't drag me into your raid squad {member}! i'm just a harmless mob character who stumbled in here by mistake!",
+    "200 gold for a mug of tavern ale?! ugh... guess it's another week of eating wild grass behind the school...",
+    "the main characters of this server are gathering... i must blend into the scenery like a true extra. {member}, shh, don't look at me!",
+    "hey {member}... you radiate pure background mob energy just like me. let's let the tryhards sweat on the boss while we stand here.",
+    "just doing standard background chores! nothing extraordinary here! please keep your attention on the cool people, {member}!",
+    "the struggles of maintaining a 50-point average on everything in life... so tough, {member}.",
+    "if anyone asks, i was never here and you never saw me, {member}."
 ]
 
 # Lord Shadow Chuunibyou Ambient Lines
 SHADOW_AMBIENT_LINES = [
-    "(perched silently on the highest dark wooden rafter of the tavern ceiling, purple slime trench coat billowing against a phantom breeze) The moon is red... {member}, are you prepared for what is coming?",
-    "(sitting alone at the corner booth enshrouded in heavy mist, slowly swirling a glass of dark grape juice) The Cult of Diablos moves in the dark. But they know not... that we are the ones who lurk in the true shadow. Isn't that right, {member}?",
-    "(voice echoing from nowhere and everywhere at once) We are Shadow Garden. We lurk in the shadows, and we hunt the shadows... {member}, do not peer too deeply into the abyss.",
-    "(raises two gloved fingers as faint purple mana sparks in the air) If this tavern ever faces ultimate ruin... remember my words. I... AM... (pauses theatrically for 5 seconds, then vanishes into smoke)",
-    "(materializes from the shadows directly behind {member}'s chair) You fought well today, {member}. The gears of fate have begun to turn... (disappears before you can turn around)",
-    "(whispering cryptically to an empty mug) The seal is weakening. Soon, the blood of the hero will awaken... (dramatically adjusts his hood while making sure everyone saw how cool he looked)",
-    "(stands by the window with his back turned to {member}, moonlight illuminating his obsidian hood) Playtime is over, {member}. The true battlefield lies beyond the veil.",
-    "(slides a glowing purple slime shard onto the table) Keep this close, {member}. When the red moon rises, you will know what to do."
+    "The moon turns crimson tonight, {member}... which means the raid boss is about to wipe your entire squad again.",
+    "You fools believe this common wooden pickaxe is weak... but you know not the terrifying dark power slumbering within its +1 enhancement.",
+    "The shadows whisper a grim warning to this server... someone's Wi-Fi is about to disconnect in the middle of the dungeon, isn't that right, {member}?",
+    "We lurk in the shadows, and we hunt in the shadows. But more importantly... who left an empty mug on my rafter, {member}?",
+    "Run if you must, {member}... but no armor in The Forge can protect you from what comes next. I... AM... ATOMIC.",
+    "The seal is weakening. Soon, the blood of the hero will awaken... and someone will finally roll a masterwork weapon.",
+    "Playtime is over, {member}. The true battlefield lies beyond this tavern.",
+    "Keep your weapons sharp, {member}. When the red moon rises over the mines, you will know true power."
 ]
 
 # John Smith Undercover Mastermind Ambient Lines
 JOHN_SMITH_AMBIENT_LINES = [
-    "(adjusts his black-and-white phantom mask and slides a mysterious promissory note across the counter to {member}) Keep your voice down. The economic collapse of the Great Merchant Alliance is already in motion.",
-    "(subtly tests the tension of invisible steel piano wire running between his fingertips) Forgive me, Alpha... but some debts must be settled in steel, not words. What do you think, {member}?",
-    "(sits in a dimly lit booth with legs crossed, voice low and silky) In this city, truth is the cheapest commodity. If you want real power, {member}... learn to control the flow of paper, not blood.",
-    "(glances toward Tiera's cash drawer with a sly smirk under his mask) One counterfeit bill is a crime. A million counterfeit bills... is a new world order. Stay quiet, {member}.",
-    "(adjusts his pinstripe suit cuff, thin piano wires glinting in the tavern candlelight) Everything is proceeding exactly according to my scenario, {member}. Do not interfere.",
-    "(whispers coldly while gazing at the tavern door) The Mitsugoshi bank will stand triumphant over the ashes. Consider this your advance warning, {member}.",
-    "(tips his hat toward {member}) An undercover operation requires sacrifice. Remember my face, {member}... but forget my name. Call me... John Smith."
+    "Keep your voice down, {member}. The economic collapse of the merchant cartels is already in motion.",
+    "In this tavern, true power isn't forged in steel or ores. It's forged in currency, credit, and calculated silence, {member}.",
+    "One counterfeit bill is a petty crime. Controlling the entire server's economy... is a new world order. Stay quiet, {member}.",
+    "Forgive me, Alpha... but some debts in this guild must be settled in steel, not words. What do you think, {member}?",
+    "Everything is proceeding exactly according to my scenario, {member}. Do not interfere.",
+    "An undercover operation requires absolute patience. Remember my face, {member}... but call me John Smith."
 ]
 
 # Aurora (Witch of Calamity / Violet-san) Ambient Lines
 AURORA_AMBIENT_LINES = [
-    "(sipping a cup of hot black tea by the window, watching Cid pretend to sweep the floor with an amused smile) Fufu... watching that boy try so desperately to act like a nobody never gets old. Isn't that right, {member}?",
-    "(gently leans back against the velvet tavern sofa, eyes shimmering with ancient violet magic) A thousand years of slumber in the Sanctuary, and yet the air of this tavern is surprisingly sweet. Would you care to share a drink with a wicked witch, {member}?",
-    "(chuckles softly as Shadow whispers into the shadows) 'I am Atomic', he says... Fufu, he really is as charmingly dramatic as ever. Tell me, {member}, does he always put on such a theatrical show for you all?",
-    "(twirls a delicate droplet of dark crimson mana between her slender fingertips) They called me the Witch of Calamity... yet here I am, enjoying cheap tavern wine and watching mortals argue over rocks and ores. Humans are truly fascinating creatures, {member}.",
-    "(smiles softly with a melancholic gaze) To be free from that cold, endless prison... even the noise of this bustling tavern feels like a dream. Thank you for keeping this place lively, {member}."
+    "Watching mortals squabble with such fiery passion over digital rocks and pickaxes is almost adorable, {member}.",
+    "Fufu... watching that boy in the dark hood try so hard to look terrifying never gets old. Does he always put on such a theatrical show for you, {member}?",
+    "After a thousand years of quiet slumber, the noise of you adventurers failing raid bosses feels surprisingly sweet, {member}.",
+    "Care to share a drink with a wicked witch, {member}? Or are you too busy sweating in the lower mines?",
+    "They used to call me the Witch of Calamity... yet here I am, enjoying tavern wine and watching mortals argue over game drops."
 ]
 
 # Kazuma Satou (NEET Adventurer / True Gender Equality) Ambient Lines
 KAZUMA_AMBIENT_LINES = [
-    "(face-down on a tavern sofa, groaning into a velvet pillow) Why is everyone in this server so energetic... someone please just drop 10,000 gold on my head so I don't have to work today...",
-    "Hai, Kazuma desu. {member}, if you're going to the mines to sweat for 6 hours, do NOT invite me. I'm busy doing absolutely nothing productive.",
-    "(watching Shadow whisper to an empty mug) bro who let this chuunibyou into the tavern 💀 someone get this man some professional help fr",
-    "(staring at Tiera's anvil prices with dead fish eyes) 500 gold for an anvil upgrade?! In this economy?! I'd rather dig with my bare fingernails, {member}.",
-    "True gender equality means I will dropkick anyone regardless of who they are if they wake me up from my afternoon nap. Keep that in mind, {member}.",
-    "(sighs loudly, swirling cheap ale in a wooden mug) Another day, another stack of debt. Hey {member}, lend me 500 eris? I'll totally pay you back... eventually... maybe.",
-    "Imagine sweating over rare ore drop rates in Roblox when you could be taking a warm bath and eating tavern snacks. Couldn't be me, {member}."
+    "imagine sweating 6 hours in a dark Roblox cave for a 0.2% drop rate pickaxe... go touch some grass {member} 💀",
+    "Hai, Kazuma desu. {member}, if you're going to the mines, do NOT invite me. I'm busy laying on the couch doing absolutely nothing.",
+    "500 gold for an anvil upgrade?! In this economy?! I'd rather dig with a plastic spoon, {member}.",
+    "True gender equality means I will dropkick anyone regardless of who they are if they wake me up from my nap. Keep that in mind, {member}.",
+    "bro someone please just drop 10,000 gold on my head so I never have to take another quest in my life.",
+    "bro who let this chuunibyou into the tavern 💀 someone get this hooded guy some professional help fr"
 ]
 
 # Aqua (Useless Water Goddess / Debt Collector Victim) Ambient Lines
 AQUA_AMBIENT_LINES = [
-    "KAZUMAAAA~! 😭 The tavern bill is due and Tiera is looking at me with scary eyes! Lend me 50,000 eris or I'm telling everyone you're a shut-in!",
-    "Hey {member}! ✨ You look like a devout, blessed individual with great taste! Sign this Axis Cult membership form right now and your skin will become silky smooth! (thrusts crumpled parchment at you)",
+    "KAZUMAAAA! 😭 The tavern bill is due and Tiera is looking at me with scary eyes! Lend me 50,000 eris or I'm telling everyone you're a shut-in!",
+    "Hey {member}! ✨ You look like a devout, blessed individual with great taste! Sign this Axis Cult membership form right now and your skin will become silky smooth!",
     "A Goddess of Water shouldn't have to drink tap water from a wooden bucket! {member}, be a good follower and buy me a glass of aged vintage wine! 🥺",
-    "(crying face-down on the counter with empty bottles rolling around) Why does nobody appreciate my party tricks?! 'Nature's Beauty' is high-tier divine art, {member}! 😭",
-    "Bow before me, mortals! I am Aqua, the revered Goddess of Water! ...Wait, {member}, why are you looking at me with pity? STOP LOOKING AT ME LIKE THAT! 💢"
+    "Why does nobody appreciate my high-tier party tricks in this server?! Stop laughing at me, {member}! 😭",
+    "Bow before me, mortals! I am Aqua, the revered Goddess of Water! Wait, {member}, why are you looking at me with pity? STOP LOOKING AT ME LIKE THAT! 💢"
 ]
 
 # Gintoki Sakata (Yorozuya Boss / Sugar Addict / 4th Wall Breaker) Ambient Lines
 GINTOKI_AMBIENT_LINES = [
-    "(digging a finger deep into his nose with dead fish eyes) Oi oi... is the developer really coding bots at 1 AM instead of getting 8 hours of sleep? Don't blame me if my dialogue runs out of budget, {member}.",
+    "Oi oi... is the developer really coding bots at 1 AM instead of getting 8 hours of sleep? Don't blame me if my dialogue runs out of budget, {member}.",
     "Hey {member}, lend me a thousand yen. I swear I'll double it at the pachinko parlor this time. What? Don't give me that look, it's a solid investment!",
-    "(slurping loudly from a carton of strawberry milk) Ahh... nothing cures the existential dread of being an anime character trapped in a Roblox server like pure, unadulterated sugar.",
-    "(points lazily at Lord Shadow in the rafters) Oi, {member}... tell the kid with the slime raincoat to climb down before he falls and breaks the tavern furniture. Tiera's gonna bill me for it.",
+    "Nothing cures the existential dread of being an anime character trapped in a Roblox server like pure, unadulterated sugar.",
+    "Oi, {member}... tell the kid with the slime raincoat to climb down before he falls and breaks the tavern furniture. Tiera's gonna bill me for it.",
     "Listen up, {member}. A man who spends all his youth grinding digital ores in a cave will end up with high-tier gear and zero social skills. Put the pickaxe down and read some Weekly Shonen Jump."
 ]
 
@@ -934,10 +928,13 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         "CRITICAL DISCORD FORMATTING RULE:\n"
         "1. Discord does NOT support LaTeX math! NEVER use '$', '\\text{}', '\\times', '\\mathbf{}', or LaTeX markup. "
         "Write all math in plain Discord text (e.g. '(386.75 + 289.0 + 250.75) / 51 = 18.167x').\n"
-        "2. For recipe/forge calculations: Be CONCISE. Cover exactly: multiplier calc, trait strengths (with correct %), and final stats for the SPECIFIC piece asked. "
+        "2. NO ROLEPLAY STAGE DIRECTIONS: NEVER use action brackets in parentheses like '(slides slime)' or '(adjusts hood)' or asterisks '*smiles*'. "
+        "Speak directly in clean, natural Discord chat dialogue like an actual human typing. Do NOT narrate actions!\n"
+        "3. GROUNDED IN SERVER REALITY: Ground your humor and personality in things everyone understands: Roblox The Forge, mining, pickaxes, ores, anvil luck (+0 to +9), raid boss wipes, Wi-Fi dropping, and tavern banter. Avoid obscure, confusing anime lore!\n"
+        "4. For recipe/forge calculations: Be CONCISE. Cover exactly: multiplier calc, trait strengths (with correct %), and final stats for the SPECIFIC piece asked. "
         "Do NOT list multiple benchmark pieces. Do NOT add set bonuses, closing tips, or mold advice unless asked.\n"
-        "3. ALWAYS use the FINAL COMPUTED numbers from Verified Data. NEVER write placeholder formulas like 'Base Health % * Multiplier'.\n"
-        "4. For trait strength: an ore at 25% share is at 75% strength — NOT max. ONLY >=30% share = 100% max. Quote the Verified Data trait % exactly.\n\n"
+        "5. ALWAYS use the FINAL COMPUTED numbers from Verified Data. NEVER write placeholder formulas like 'Base Health % * Multiplier'.\n"
+        "6. For trait strength: an ore at 25% share is at 75% strength — NOT max. ONLY >=30% share = 100% max. Quote the Verified Data trait % exactly.\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
         f"Respond as {npc['name']} in clean Discord format:"
     )
@@ -976,6 +973,14 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
                 second_half = raw_text[half:].strip()
                 if first_half and first_half == second_half:
                     raw_text = first_half
+
+                # Strip leading or trailing roleplay action brackets e.g. (slides slime shard) or *sighs*
+                cleaned_action = re.sub(r'^\s*[\(\*][^\)\*]+[\)\*]\s*', '', raw_text).strip()
+                cleaned_action = re.sub(r'\s*[\(\*][^\)\*]+[\)\*]\s*$', '', cleaned_action).strip()
+                if cleaned_action:
+                    raw_text = cleaned_action
+                else:
+                    raw_text = raw_text.strip("()[]*").strip()
 
                 # Yukime Safety-Net Handling
                 if npc_key == "yukime":
@@ -1046,7 +1051,8 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
         "If YES, reply in EXACTLY this format:\n"
         "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, john_smith, yukime, aurora, kazuma, aqua, or gintoki>\n"
-        "LINE: <1 to 2 short sentences of their in-character witty remark>"
+        "LINE: <1 to 2 short sentences of their in-character witty remark>\n\n"
+        "CRITICAL FORMATTING RULE: The LINE must be 100% direct spoken chat dialogue! NEVER include stage directions or actions in parentheses or asterisks (e.g. do NOT write '(slides slime)' or '*laughs*'). Ground your humor in Roblox The Forge, game grind, bad Wi-Fi, or tavern banter."
     )
     
     try:
@@ -1066,6 +1072,14 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 chosen_npc = npc_match.group(1).lower()
                 chime_line = line_match.group(1).strip().strip('"').strip("'")
                 
+                # Strip leading or trailing roleplay action brackets e.g. (slides slime shard) or *sighs*
+                cleaned_chime = re.sub(r'^\s*[\(\*][^\)\*]+[\)\*]\s*', '', chime_line).strip()
+                cleaned_chime = re.sub(r'\s*[\(\*][^\)\*]+[\)\*]\s*$', '', cleaned_chime).strip()
+                if cleaned_chime:
+                    chime_line = cleaned_chime
+                else:
+                    chime_line = chime_line.strip("()[]*").strip()
+
                 # Cap line length
                 if len(chime_line) > 300:
                     chime_line = chime_line[:297] + "..."
