@@ -853,6 +853,20 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
                 raw_text = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'(\1 / \2)', raw_text)
                 raw_text = raw_text.replace('$', '')
 
+                # Clean up accidental text repetitions / duplicate paragraphs
+                paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
+                deduped = []
+                for p in paragraphs:
+                    if not deduped or p != deduped[-1]:
+                        deduped.append(p)
+                raw_text = "\n\n".join(deduped)
+
+                half = len(raw_text) // 2
+                first_half = raw_text[:half].strip()
+                second_half = raw_text[half:].strip()
+                if first_half and first_half == second_half:
+                    raw_text = first_half
+
                 # Yukime Safety-Net Handling
                 if npc_key == "yukime":
                     if "[SILENCE]" in raw_text:
@@ -894,7 +908,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     eval_prompt = (
         "You are observing the Moon Sanctum tavern in Discord.\n"
         f"Recent conversation snippet:\n{chat_snippet}\n\n"
-        "You control 4 NPCs:\n"
+        "You control 8 NPCs:\n"
         "1. Tiera Lucent: Sassy, tsundere workshop craftswoman. Loves roasting members about playing outdated/ancient music, slacking off, wasting Bismuth, or goofy fails.\n"
         "2. Schnee Raizar: High Elf master strategist. Elegant, composed, drops witty/tactical commentary on combat, gear, or pride.\n"
         "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n"
