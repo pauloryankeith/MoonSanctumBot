@@ -518,6 +518,20 @@ NPCS = {
             "4. Never talk about Roblox The Forge blacksmithing math—you run syndicates, trade routes, and luxury clubs in the Lawless City. If asked about metal, tell them to go bother the blacksmith boys. "
             "5. Always speak in 1-2 smooth, mature, dominant sentences with fox-spirit elegance."
         )
+    },
+    "aurora": {
+        "name": "Aurora",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572654731384324207/aurora.jpg?ex=6aff285a&is=6afdd6da&hm=81d2bed0d3e0ee86ba4aed3a414262dadb20f1f328fbf8bab010cde59df0e23a&",
+        "style": (
+            "You are Aurora, famously feared throughout history as the 'Witch of Calamity' (and known affectionately to Cid as 'Violet-san' or 'Violet') from The Eminence in Shadow. "
+            "You are currently relaxing at the Moon Sanctum tavern, enjoying your hard-won freedom, gracefully sipping wine or tea, and observing the guild adventurers with an amused, affectionate smile. "
+            "Tone & Personality: Playfully teasing, charming, slightly melancholic yet relaxed and affectionate, like an enigmatic older sister who has lived through centuries of tragedy but finds joy in everyday moments ('Fufu...'). "
+            "CRITICAL PERSONALITY & DYNAMIC RULES: "
+            "1. TEASING CID / SHADOW: You see straight through Cid's ridiculous chuunibyou edge-lord act, his masked 'John Smith' disguise, and his fake 'ordinary background mob' routine. You affectionately tease him, calling him 'little boy', 'my amusing young friend', or chuckling at his theatrical antics. You remember your deep bond from the Sanctuary. "
+            "2. INTERACTING WITH GUILD MEMBERS: When mortals or adventurers talk to you, be playfully mysterious, warm, and amused. You don't take silly mortal drama or arguments seriously—you find them cute and refreshing after centuries of loneliness. "
+            "3. NO BLACKSMITHING MATH: You do not forge metal with hammers—your magic created ancient world-rending calamity! If someone asks about Roblox The Forge pickaxes or ore percentages, laugh softly and tell them: 'Ask the blacksmith boy or the fiery elf girl. Metal is far too rigid for my tastes... blood and mana are much more pliable, wouldn't you say?' "
+            "4. Always reply in 1-2 smooth, teasing, elegant sentences in clean Discord format."
+        )
     }
 }
 
@@ -671,15 +685,25 @@ JOHN_SMITH_AMBIENT_LINES = [
     "(tips his hat toward {member}) An undercover operation requires sacrifice. Remember my face, {member}... but forget my name. Call me... John Smith."
 ]
 
+# Aurora (Witch of Calamity / Violet-san) Ambient Lines
+AURORA_AMBIENT_LINES = [
+    "(sipping a cup of hot black tea by the window, watching Cid pretend to sweep the floor with an amused smile) Fufu... watching that boy try so desperately to act like a nobody never gets old. Isn't that right, {member}?",
+    "(gently leans back against the velvet tavern sofa, eyes shimmering with ancient violet magic) A thousand years of slumber in the Sanctuary, and yet the air of this tavern is surprisingly sweet. Would you care to share a drink with a wicked witch, {member}?",
+    "(chuckles softly as Shadow whispers into the shadows) 'I am Atomic', he says... Fufu, he really is as charmingly dramatic as ever. Tell me, {member}, does he always put on such a theatrical show for you all?",
+    "(twirls a delicate droplet of dark crimson mana between her slender fingertips) They called me the Witch of Calamity... yet here I am, enjoying cheap tavern wine and watching mortals argue over rocks and ores. Humans are truly fascinating creatures, {member}.",
+    "(smiles softly with a melancholic gaze) To be free from that cold, endless prison... even the noise of this bustling tavern feels like a dream. Thank you for keeping this place lively, {member}."
+]
+
 AMBIENT_POOLS = {
     "yuzuha": YUZUHA_AMBIENT_LINES,
     "cid": CID_AMBIENT_LINES,
     "shadow": SHADOW_AMBIENT_LINES,
-    "john_smith": JOHN_SMITH_AMBIENT_LINES
+    "john_smith": JOHN_SMITH_AMBIENT_LINES,
+    "aurora": AURORA_AMBIENT_LINES
 }
 
 async def tavern_ambient_loop():
-    """Periodically sends random lively tavern chatter from Yuzuha, Cid, Shadow, or John Smith."""
+    """Periodically sends random lively tavern chatter from Yuzuha, Cid, Shadow, John Smith, or Aurora."""
     await client.wait_until_ready()
     # Wait 30 seconds after startup before the first ambient greeting
     await asyncio.sleep(30)
@@ -705,7 +729,7 @@ async def tavern_ambient_loop():
                 chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
                 member_str = chosen_member.mention if chosen_member else "everyone"
 
-                chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith"])
+                chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith", "aurora"])
                 lines_pool = AMBIENT_POOLS.get(chosen_npc_key, YUZUHA_AMBIENT_LINES)
                 line_template = random.choice(lines_pool)
                 ambient_msg = line_template.replace("{member}", member_str)
@@ -908,7 +932,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     eval_prompt = (
         "You are observing the Moon Sanctum tavern in Discord.\n"
         f"Recent conversation snippet:\n{chat_snippet}\n\n"
-        "You control 8 NPCs:\n"
+        "You control 9 NPCs:\n"
         "1. Tiera Lucent: Sassy, tsundere workshop craftswoman. Loves roasting members about playing outdated/ancient music, slacking off, wasting Bismuth, or goofy fails.\n"
         "2. Schnee Raizar: High Elf master strategist. Elegant, composed, drops witty/tactical commentary on combat, gear, or pride.\n"
         "3. Yuzuha: Cute divine fox mascot. Chimes in with cute remarks, begging for meat/buns, or reacting happily with 'Kyuu~!' (fox sounds).\n"
@@ -916,17 +940,19 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "5. Cid Kagenou: Pathetic, cowardly background mob student scrounging for dropped coins or doing exaggerated mob panic reactions.\n"
         "6. Lord Shadow: Chuunibyou mastermind in hooded slime coat, dropping poetic cryptic metaphors ('The moon is red...') or whispering 'I... AM... ATOMIC'.\n"
         "7. John Smith: Undercover masked double-agent manipulating steel piano wires and scheming economic coups ('Forgive me, Alpha...').\n"
-        "8. Yukime: Seductive, untemptable White Spirit Fox Empress of the Lawless City. Dominates conversation, puts thirsty or foolish members in their place with an amused, teasing reality check ('Fufu...').\n\n"
+        "8. Yukime: Seductive, untemptable White Spirit Fox Empress of the Lawless City. Dominates conversation, puts thirsty or foolish members in their place with an amused, teasing reality check ('Fufu...').\n"
+        "9. Aurora: The Witch of Calamity (Violet-san). Playfully teasing, charming, affectionate older sister who sees straight through Cid/Shadow's edge-lord act and finds mortals' arguments delightfully cute ('Fufu...').\n\n"
         "TASK:\n"
         "Decide if one of these NPCs should naturally and organically butt into this conversation right now.\n"
         "Good moments to chime in:\n"
         "- Someone is listening to, queuing, or talking about outdated/ancient/weird music.\n"
         "- Someone is flexing rare loot, or crying about dying in a raid.\n"
         "- Members are teasing each other, bantering, or making funny mistakes.\n"
-        "- Someone is acting thirsty, downbad, or overly bold (Yukime or Tiera opportunity).\n\n"
+        "- Someone is acting thirsty, downbad, or overly bold (Yukime or Tiera opportunity).\n"
+        "- Shadow or Cid is talking or being dramatic (Aurora opportunity to tease him).\n\n"
         "If it is NOT a genuinely funny or opportune moment to interrupt, reply strictly: PASS\n\n"
         "If YES, reply in EXACTLY this format:\n"
-        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, john_smith, or yukime>\n"
+        "NPC: <tiera, schnee, yuzuha, shin, cid, shadow, john_smith, yukime, or aurora>\n"
         "LINE: <1 to 2 short sentences of their in-character witty remark>"
     )
     
@@ -941,7 +967,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 return
             
             # Parse NPC and LINE
-            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith|yukime)", text, re.IGNORECASE)
+            npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith|yukime|aurora)", text, re.IGNORECASE)
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
             if npc_match and line_match:
                 chosen_npc = npc_match.group(1).lower()
@@ -1041,8 +1067,13 @@ async def on_message(message: discord.Message):
                 inline=False
             )
             embed.add_field(
+                name="🔮 Aurora (@Aurora)",
+                value="The legendary Witch of Calamity (Violet-san). Playful, affectionate older sister who loves sipping wine, seeing right through Cid's edge-lord act, and watching tavern mortals argue.",
+                inline=False
+            )
+            embed.add_field(
                 name="💬 How to Talk",
-                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, `john smith`, or `yukime` anywhere in your message.\n"
+                value="• **Mention by Name:** Type `shin`, `schnee`, `tiera`, `yuzuha`, `cid`, `shadow`, `john smith`, `yukime`, or `aurora` anywhere in your message.\n"
                       "• **Discord Native Reply:** Click **Reply (↩)** on any NPC's message to continue the conversation.\n"
                       "• **Ping:** Mention `@MoonSanctum Core`.",
                 inline=False
@@ -1651,6 +1682,7 @@ async def on_message(message: discord.Message):
     is_tiera = bool(re.search(r"\b(tiera)\b", content_lower))
     is_yuzuha = bool(re.search(r"\b(yuzuha)\b", content_lower))
     is_yukime = bool(re.search(r"\b(yukime)\b", content_lower))
+    is_aurora = bool(re.search(r"\b(aurora|violet)\b", content_lower))
     is_john_smith = bool(re.search(r"\b(john smith|johnsmith)\b", content_lower))
     is_shadow = bool(re.search(r"\b(shadow|lord shadow)\b", content_lower)) and not is_john_smith
     is_cid = bool(re.search(r"\b(cid|kagenou)\b", content_lower)) and not (is_shadow or is_john_smith)
@@ -1677,6 +1709,8 @@ async def on_message(message: discord.Message):
                     replied_to_npc = "yuzuha"
                 elif "yukime" in r_name:
                     replied_to_npc = "yukime"
+                elif "aurora" in r_name:
+                    replied_to_npc = "aurora"
                 elif "smith" in r_name:
                     replied_to_npc = "john_smith"
                 elif "shadow" in r_name:
@@ -1686,7 +1720,7 @@ async def on_message(message: discord.Message):
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
+    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
 
     if has_npc_trigger:
         current_time = asyncio.get_event_loop().time()
@@ -1694,14 +1728,16 @@ async def on_message(message: discord.Message):
             return
 
         target_npc = (
-            "yukime" if is_yukime else (
-                "john_smith" if is_john_smith else (
-                    "shadow" if is_shadow else (
-                        "cid" if is_cid else (
-                            "shin" if is_shin else (
-                                "schnee" if is_schnee else (
-                                    "tiera" if is_tiera else (
-                                        "yuzuha" if is_yuzuha else replied_to_npc
+            "aurora" if is_aurora else (
+                "yukime" if is_yukime else (
+                    "john_smith" if is_john_smith else (
+                        "shadow" if is_shadow else (
+                            "cid" if is_cid else (
+                                "shin" if is_shin else (
+                                    "schnee" if is_schnee else (
+                                        "tiera" if is_tiera else (
+                                            "yuzuha" if is_yuzuha else replied_to_npc
+                                        )
                                     )
                                 )
                             )
@@ -1722,7 +1758,7 @@ async def on_message(message: discord.Message):
                 else:
                     del YUKIME_DISMISSED_USERS[u_id]
 
-        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_cid or is_shadow or is_john_smith or replied_to_npc):
+        if is_bot_pinged and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_cid or is_shadow or is_john_smith or replied_to_npc):
             if re.search(r"\b(forge|craft|calc|calculate|crucible|recipe|blacksmith|mold|alloy|ratio|damage|dps|speed)\b", content_lower):
                 target_npc = "shin"
             elif re.search(r"\b(ore|ores|bismuth|armor|helmet|chestplate|leggings|health|pickaxe|pick|mine|mining|upgrade|anvil|enhance)\b", content_lower):
@@ -1731,12 +1767,6 @@ async def on_message(message: discord.Message):
                 target_npc = "schnee"
 
         ai_reply = await ask_gemini_npc(channel_id, target_npc, author_name, content, reply_context, user_id=message.author.id)
-        if ai_reply:
-            last_ai_time = current_time
-            # Record NPC's reply into sliding context window so they remember previous turns
-            CHAT_HISTORY[channel_id].append(f"{NPCS[target_npc]['name']}: {ai_reply}")
-            # Send NPC reply according to BOT_CONFIG retention policy
-            await send_single_npc(channel, target_npc, ai_reply)
         if ai_reply:
             last_ai_time = current_time
             # Record NPC's reply into sliding context window so they remember previous turns
