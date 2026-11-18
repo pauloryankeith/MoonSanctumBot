@@ -624,10 +624,10 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
     if npc_key == "shin" and "RECIPE STAT PROJECTION" in verified_data:
         lines = verified_data.split("\n")
         # Extract pre-computed values from the projection block
-        mult_line = next((l.strip() for l in lines if l.strip().startswith("Ores:")), "")
+        mult_line = next((l for l in lines if l.startswith("Ores:")), "")
         trait_lines = [l.strip() for l in lines if "-> Traits at" in l]
-        stat_lines = [l.strip() for l in lines if l.strip().startswith("->")]
-        likeliest_line = next((l.strip() for l in lines if l.strip().startswith("Likeliest Roll:")), "")
+        stat_lines = [l.strip() for l in lines if l.startswith("->")]
+        likeliest_line = next((l for l in lines if l.startswith("Likeliest Roll:")), "")
 
         if mult_line:
             # Build multiplier string: extract from "Ores: N total | Multiplier: (calc) = Xx"
