@@ -185,9 +185,14 @@ def find_relevant_data(user_text):
         name_clean = name_str.strip().lower()
         if len(name_clean) < 3 or name_clean in ["total", "units", "molds", "level", "lvl"]:
             continue
+        # Normalize spaces: remove spaces for matching (e.g. "frostcore" -> matches "frost core")
+        name_nospace = re.sub(r"\s+", "", name_clean)
         for o_key, (official_name, m_val) in ore_lookup.items():
-            if o_key in name_clean or (len(name_clean) > 4 and name_clean in o_key):
-                parsed_ores.append((int(count_str), official_name, m_val))
+            o_key_nospace = re.sub(r"\s+", "", o_key)
+            if o_key in name_clean or name_clean in o_key or o_key_nospace == name_nospace or (len(name_nospace) > 4 and name_nospace in o_key_nospace):
+                # Avoid adding duplicate ores
+                if not any(on == official_name for _, on, _ in parsed_ores):
+                    parsed_ores.append((int(count_str), official_name, m_val))
                 break
 
     if parsed_ores:
@@ -614,6 +619,54 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         return None
     npc = NPCS.get(npc_key)
     verified_data = find_relevant_data(user_text)
+
+    # === SHIN RECIPE FAST PATH: bypass Gemini entirely for clean deterministic output ===
+    if npc_key == "shin" and "RECIPE STAT PROJECTION" in verified_data:
+        lines = verified_data.split("\n")
+        # Extract pre-computed values from the projection block
+        mult_line = next((l.strip() for l in lines if l.strip().startswith("Ores:")), "")
+        trait_lines = [l.strip() for l in lines if "-> Traits at" in l]
+        stat_lines = [l.strip() for l in lines if l.strip().startswith("->")]
+        likeliest_line = next((l.strip() for l in lines if l.strip().startswith("Likeliest Roll:")), "")
+
+        if mult_line:
+            # Build multiplier string: extract from "Ores: N total | Multiplier: (calc) = Xx"
+            mult_m = re.search(r"Multiplier:\s*(.+)", mult_line)
+            mult_str = mult_m.group(1).strip() if mult_m else mult_line
+
+            # Trait strength summary (compact, one line, comma-separated)
+            trait_summary_parts = []
+            for tl in trait_lines:
+                t_m = re.match(r"(\w[\w\s]+?):\s*\d+/\d+\s*=\s*([\d.]+)%\s*share\s*->\s*Traits at\s*(.+)", tl)
+                if t_m:
+                    ore_name = t_m.group(1).strip()
+                    share_pct = t_m.group(2)
+                    label = t_m.group(3).strip()
+                    trait_summary_parts.append(f"{ore_name}: {share_pct}% share -> Traits at {label}")
+            trait_str = ", ".join(trait_summary_parts) if trait_summary_parts else "No traits detected."
+
+            # Final stats — use specific piece stats if detected, else likeliest roll
+            if stat_lines:
+                stats_str = "\n".join(sl.lstrip("-> ").strip() for sl in stat_lines)
+                # Piece name for intro line
+                piece_name = stat_lines[0].lstrip("-> ").split("(")[0].strip().rstrip(":")
+            elif likeliest_line:
+                stats_str = likeliest_line.replace("Likeliest Roll: ", "")
+                piece_name = ""
+            else:
+                stats_str = "Check your ore quantities."
+                piece_name = ""
+
+            # Build the compact 4-line Shin response (exact format user requested)
+            intro = f"Ah, {user_name}, let's take a look at that crucible mixture"
+            intro += f" for the {piece_name}." if piece_name else "."
+            response_text = (
+                f"{intro}\n"
+                f"Multiplier: {mult_str}\n"
+                f"Trait Strengths: {trait_str}\n"
+                f"Final Stats: {stats_str}"
+            )
+            return response_text
 
     # Real-world date & clock (GMT+8)
     tz_gmt8 = datetime.timezone(datetime.timedelta(hours=8))
