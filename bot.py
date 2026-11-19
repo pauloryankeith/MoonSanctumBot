@@ -37,6 +37,77 @@ if os.getenv("PORT"):
 # Automatically drops old messages as new ones arrive so memory stays fresh!
 CHAT_HISTORY = {}
 
+# Persistent Member Ledger (Long-Term Tavern Memory)
+# Remembers members' nicknames, playstyles, jokes, and habits in a feather-light JSON
+TAVERN_MEMORIES_FILE = os.path.join(os.path.dirname(__file__), "tavern_memories.json")
+TAVERN_MEMORIES = {}
+try:
+    if os.path.exists(TAVERN_MEMORIES_FILE):
+        with open(TAVERN_MEMORIES_FILE, "r", encoding="utf-8") as f:
+            TAVERN_MEMORIES = json.load(f)
+        print(f"Loaded long-term memory for {len(TAVERN_MEMORIES)} guild members.")
+except Exception as e:
+    print(f"Error loading tavern memories: {e}")
+
+def save_tavern_memories():
+    """Saves memory asynchronously or in background without blocking Discord loop."""
+    try:
+        with open(TAVERN_MEMORIES_FILE, "w", encoding="utf-8") as f:
+            json.dump(TAVERN_MEMORIES, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error saving tavern memories: {e}")
+
+async def maybe_update_member_memory(user_id: int, user_name: str, user_text: str, npc_name: str, npc_reply: str):
+    """Background task: periodically updates long-term notes on a member using Gemini."""
+    if not ai_client:
+        return
+    # Only update occasionally or if text is meaningful (more than 3 words)
+    if len(user_text.split()) < 3:
+        return
+
+    uid_str = str(user_id)
+    existing_profile = TAVERN_MEMORIES.get(uid_str, {
+        "name": user_name,
+        "notes": []
+    })
+    existing_profile["name"] = user_name # Keep display name fresh
+
+    # Prompt to extract a 1-sentence memorable trait or inside joke if present
+    notes_str = "; ".join(existing_profile.get("notes", []))
+    update_prompt = (
+        f"You maintain the Moon Sanctum tavern memory ledger.\n"
+        f"Guild Member: {user_name}\n"
+        f"Existing Notes: {notes_str if notes_str else 'None'}\n"
+        f"Recent Interaction:\n"
+        f"- {user_name}: '{user_text}'\n"
+        f"- {npc_name}: '{npc_reply}'\n\n"
+        "TASK: Did we learn anything memorable about this member's gaming habits, inside jokes, personality, or weapon preferences from this interaction?\n"
+        "If NO or it's just generic greetings/chatter, reply strictly: NO_UPDATE\n"
+        "If YES, reply with ONE concise bullet (max 15 words) describing the trait/joke/habit (e.g. 'Tries to flirt with Aurora; obsessed with gacha banner pity' or 'Plays Roblox The Forge late night; broke another pickaxe')."
+    )
+
+    try:
+        res = ai_client.models.generate_content(
+            model="gemini-3.5-flash-lite",
+            contents=update_prompt
+        )
+        if res and res.text:
+            text = res.text.strip().strip("-*• ")
+            if "NO_UPDATE" not in text.upper() and len(text) > 5:
+                notes = existing_profile.setdefault("notes", [])
+                # Avoid duplicates
+                if not any(text.lower() in n.lower() or n.lower() in text.lower() for n in notes):
+                    notes.append(text)
+                    # Keep memory capped strictly to the 4 most recent/relevant notes (feather-light)
+                    if len(notes) > 4:
+                        existing_profile["notes"] = notes[-4:]
+                    TAVERN_MEMORIES[uid_str] = existing_profile
+                    # Save to file
+                    loop = asyncio.get_event_loop()
+                    await loop.run_in_executor(None, save_tavern_memories)
+    except Exception as e:
+        print(f"Memory update error: {e}")
+
 # Safety Net: Users dismissed by Yukime get the cold shoulder / left on read
 YUKIME_DISMISSED_USERS = {}
 
@@ -1043,12 +1114,25 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
             "- If {user_name} continues pestering you with nonsense after being dismissed, respond strictly: [SILENCE]\n"
         )
 
+    # Pull persistent member memory if available
+    member_memory_context = ""
+    if user_id:
+        u_profile = TAVERN_MEMORIES.get(str(user_id))
+        if u_profile and u_profile.get("notes"):
+            notes_bullets = "\n".join(f"  - {note}" for note in u_profile["notes"])
+            member_memory_context = (
+                f"YOUR LONG-TERM MEMORY OF {user_name} (from past tavern interactions):\n"
+                f"{notes_bullets}\n"
+                f"Naturally weave in your knowledge or inside jokes about {user_name} if relevant!\n\n"
+            )
+
     full_prompt = (
         f"{npc['style']}\n\n"
         f"Real-World Current Date & Time: {current_time_str}\n\n"
         f"Verified Local Data from theforge.gg:\n{verified_data if verified_data else 'None matched directly.'}\n\n"
         f"Live Web Search Intel:\n{web_intel if web_intel else 'None.'}\n\n"
         f"Recent Tavern Chat History (Sliding Context Window):\n{prior_context}\n\n"
+        f"{member_memory_context}"
         f"{reply_context + chr(10) if reply_context else ''}"
         f"SPEAKER IDENTITY RULE: The person speaking to you right now is '{user_name}'. "
         f"You are responding directly to '{user_name}'. Never confuse '{user_name}' with other guild members from earlier messages!\n\n"
@@ -2069,6 +2153,13 @@ async def on_message(message: discord.Message):
             CHAT_HISTORY[channel_id].append(f"{NPCS[target_npc]['name']}: {ai_reply}")
             # Send NPC reply according to BOT_CONFIG retention policy
             await send_single_npc(channel, target_npc, ai_reply)
+
+            # Background: update long-term tavern memory on this member
+            asyncio.create_task(
+                maybe_update_member_memory(
+                    message.author.id, author_name, content, NPCS[target_npc]['name'], ai_reply
+                )
+            )
     else:
         # Organic conversation between guild members! Count messages and evaluate spontaneous interjections
         msg_counter_since_spontaneous += 1
