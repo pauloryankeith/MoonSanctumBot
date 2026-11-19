@@ -101,7 +101,7 @@ async def maybe_update_member_memory(user_id: int, user_name: str, user_text: st
 
         if not mem_text and GROQ_KEY:
             try:
-                groq_res = await call_groq_async(update_prompt, model="llama-3.1-8b-instant", max_tokens=60)
+                groq_res = await call_groq_async(update_prompt, model="qwen/qwen3.8-27b", max_tokens=60)
                 if groq_res:
                     mem_text = groq_res.strip()
             except Exception as e:
@@ -175,7 +175,7 @@ if GEMINI_KEY:
 if GROQ_KEY:
     print("=== Groq Ultra-Fast AI Failover is ENABLED! ===")
 
-def call_groq_sync(prompt: str, model: str = "llama-3.3-70b-versatile", max_tokens: int = 400) -> str:
+def call_groq_sync(prompt: str, model: str = "qwen/qwen3.8-27b", max_tokens: int = 400) -> str:
     """Synchronous Groq API caller using pure standard library (zero new pip packages required)."""
     if not GROQ_KEY:
         return None
@@ -183,7 +183,7 @@ def call_groq_sync(prompt: str, model: str = "llama-3.3-70b-versatile", max_toke
     headers = {
         "Authorization": f"Bearer {GROQ_KEY}",
         "Content-Type": "application/json",
-        "User-Agent": "MoonSanctumBot/1.0"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) MoonSanctumBot/1.0"
     }
     payload = {
         "model": model,
@@ -198,12 +198,14 @@ def call_groq_sync(prompt: str, model: str = "llama-3.3-70b-versatile", max_toke
         with urllib.request.urlopen(req, timeout=6) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             if data and "choices" in data and len(data["choices"]) > 0:
-                return data["choices"][0]["message"]["content"].strip()
+                msg = data["choices"][0]["message"]
+                res_content = msg.get("content") or msg.get("reasoning") or ""
+                return res_content.strip()
     except Exception as e:
         print(f"Groq API error ({model}): {e}")
     return None
 
-async def call_groq_async(prompt: str, model: str = "llama-3.3-70b-versatile", max_tokens: int = 400) -> str:
+async def call_groq_async(prompt: str, model: str = "qwen/qwen3.8-27b", max_tokens: int = 400) -> str:
     """Non-blocking async Groq caller."""
     if not GROQ_KEY:
         return None
@@ -1044,7 +1046,7 @@ async def tavern_ambient_loop():
 
                         if not skit_text and GROQ_KEY:
                             try:
-                                groq_skit = await call_groq_async(skit_prompt, model="llama-3.3-70b-versatile", max_tokens=500)
+                                groq_skit = await call_groq_async(skit_prompt, model="qwen/qwen3.8-27b", max_tokens=500)
                                 if groq_skit:
                                     skit_text = groq_skit.strip()
                             except Exception as e:
@@ -1299,9 +1301,9 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
                 print(f"Gemini {model_name} error: {e}")
                 continue
 
-    # 2. Secondary Ultra-Fast Failover Engine: Groq (Llama-3.3-70b / Llama-3.1-8b)
+    # 2. Secondary Ultra-Fast Failover Engine: Groq (Qwen-3.8-27b & GPT-OSS-120b)
     if GROQ_KEY:
-        for groq_model in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+        for groq_model in ["qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openai/gpt-oss-20b"]:
             try:
                 groq_reply = await call_groq_async(full_prompt, model=groq_model, max_tokens=400)
                 if groq_reply:
@@ -1403,7 +1405,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
 
         if not text and GROQ_KEY:
             try:
-                groq_chime = await call_groq_async(eval_prompt, model="llama-3.1-8b-instant", max_tokens=150)
+                groq_chime = await call_groq_async(eval_prompt, model="qwen/qwen3.8-27b", max_tokens=150)
                 if groq_chime:
                     text = groq_chime.strip()
             except Exception as e:
@@ -1505,7 +1507,7 @@ async def generate_tavern_bulletin(guild: discord.Guild, period_name: str = "Mor
 
     if not bulletin_text and GROQ_KEY:
         try:
-            groq_b = await call_groq_async(bulletin_prompt, model="llama-3.3-70b-versatile", max_tokens=800)
+            groq_b = await call_groq_async(bulletin_prompt, model="qwen/qwen3.8-27b", max_tokens=800)
             if groq_b:
                 bulletin_text = groq_b.strip()
         except Exception as e:
