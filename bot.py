@@ -1333,20 +1333,24 @@ async def on_message(message: discord.Message):
             )
             embed.add_field(
                 name="⚙️ Built-In Server Commands",
-                value="• `!help` or `!sanctum` — Show this tavern guide\n"
-                      "• `!shin` — **Shin's blacksmithing guide** (how to use him + all examples)\n"
-                      "• `!calc <ores>` — Forge Crucible Calculator (e.g. `!calc 10 quartz 5 amethyst`)\n"
-                      "• `!farm <item>` — Item Drop Table & Farm Finder (e.g. `!farm Heavenite` or `!farm Rosethorn`)\n"
-                      "• `!list` — Browse complete directories for pickaxes, weapons, & armors\n"
-                      "• `!top` or `!dps` — Show top 5 highest DPS weapons\n"
-                      "• `!pickaxes` or `!picks` — Show top 5 mining pickaxes\n"
-                      "• `!upgrades` or `!enhance` — Show anvil enhancement multipliers (+0 to +9)\n"
-                      "• `!settings` or `!config` — Check bot diagnostics & database counts\n"
-                      "• `!autodelete <seconds>` — Set auto-delete timer for bot messages (`0` for permanent)\n"
-                      "• `!chatter <on|off>` — Toggle periodic single NPC ambient lines (Yuzuha, Shadow, Aurora, etc.)\n"
-                      "• `!skits <on|off>` — Toggle multi-message back-and-forth conversations between bots\n"
-                      "• `!interject <on|off>` — Toggle spontaneous tavern interjections on chat\n"
-                      "• `!gossip <on|off>` — Toggle NPCs whispering/gossiping about specific server members",
+                value="• `!help` or `!sanctum` — Tavern guide\n"
+                      "• `!shin` — Shin's blacksmith guide\n"
+                      "• `!calc <ores>` — Forge crucible calculator\n"
+                      "• `!farm <item>` — Item drop table & finder\n"
+                      "• `!list` — Directories for picks, weapons, & armor\n"
+                      "• `!top` / `!dps` — Top 5 highest DPS weapons\n"
+                      "• `!pickaxes` / `!picks` — Top 5 mining pickaxes\n"
+                      "• `!upgrades` / `!enhance` — Anvil enhancement mults (+0 to +9)\n"
+                      "• `!settings` / `!config` — Diagnostics & database counts",
+                inline=False
+            )
+            embed.add_field(
+                name="🎛️ Server Feature Toggles",
+                value="• `!autodelete <seconds>` — Set auto-delete timer (`0` for permanent)\n"
+                      "• `!chatter <on|off>` — Toggle single NPC ambient lines\n"
+                      "• `!skits <on|off>` — Toggle multi-message bot conversations\n"
+                      "• `!interject <on|off>` — Toggle spontaneous chat roasts\n"
+                      "• `!gossip <on|off>` — Toggle member gossip/backstabbing",
                 inline=False
             )
             embed.set_footer(text="Powered by Google Gemini & theforge.gg • 24/7 Cloud on Render")
