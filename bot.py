@@ -600,8 +600,9 @@ async def get_or_create_webhook(channel: discord.TextChannel):
 # Global Config & Customization Toggles
 BOT_CONFIG = {
     "auto_delete_seconds": 0, # 0 = permanent, >0 = timer in seconds
-    "ambient_chatter_enabled": True, # Yuzuha random ambient chatter
-    "interjection_enabled": True # Spontaneous uninvited tavern roasts
+    "ambient_chatter_enabled": True, # Periodic ambient chatter & mini-skits
+    "interjection_enabled": True, # Spontaneous uninvited tavern roasts on live chat
+    "gossip_enabled": False # Gossip / talking behind member's back (default OFF per user preference)
 }
 
 def split_message(text: str, max_len: int = 1900):
@@ -818,25 +819,52 @@ async def tavern_ambient_loop():
                     break
 
             if target_channel and ai_client:
-                # Find a random human member from the guild to gossip about / backstab playfully!
-                guild_members = [m for m in target_channel.guild.members if not m.bot]
-                online_members = [m for m in guild_members if m.status != discord.Status.offline]
-                chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
-                member_name = chosen_member.display_name if chosen_member else "someone"
+                # Check if someone is actively chatting right now so skits don't interrupt active conversations
+                current_loop_time = asyncio.get_event_loop().time()
+                if current_loop_time - last_ai_time < 90:
+                    # An active AI conversation just occurred within the last 90 seconds, postpone skit
+                    await asyncio.sleep(120)
+                    continue
 
-                # Pre-defined fun NPC pairings with hilarious comedic chemistry + gossip/backstabbing scenarios!
-                PAIRINGS = [
-                    ("kazuma", "aqua", f"Kazuma and Aqua are whispering and gossiping about {member_name}'s questionable grinding habits, low luck, or weird chat messages behind their back."),
-                    ("gintoki", "kazuma", f"Gintoki and Kazuma are lazily roasting {member_name} behind their back, wondering why they stay up grinding instead of sleeping or touching grass."),
-                    ("tiera", "schnee", f"Tiera complains to Schnee that {member_name} nearly broke another pickaxe or ruined an anvil enhancement, while Schnee calmly evaluates their combat mistakes."),
-                    ("aurora", "shadow", f"Aurora and Shadow are observing {member_name} from the shadows, whispering about their strange energy and whether they have hidden potential or are just totally lost."),
-                    ("gintoki", "shadow", f"Gintoki and Shadow are whispering about {member_name}; Gintoki wonders if they actually have a social life, while Shadow claims they are an agent tied to cosmic destiny."),
-                    ("kazuma", "tiera", f"Kazuma and Tiera are talking trash behind {member_name}'s back about how much gold or rare ores {member_name} wasted on terrible crafting rolls."),
-                    ("aqua", "kazuma", f"Aqua is plotting with Kazuma to scam or beg {member_name} for tavern gold, but Kazuma roasts both Aqua and {member_name} for being gullible."),
-                    ("gintoki", "cid", f"Gintoki and Cid are gossiping about {member_name}; Gintoki asks if {member_name} is rich enough to buy them snacks, while Cid pretends he doesn't know them to stay an ordinary mob."),
-                    ("aurora", "yukime", f"Aurora and Yukime are elegantly sipping wine and giggling while gossiping about how adorable and clumsy {member_name} is when trying to act tough in raids."),
-                    ("shin", "tiera", f"Shin and Tiera are chatting about {member_name}'s crazy weapon requests and how {member_name} keeps trying to forge without using enough molds.")
-                ]
+                gossip_on = BOT_CONFIG.get("gossip_enabled", False)
+
+                if gossip_on:
+                    # Find a random human member from the guild to gossip about / backstab playfully
+                    guild_members = [m for m in target_channel.guild.members if not m.bot]
+                    online_members = [m for m in guild_members if m.status != discord.Status.offline]
+                    chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
+                    member_name = chosen_member.display_name if chosen_member else "someone"
+
+                    PAIRINGS = [
+                        ("kazuma", "aqua", f"Kazuma and Aqua are whispering and gossiping about {member_name}'s questionable grinding habits, low luck, or weird chat messages behind their back."),
+                        ("gintoki", "kazuma", f"Gintoki and Kazuma are lazily roasting {member_name} behind their back, wondering why they stay up grinding instead of sleeping or touching grass."),
+                        ("tiera", "schnee", f"Tiera complains to Schnee that {member_name} nearly broke another pickaxe or ruined an anvil enhancement, while Schnee calmly evaluates their combat mistakes."),
+                        ("aurora", "shadow", f"Aurora and Shadow are observing {member_name} from the shadows, whispering about their strange energy and whether they have hidden potential or are just totally lost."),
+                        ("gintoki", "shadow", f"Gintoki and Shadow are whispering about {member_name}; Gintoki wonders if they actually have a social life, while Shadow claims they are an agent tied to cosmic destiny."),
+                        ("kazuma", "tiera", f"Kazuma and Tiera are talking trash behind {member_name}'s back about how much gold or rare ores {member_name} wasted on terrible crafting rolls."),
+                        ("aqua", "kazuma", f"Aqua is plotting with Kazuma to scam or beg {member_name} for tavern gold, but Kazuma roasts both Aqua and {member_name} for being gullible."),
+                        ("gintoki", "cid", f"Gintoki and Cid are gossiping about {member_name}; Gintoki asks if {member_name} is rich enough to buy them snacks, while Cid pretends he doesn't know them to stay an ordinary mob."),
+                        ("aurora", "yukime", f"Aurora and Yukime are elegantly sipping wine and giggling while gossiping about how adorable and clumsy {member_name} is when trying to act tough in raids."),
+                        ("shin", "tiera", f"Shin and Tiera are chatting about {member_name}'s crazy weapon requests and how {member_name} keeps trying to forge without using enough molds.")
+                    ]
+                    target_info = f"Target of Tavern Gossip: {member_name}\n"
+                    rule_gossip = f"1. They should be gossiping, talking behind {member_name}'s back, or playfully roasting {member_name} like two tavern regulars whispering about someone in the room!\n"
+                else:
+                    # General hilarious tavern topics (NO specific member targeted or named)
+                    PAIRINGS = [
+                        ("kazuma", "aqua", "Aqua is crying to Kazuma about her overdue tavern drink tab and begging for money; Kazuma sighs and tells her to get a job."),
+                        ("gintoki", "shadow", "Gintoki is picking his nose telling Lord Shadow to get down from the tavern rafters before he breaks a chair; Shadow replies with over-the-top dark chuunibyou poetry."),
+                        ("tiera", "cid", "Tiera yells at Cid for slacking off near the counter instead of mining ores; Cid panics and plays the pathetic, innocent background mob."),
+                        ("aurora", "shadow", "Aurora playfully teases Lord Shadow about his dramatic purple cape and edgy poses; Shadow tries desperately to stay mysterious."),
+                        ("kazuma", "gintoki", "Kazuma and Gintoki bond over being broke, complaining about tryhard players sweating 10 hours for digital pickaxes, and wanting to take a nap."),
+                        ("aqua", "yukime", "Aqua arrogantly claims she is a supreme water goddess who deserves free wine; Yukime gives her an amused, elegant reality check."),
+                        ("shin", "tiera", "Shin and Tiera casually chat about crafting experiments, melted ores, or reckless adventurers trying to forge without molds."),
+                        ("aurora", "kazuma", "Aurora finds Kazuma's cynical complaints about true gender equality and useless party members delightfully funny; Kazuma wearily sighs."),
+                        ("gintoki", "cid", "Gintoki asks Cid if he has any spare yen for strawberry milk; Cid acts broke and tries to play dead on the floor to avoid paying."),
+                        ("schnee", "shin", "Schnee and Shin share a peaceful moment talking about the guild's recent dungeon expeditions and keeping the tavern warm.")
+                    ]
+                    target_info = ""
+                    rule_gossip = "1. Funny, in-character banter between the two NPCs about tavern life, gaming, drink tabs, or laziness. Do NOT mention or target any specific real member by name!\n"
 
                 # Pick a random pairing and topic
                 npc1_key, npc2_key, scenario = random.choice(PAIRINGS)
@@ -846,13 +874,13 @@ async def tavern_ambient_loop():
                 skit_prompt = (
                     f"Write a short, realistic, and funny 3 to 5 message Discord conversation between {npc1_name} and {npc2_name} at the Moon Sanctum tavern.\n"
                     f"Scenario: {scenario}\n"
-                    f"Target of Tavern Gossip / Playful Backstabbing: {member_name}\n\n"
+                    f"{target_info}\n"
                     f"NPC 1: {npc1_name}\nStyle: {NPCS[npc1_key]['style']}\n\n"
                     f"NPC 2: {npc2_name}\nStyle: {NPCS[npc2_key]['style']}\n\n"
                     "RULES:\n"
-                    f"1. They should be gossiping, talking behind {member_name}'s back, or playfully roasting {member_name} (their gaming habits, bad anvil luck, staying up late, or weird messages) like two tavern regulars whispering about someone in the room!\n"
+                    f"{rule_gossip}"
                     "2. EXACTLY 3, 4, or 5 lines total alternating between the two characters.\n"
-                    "3. The conversation MUST naturally and smoothly conclude by line 4 or 5 (e.g. someone notices, hushes the other, sighs, or goes back to their drink/nap).\n"
+                    "3. The conversation MUST naturally and smoothly conclude by line 4 or 5 (e.g. someone sighs, gives up, walks away, or goes back to their drink/nap).\n"
                     "4. NO ROLEPLAY STAGE DIRECTIONS IN PARENTHESES OR ASTERISKS! (Do NOT write '(whispers)' or '*laughs*'). Write 100% direct spoken chat dialogue!\n"
                     "5. Ground the dialogue in Roblox The Forge, tavern life, or relatable gamer humor.\n"
                     "6. Output FORMAT must be exactly like this (one per line):\n"
@@ -1297,8 +1325,9 @@ async def on_message(message: discord.Message):
                       "• `!upgrades` or `!enhance` — Show anvil enhancement multipliers (+0 to +9)\n"
                       "• `!settings` or `!config` — Check bot diagnostics & database counts\n"
                       "• `!autodelete <seconds>` — Set auto-delete timer for bot messages (`0` for permanent)\n"
-                      "• `!chatter <on|off>` — Toggle Yuzuha's periodic ambient chatter\n"
-                      "• `!interject <on|off>` — Toggle spontaneous tavern interjections",
+                      "• `!chatter <on|off>` — Toggle periodic tavern ambient chatter & skits\n"
+                      "• `!interject <on|off>` — Toggle spontaneous tavern interjections on chat\n"
+                      "• `!gossip <on|off>` — Toggle NPCs whispering/gossiping about specific server members",
                 inline=False
             )
             embed.set_footer(text="Powered by Google Gemini & theforge.gg • 24/7 Cloud on Render")
@@ -1876,6 +1905,17 @@ async def on_message(message: discord.Message):
                 await channel.send("✅ **Settings Updated:** Spontaneous tavern interjections are now **Disabled**.")
             else:
                 await channel.send("⚠️ **Usage:** `!interject <on|off>`")
+            return
+
+        elif cmd == "!gossip":
+            if len(cmd_parts) > 1 and cmd_parts[1].lower() in ["on", "enable", "true"]:
+                BOT_CONFIG["gossip_enabled"] = True
+                await channel.send("✅ **Settings Updated:** Tavern member gossip/backstabbing is now **Enabled**.")
+            elif len(cmd_parts) > 1 and cmd_parts[1].lower() in ["off", "disable", "false"]:
+                BOT_CONFIG["gossip_enabled"] = False
+                await channel.send("✅ **Settings Updated:** Tavern member gossip/backstabbing is now **Disabled** (NPCs will banter generally without naming members).")
+            else:
+                await channel.send("⚠️ **Usage:** `!gossip <on|off>`")
             return
 
     # Add message to sliding context window
