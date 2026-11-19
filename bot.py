@@ -1043,8 +1043,9 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         "3. GROUNDED IN SERVER REALITY: Ground your humor and personality in things everyone understands: Roblox The Forge, mining, pickaxes, ores, anvil luck (+0 to +9), raid boss wipes, Wi-Fi dropping, and tavern banter. Avoid obscure, confusing anime lore!\n"
         "4. For recipe/forge calculations: Be CONCISE. Cover exactly: multiplier calc, trait strengths (with correct %), and final stats for the SPECIFIC piece asked. "
         "Do NOT list multiple benchmark pieces. Do NOT add set bonuses, closing tips, or mold advice unless asked.\n"
-        "5. ALWAYS use the FINAL COMPUTED numbers from Verified Data. NEVER write placeholder formulas like 'Base Health % * Multiplier'.\n"
-        "6. For trait strength: an ore at 25% share is at 75% strength — NOT max. ONLY >=30% share = 100% max. Quote the Verified Data trait % exactly.\n\n"
+        "5. HONEST UNKNOWN / MISSING INFO RULE: If the user asks about an obscure item, brand new unreleased leak, secret mechanic, or question that CANNOT be found in Verified Data or Live Web Search, DO NOT invent fake numbers or fabricate facts! Honestly and naturally admit in-character that you haven't acquired that information or rumor in the tavern yet (e.g. 'I haven't heard any reliable reports or records on that in the workshop archives yet', or tell them to check back once the guild scouts uncover more).\n"
+        "6. ALWAYS use the FINAL COMPUTED numbers from Verified Data. NEVER write placeholder formulas like 'Base Health % * Multiplier'.\n"
+        "7. For trait strength: an ore at 25% share is at 75% strength — NOT max. ONLY >=30% share = 100% max. Quote the Verified Data trait % exactly.\n\n"
         f"Guild member {user_name} said: '{user_text}'.\n\n"
         f"Respond as {npc['name']} in clean Discord format:"
     )
