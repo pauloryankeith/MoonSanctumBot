@@ -59,7 +59,7 @@ def save_tavern_memories():
 
 async def maybe_update_member_memory(user_id: int, user_name: str, user_text: str, npc_name: str, npc_reply: str):
     """Background task: periodically updates long-term notes on a member using Gemini."""
-    if not ai_client:
+    if not ai_client and not GROQ_KEY:
         return
     # Only update occasionally or if text is meaningful (more than 3 words)
     if len(user_text.split()) < 3:
@@ -87,12 +87,28 @@ async def maybe_update_member_memory(user_id: int, user_name: str, user_text: st
     )
 
     try:
-        res = await asyncio.wait_for(
-            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=update_prompt),
-            timeout=6.0
-        )
-        if res and res.text:
-            text = res.text.strip().strip("-*• ")
+        mem_text = ""
+        if ai_client:
+            try:
+                res = await asyncio.wait_for(
+                    asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=update_prompt),
+                    timeout=6.0
+                )
+                if res and res.text:
+                    mem_text = res.text.strip()
+            except Exception as e:
+                print(f"Gemini memory update error: {e}")
+
+        if not mem_text and GROQ_KEY:
+            try:
+                groq_res = await call_groq_async(update_prompt, model="llama-3.1-8b-instant", max_tokens=60)
+                if groq_res:
+                    mem_text = groq_res.strip()
+            except Exception as e:
+                print(f"Groq memory update error: {e}")
+
+        if mem_text:
+            text = mem_text.strip().strip("-*• ")
             if "NO_UPDATE" not in text.upper() and len(text) > 5:
                 notes = existing_profile.setdefault("notes", [])
                 # Avoid duplicates
@@ -136,6 +152,7 @@ if os.path.exists(env_file):
 
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+GROQ_KEY = os.getenv("GROQ_API_KEY")
 
 if not TOKEN:
     print("FATAL: DISCORD_BOT_TOKEN environment variable is not set!")
@@ -154,6 +171,50 @@ if GEMINI_KEY:
         print("=== Google Gemini AI Intelligence is ENABLED! ===")
     except Exception as e:
         print(f"Gemini init error: {e}")
+
+if GROQ_KEY:
+    print("=== Groq Ultra-Fast AI Failover is ENABLED! ===")
+
+def call_groq_sync(prompt: str, model: str = "llama-3.3-70b-versatile", max_tokens: int = 400) -> str:
+    """Synchronous Groq API caller using pure standard library (zero new pip packages required)."""
+    if not GROQ_KEY:
+        return None
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {GROQ_KEY}",
+        "Content-Type": "application/json",
+        "User-Agent": "MoonSanctumBot/1.0"
+    }
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.7,
+        "max_tokens": max_tokens
+    }
+    try:
+        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers=headers)
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            if data and "choices" in data and len(data["choices"]) > 0:
+                return data["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        print(f"Groq API error ({model}): {e}")
+    return None
+
+async def call_groq_async(prompt: str, model: str = "llama-3.3-70b-versatile", max_tokens: int = 400) -> str:
+    """Non-blocking async Groq caller."""
+    if not GROQ_KEY:
+        return None
+    try:
+        return await asyncio.wait_for(
+            asyncio.to_thread(call_groq_sync, prompt, model, max_tokens),
+            timeout=7.0
+        )
+    except Exception as e:
+        print(f"Groq async timeout/error: {e}")
+        return None
 
 # Load live scraped ores from theforge.gg/database/ores
 LIVE_ORES = []
@@ -896,7 +957,7 @@ async def tavern_ambient_loop():
             if target_channel:
                 skits_on = BOT_CONFIG.get("skits_enabled", False)
 
-                if skits_on and ai_client:
+                if skits_on and (ai_client or GROQ_KEY):
                     # Check if someone is actively chatting right now so skits don't interrupt active conversations
                     current_loop_time = asyncio.get_event_loop().time()
                     if current_loop_time - last_ai_time < 90:
@@ -969,12 +1030,28 @@ async def tavern_ambient_loop():
                     )
 
                     try:
-                        res = await asyncio.wait_for(
-                            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=skit_prompt),
-                            timeout=8.0
-                        )
-                        if res and res.text:
-                            lines = [l.strip() for l in res.text.strip().split("\n") if l.strip()]
+                        skit_text = ""
+                        if ai_client:
+                            try:
+                                res = await asyncio.wait_for(
+                                    asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=skit_prompt),
+                                    timeout=8.0
+                                )
+                                if res and res.text:
+                                    skit_text = res.text.strip()
+                            except Exception as e:
+                                print(f"Gemini skit error: {e}")
+
+                        if not skit_text and GROQ_KEY:
+                            try:
+                                groq_skit = await call_groq_async(skit_prompt, model="llama-3.3-70b-versatile", max_tokens=500)
+                                if groq_skit:
+                                    skit_text = groq_skit.strip()
+                            except Exception as e:
+                                print(f"Groq skit error: {e}")
+
+                        if skit_text:
+                            lines = [l.strip() for l in skit_text.split("\n") if l.strip()]
                             valid_msgs = []
                             for line in lines:
                                 match = re.match(r"^([A-Z_]+):\s*(.+)$", line)
@@ -1027,9 +1104,53 @@ async def tavern_ambient_loop():
             print(f"Tavern ambient loop error: {e}")
             await asyncio.sleep(300)
 
+def clean_npc_text(raw_text: str, user_name: str, npc_key: str, user_id: int = 0) -> str:
+    """Sanitizes AI dialogue into clean Discord text with all roleplay directions stripped."""
+    if not raw_text:
+        return ""
+    raw_text = raw_text.strip().strip('"').strip("'")
+    if raw_text.startswith("```") and raw_text.endswith("```"):
+        raw_text = raw_text.strip("`").strip()
+    raw_text = re.sub(rf"^@{re.escape(user_name)}\s*[:,]?\s*", "", raw_text, flags=re.IGNORECASE)
+    raw_text = re.sub(r'\\text\{([^}]+)\}', r'\1', raw_text)
+    raw_text = re.sub(r'\\mathbf\{([^}]+)\}', r'**\1**', raw_text)
+    raw_text = re.sub(r'\\times', r'*', raw_text)
+    raw_text = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'(\1 / \2)', raw_text)
+    raw_text = raw_text.replace('$', '')
+
+    paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
+    deduped = []
+    for p in paragraphs:
+        if not deduped or p != deduped[-1]:
+            deduped.append(p)
+    raw_text = "\n\n".join(deduped)
+
+    half = len(raw_text) // 2
+    first_half = raw_text[:half].strip()
+    second_half = raw_text[half:].strip()
+    if first_half and first_half == second_half:
+        raw_text = first_half
+
+    cleaned_action = re.sub(r'^\s*[\(\*][^\)\*]+[\)\*]\s*', '', raw_text).strip()
+    cleaned_action = re.sub(r'\s*[\(\*][^\)\*]+[\)\*]\s*$', '', cleaned_action).strip()
+    if cleaned_action:
+        raw_text = cleaned_action
+    else:
+        raw_text = raw_text.strip("()[]*").strip()
+
+    if npc_key == "yukime":
+        if "[SILENCE]" in raw_text:
+            return "[SILENCE]"
+        if "[DISMISS]" in raw_text:
+            raw_text = raw_text.replace("[DISMISS]", "").strip()
+            if user_id:
+                YUKIME_DISMISSED_USERS[user_id] = asyncio.get_event_loop().time()
+
+    return raw_text
+
 async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_text: str, reply_context: str = "", user_id: int = 0):
     """Generates a scaled, accurate response grounded in local databases + live web search + sliding chat memory."""
-    if not ai_client:
+    if not ai_client and not GROQ_KEY:
         return None
     npc = NPCS.get(npc_key)
     verified_data = find_relevant_data(user_text)
@@ -1156,67 +1277,42 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         f"Respond as {npc['name']} in clean Discord format:"
     )
 
-    for model_name in ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]:
-        try:
-            response = await asyncio.wait_for(
-                asyncio.to_thread(
-                    ai_client.models.generate_content,
-                    model=model_name,
-                    contents=full_prompt
-                ),
-                timeout=8.0
-            )
-            if response and response.text:
-                raw_text = response.text.strip().strip('"').strip("'")
-                # Remove markdown code blocks if the model wrapped it
-                if raw_text.startswith("```") and raw_text.endswith("```"):
-                    raw_text = raw_text.strip("`").strip()
-                # Remove redundant leading @Author tag if AI prepends it
-                raw_text = re.sub(rf"^@{re.escape(user_name)}\s*[:,]?\s*", "", raw_text, flags=re.IGNORECASE)
-                
-                # Sanitize any accidental LaTeX math notation into clean Discord text
-                raw_text = re.sub(r'\\text\{([^}]+)\}', r'\1', raw_text)
-                raw_text = re.sub(r'\\mathbf\{([^}]+)\}', r'**\1**', raw_text)
-                raw_text = re.sub(r'\\times', r'*', raw_text)
-                raw_text = re.sub(r'\\frac\{([^}]+)\}\{([^}]+)\}', r'(\1 / \2)', raw_text)
-                raw_text = raw_text.replace('$', '')
-
-                # Clean up accidental text repetitions / duplicate paragraphs
-                paragraphs = [p.strip() for p in raw_text.split("\n\n") if p.strip()]
-                deduped = []
-                for p in paragraphs:
-                    if not deduped or p != deduped[-1]:
-                        deduped.append(p)
-                raw_text = "\n\n".join(deduped)
-
-                half = len(raw_text) // 2
-                first_half = raw_text[:half].strip()
-                second_half = raw_text[half:].strip()
-                if first_half and first_half == second_half:
-                    raw_text = first_half
-
-                # Strip leading or trailing roleplay action brackets e.g. (slides slime shard) or *sighs*
-                cleaned_action = re.sub(r'^\s*[\(\*][^\)\*]+[\)\*]\s*', '', raw_text).strip()
-                cleaned_action = re.sub(r'\s*[\(\*][^\)\*]+[\)\*]\s*$', '', cleaned_action).strip()
-                if cleaned_action:
-                    raw_text = cleaned_action
-                else:
-                    raw_text = raw_text.strip("()[]*").strip()
-
-                # Yukime Safety-Net Handling
-                if npc_key == "yukime":
-                    if "[SILENCE]" in raw_text:
+    # 1. Primary AI Engine: Google Gemini (gemini-3.1-flash-lite / gemini-3.5-flash-lite)
+    if ai_client:
+        for model_name in ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]:
+            try:
+                response = await asyncio.wait_for(
+                    asyncio.to_thread(
+                        ai_client.models.generate_content,
+                        model=model_name,
+                        contents=full_prompt
+                    ),
+                    timeout=8.0
+                )
+                if response and response.text:
+                    cleaned = clean_npc_text(response.text, user_name, npc_key, user_id)
+                    if cleaned == "[SILENCE]":
                         return None
-                    if "[DISMISS]" in raw_text:
-                        raw_text = raw_text.replace("[DISMISS]", "").strip()
-                        if user_id:
-                            YUKIME_DISMISSED_USERS[user_id] = asyncio.get_event_loop().time()
+                    if cleaned:
+                        return cleaned
+            except Exception as e:
+                print(f"Gemini {model_name} error: {e}")
+                continue
 
-                # Return full detailed text without artificial length truncations (auto-chunked by send_single_npc)
-                return raw_text
-        except Exception as e:
-            print(f"Gemini {model_name} error: {e}")
-            continue
+    # 2. Secondary Ultra-Fast Failover Engine: Groq (Llama-3.3-70b / Llama-3.1-8b)
+    if GROQ_KEY:
+        for groq_model in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+            try:
+                groq_reply = await call_groq_async(full_prompt, model=groq_model, max_tokens=400)
+                if groq_reply:
+                    cleaned = clean_npc_text(groq_reply, user_name, npc_key, user_id)
+                    if cleaned == "[SILENCE]":
+                        return None
+                    if cleaned:
+                        return cleaned
+            except Exception as e:
+                print(f"Groq {groq_model} error: {e}")
+                continue
 
     # Fallback in-character responses if upstream Gemini models are experiencing high demand / latency
     fallback_lines = {
@@ -1243,7 +1339,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     global last_spontaneous_time, msg_counter_since_spontaneous
     if not BOT_CONFIG.get("interjection_enabled", True):
         return
-    if not ai_client:
+    if not ai_client and not GROQ_KEY:
         return
     
     current_time = asyncio.get_event_loop().time()
@@ -1293,15 +1389,30 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     )
     
     try:
-        response = await asyncio.wait_for(
-            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=eval_prompt),
-            timeout=8.0
-        )
-        if response and response.text:
-            text = response.text.strip()
+        text = ""
+        if ai_client:
+            try:
+                response = await asyncio.wait_for(
+                    asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=eval_prompt),
+                    timeout=7.0
+                )
+                if response and response.text:
+                    text = response.text.strip()
+            except Exception as e:
+                print(f"Gemini spontaneous chime error: {e}")
+
+        if not text and GROQ_KEY:
+            try:
+                groq_chime = await call_groq_async(eval_prompt, model="llama-3.1-8b-instant", max_tokens=150)
+                if groq_chime:
+                    text = groq_chime.strip()
+            except Exception as e:
+                print(f"Groq spontaneous chime error: {e}")
+
+        if text:
             if "PASS" in text.upper() and not "NPC:" in text:
                 return
-            
+                
             # Parse NPC and LINE
             npc_match = re.search(r"NPC:\s*(tiera|schnee|yuzuha|shin|cid|shadow|john_smith|yukime|aurora|kazuma|aqua|gintoki)", text, re.IGNORECASE)
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
@@ -1333,7 +1444,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
 
 async def generate_tavern_bulletin(guild: discord.Guild, period_name: str = "Morning Edition"):
     """Generates an authentic, beautifully formatted Moon Sanctum Tavern Chronicle."""
-    if not ai_client:
+    if not ai_client and not GROQ_KEY:
         return None
 
     tz_gmt8 = datetime.timezone(datetime.timedelta(hours=8))
@@ -1380,15 +1491,31 @@ async def generate_tavern_bulletin(guild: discord.Guild, period_name: str = "Mor
         "WIFI_STATUS: <Funny status, e.g. Under a dark chuunibyou curse 📶>"
     )
 
-    try:
-        res = await asyncio.wait_for(
-            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=bulletin_prompt),
-            timeout=12.0
-        )
-        if not res or not res.text:
-            return None
+    bulletin_text = ""
+    if ai_client:
+        try:
+            res = await asyncio.wait_for(
+                asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=bulletin_prompt),
+                timeout=12.0
+            )
+            if res and res.text:
+                bulletin_text = res.text.strip()
+        except Exception as e:
+            print(f"Gemini bulletin error: {e}")
 
-        text = res.text.strip()
+    if not bulletin_text and GROQ_KEY:
+        try:
+            groq_b = await call_groq_async(bulletin_prompt, model="llama-3.3-70b-versatile", max_tokens=800)
+            if groq_b:
+                bulletin_text = groq_b.strip()
+        except Exception as e:
+            print(f"Groq bulletin error: {e}")
+
+    if not bulletin_text:
+        return None
+
+    try:
+        text = bulletin_text
         data = {}
         for line in text.split("\n"):
             line = line.strip()
