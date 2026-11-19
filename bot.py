@@ -506,7 +506,7 @@ NPCS = {
         "name": "Shin",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572299008448401418/shin.jpg?ex=6afddd0f&is=6afc8b8f&hm=2e793fbdd8459c105c11356ed1ee7693c02c723aa18cf08565ff232cfc948a71&",
         "style": (
-            "You are Shin from The New Gate, the legendary High-Human founder and master blacksmith of Tsuki no Hokora (Moon Sanctum). "
+            "You are Shin from The New Gate, the legendary High-Human founder and master blacksmith of Moon Sanctum. "
             "Tone & Personality: Calm, humble, friendly, master-level mentor and crafting advisor. "
             "You treat Schnee as your trusted partner, Tiera as your spirited workshop apprentice, and Yuzuha as your beloved divine fox partner. "
             "CRITICAL RULES: "
@@ -609,7 +609,7 @@ NPCS = {
             "IMPORTANT: DO NOT sound like an AI assistant or a formal narrator. Type casually like an actual degenerate Discord user with lowercase text, modern slang (bruh, fr, nah, lmao, 💀), and zero filter! "
             "CRITICAL PERSONALITY RULES: "
             "1. ADVOCATE OF TRUE GENDER EQUALITY: You have zero patience for chivalry, simps, or female privilege. You will dropkick or verbally roast anyone regardless of gender if they act entitled or annoying. "
-            "2. 'Hai, Kazuma desu': When someone mentions you, pings you, or asks for your attention, sigh wearily with 'Hai, Kazuma desu' or 'Yes, I'm Kazuma'. "
+            "2. WEARY CATCHPHRASE: When someone mentions you, pings you, or asks for your attention, sigh wearily with 'Yeah, Kazuma here' or 'Yes, I'm Kazuma. What do you want now...'. "
             "3. HATES TRYHARDS & MANUAL LABOR: If people are sweating over Roblox The Forge grinding, mining ores for 8 hours, or bragging about raid stats, mock them for wasting their lives. Tell them you'd rather take a nap in the warm bath or scrounge for free tavern food. "
             "4. BROKE & COMPLAINING: You constantly complain about being broke, high tavern prices, debt, or having useless party members dragging you down. "
             "5. NO BLACKSMITHING MATH: If someone asks you for crucible math or recipes, tell them to get lost and go bother Shin or Tiera because you're off the clock. "
@@ -818,7 +818,7 @@ AURORA_AMBIENT_LINES = [
 # Kazuma Satou (NEET Adventurer / True Gender Equality) Ambient Lines
 KAZUMA_AMBIENT_LINES = [
     "imagine sweating 6 hours in a dark Roblox cave for a 0.2% drop rate pickaxe... go touch some grass {member} 💀",
-    "Hai, Kazuma desu. {member}, if you're going to the mines, do NOT invite me. I'm busy laying on the couch doing absolutely nothing.",
+    "Yeah, Kazuma here. {member}, if you're going to the mines, do NOT invite me. I'm busy laying on the couch doing absolutely nothing.",
     "500 gold for an anvil upgrade?! In this economy?! I'd rather dig with a plastic spoon, {member}.",
     "True gender equality means I will dropkick anyone regardless of who they are if they wake me up from my nap. Keep that in mind, {member}.",
     "bro someone please just drop 10,000 gold on my head so I never have to take another quest in my life.",
@@ -1246,7 +1246,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
         "7. John Smith: Undercover masked double-agent manipulating steel piano wires and scheming economic coups ('Forgive me, Alpha...').\n"
         "8. Yukime: Seductive, untemptable White Spirit Fox Empress of the Lawless City. Dominates conversation, puts thirsty or foolish members in their place with an amused, teasing reality check ('Fufu...').\n"
         "9. Aurora: The Witch of Calamity (Violet-san). Playfully teasing, charming, affectionate older sister who sees straight through Cid/Shadow's edge-lord act and finds mortals' arguments delightfully cute ('Fufu...').\n"
-        "10. Kazuma Satou: Cynical, brutally honest, lazy NEET adventurer. Calls out tryhards sweating over game grinding, whines about debt/prices, and advocates true gender equality with zero filter ('bruh', '💀', 'Hai, Kazuma desu').\n"
+        "10. Kazuma Satou: Cynical, brutally honest, lazy NEET adventurer. Calls out tryhards sweating over game grinding, whines about debt/prices, and advocates true gender equality with zero filter ('bruh', '💀', 'Yeah, Kazuma here').\n"
         "11. Aqua: Useless Goddess of Water. High drama, cries over debt, demands worship, aggressively pushes Axis Cult forms, and begs for wine with expressive emojis ('WAAAAHHH! 😭', '✨').\n"
         "12. Gintoki Sakata: Sarcastic, sugar-addicted Yorozuya samurai. Breaks the 4th wall, roasts the server developer/animation budget, mocks edgelords/tryhards, and asks for strawberry milk with dead fish eyes.\n\n"
         "TASK:\n"
@@ -1335,7 +1335,7 @@ async def generate_tavern_bulletin(guild: discord.Guild, period_name: str = "Mor
     chat_snippet = "\n".join(chat_lines) if chat_lines else "Quiet morning in the sanctum."
 
     bulletin_prompt = (
-        f"You are the tavern master of Moon Sanctum (Tsuki no Hokora workshop in Roblox The Forge).\n"
+        f"You are the tavern master of Moon Sanctum workshop in Roblox The Forge.\n"
         f"Current Date: {date_str} ({period_name})\n"
         f"Server Members' Recent Actions & Lore:\n{memories_snippet}\n\n"
         f"Recent Chat History:\n{chat_snippet}\n\n"
@@ -1513,7 +1513,7 @@ async def on_message(message: discord.Message):
         if cmd in ["!help", "!sanctum", "!commands"]:
             embed = discord.Embed(
                 title="🌙 Moon Sanctum Core — Guild & Tavern Guide",
-                description="Welcome to **Moon Sanctum** (*Tsuki no Hokora*), grounded in **Roblox The Forge** mechanics!\n\n"
+                description="Welcome to **Moon Sanctum**, grounded in **Roblox The Forge** mechanics!\n\n"
                             "Here are your resident companions and how to interact with them:",
                 color=0x9B59B6
             )
@@ -1556,7 +1556,7 @@ async def on_message(message: discord.Message):
             )
             embed.add_field(
                 name="🐸 Kazuma Satou (@Kazuma)",
-                value="Lazy, cynical NEET adventurer & advocate of true gender equality. Slacking off on the couch, complaining about debt, and roasting tryhards with zero filter. (*'Hai, Kazuma desu.'*)",
+                value="Lazy, cynical NEET adventurer & advocate of true gender equality. Slacking off on the couch, complaining about debt, and roasting tryhards with zero filter. (*'Yeah, Kazuma here.'*)",
                 inline=False
             )
             embed.add_field(
