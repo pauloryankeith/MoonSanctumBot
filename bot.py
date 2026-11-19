@@ -1307,6 +1307,165 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     except Exception as e:
         print(f"Spontaneous eval error: {e}")
 
+async def generate_tavern_bulletin(guild: discord.Guild, period_name: str = "Morning Edition"):
+    """Generates an authentic, beautifully formatted Moon Sanctum Tavern Chronicle."""
+    if not ai_client:
+        return None
+
+    tz_gmt8 = datetime.timezone(datetime.timedelta(hours=8))
+    now_gmt8 = datetime.datetime.now(tz_gmt8)
+    date_str = now_gmt8.strftime("%A, %B %d, %Y")
+
+    # Gather recent context from memory and chat history
+    recent_memories = []
+    for uid, prof in list(TAVERN_MEMORIES.items())[:6]:
+        m_name = prof.get("name", "Unknown")
+        notes = prof.get("notes", [])
+        if notes:
+            recent_memories.append(f"{m_name}: {'; '.join(notes)}")
+    memories_snippet = "\n".join(f"- {m}" for m in recent_memories) if recent_memories else "Adventurers idling peacefully."
+
+    # Gather recent chat snippets across text channels
+    chat_lines = []
+    for ch in guild.text_channels:
+        if ch.name.lower() in ["chat", "general", "main-chat"]:
+            recent_msgs = list(CHAT_HISTORY.get(ch.id, []))
+            chat_lines.extend(recent_msgs[-10:])
+            break
+    chat_snippet = "\n".join(chat_lines) if chat_lines else "Quiet morning in the sanctum."
+
+    bulletin_prompt = (
+        f"You are the tavern master of Moon Sanctum (Tsuki no Hokora workshop in Roblox The Forge).\n"
+        f"Current Date: {date_str} ({period_name})\n"
+        f"Server Members' Recent Actions & Lore:\n{memories_snippet}\n\n"
+        f"Recent Chat History:\n{chat_snippet}\n\n"
+        "TASK: Write a humorous, engaging, and atmospheric 'Moon Sanctum Tavern Chronicle' newspaper bulletin.\n"
+        "CRITICAL RULES:\n"
+        "1. STRICTLY ENGLISH ONLY! Do NOT use Japanese words (do NOT write 'Tsuki no Hokora', 'Ara ara', 'Omae', etc.). Always use 'Moon Sanctum'!\n"
+        "2. Ground everything in Roblox The Forge gameplay (mining, pickaxes, broken anvil rolls, raid boss fails, Bismuth) and server life.\n"
+        "3. Output MUST follow this exact structure:\n\n"
+        "HEADLINE: <Catchy, dramatic, funny 1-line headline about the guild's recent activities>\n"
+        "HEADLINE_BODY: <2 sentences describing the top event or joke of the day>\n"
+        "HEARSAY_1: <Funny rumor or member callout bullet with an emoji>\n"
+        "HEARSAY_2: <Funny rumor or member callout bullet with an emoji>\n"
+        "HEARSAY_3: <Funny rumor or member callout bullet with an emoji>\n"
+        "QUOTE: <A hilarious 1-2 sentence quote from one of the NPCs (e.g. Kazuma, Gintoki, Tiera, or Shadow)>\n"
+        "QUOTE_AUTHOR: <NPC Name>\n"
+        "WEATHER: <Atmospheric weather description over Moon Sanctum, e.g. Misty moonlight over Sacred Grove 🌙>\n"
+        "FORGE_STATUS: <Crucible / Forge status, e.g. High Heat (Crucibles Ready) 🔥>\n"
+        "WIFI_STATUS: <Funny status, e.g. Under a dark chuunibyou curse 📶>"
+    )
+
+    try:
+        res = ai_client.models.generate_content(
+            model="gemini-3.5-flash-lite",
+            contents=bulletin_prompt
+        )
+        if not res or not res.text:
+            return None
+
+        text = res.text.strip()
+        data = {}
+        for line in text.split("\n"):
+            line = line.strip()
+            if ":" in line:
+                key, val = line.split(":", 1)
+                data[key.strip().upper()] = val.strip().strip('"').strip("'")
+
+        # Build the rich Discord Embed for the Bulletin Board
+        embed = discord.Embed(
+            title=f"📜 MOON SANCTUM — TAVERN CHRONICLE 📜",
+            description=f"*Official Tavern Archives • {period_name} • {date_str}*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+            color=0xD4AC0D
+        )
+
+        headline_title = data.get("HEADLINE", "Wild Night at Moon Sanctum")
+        headline_body = data.get("HEADLINE_BODY", "Tavern regulars survived another chaotic night of anvil fails and midnight mining queues.")
+        embed.add_field(
+            name=f"📰 HEADLINE: {headline_title}",
+            value=headline_body + "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+            inline=False
+        )
+
+        h1 = data.get("HEARSAY_1", "• ⚔️ Adventurers reported missing parry windows in the raid zones.")
+        h2 = data.get("HEARSAY_2", "• ⛏️ Multiple pickaxes shattered at the workshop counter.")
+        h3 = data.get("HEARSAY_3", "• 🛋️ Couch occupants refused to move for early morning quests.")
+        embed.add_field(
+            name="🍺 TAVERN HEARSAY & RUMORS",
+            value=f"{h1}\n{h2}\n{h3}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+            inline=False
+        )
+
+        quote_text = data.get("QUOTE", "If you bring another broken wooden pickaxe to my counter, I'm charging hazard fees.")
+        quote_author = data.get("QUOTE_AUTHOR", "Tiera Lucent")
+        embed.add_field(
+            name=f"💬 WORDS FROM THE RESIDENTS ({quote_author})",
+            value=f"> *\"{quote_text}\"*\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
+            inline=False
+        )
+
+        weather = data.get("WEATHER", "Misty moonlight over the Sanctum Grove 🌙")
+        forge_stat = data.get("FORGE_STATUS", "High Heat (Crucibles Ready) 🔥")
+        wifi_stat = data.get("WIFI_STATUS", "Slight lag spikes from late-night queues 📶")
+
+        embed.add_field(
+            name="📌 SANCTUM DISPATCH",
+            value=(
+                f"• **Atmosphere:** {weather}\n"
+                f"• **Workshop Anvil:** {forge_stat}\n"
+                f"• **Connection:** {wifi_stat}"
+            ),
+            inline=False
+        )
+
+        embed.set_footer(text="Moon Sanctum Tavern Board • Fresh bulletins posted daily")
+        return embed
+    except Exception as e:
+        print(f"Error generating tavern bulletin: {e}")
+        return None
+
+last_bulletin_day = None
+
+async def tavern_daily_bulletin_loop():
+    """Checks the time and automatically delivers the Morning Chronicle at 8:00 AM GMT+8."""
+    global last_bulletin_day
+    await client.wait_until_ready()
+    await asyncio.sleep(60)
+
+    tz_gmt8 = datetime.timezone(datetime.timedelta(hours=8))
+
+    while not client.is_closed():
+        try:
+            now_gmt8 = datetime.datetime.now(tz_gmt8)
+            today_str = now_gmt8.strftime("%Y-%m-%d")
+
+            # Check if it's 8:00 AM - 8:05 AM GMT+8 and hasn't been posted today
+            if now_gmt8.hour == 8 and now_gmt8.minute < 30 and last_bulletin_day != today_str:
+                for guild in client.guilds:
+                    # Look for guild-notices or chat
+                    target_ch = None
+                    for ch in guild.text_channels:
+                        if "notice" in ch.name.lower() or "bulletin" in ch.name.lower():
+                            target_ch = ch
+                            break
+                    if not target_ch:
+                        for ch in guild.text_channels:
+                            if ch.name.lower() in ["chat", "general"]:
+                                target_ch = ch
+                                break
+
+                    if target_ch:
+                        embed = await generate_tavern_bulletin(guild, period_name="Morning Edition")
+                        if embed:
+                            await target_ch.send(embed=embed)
+                            last_bulletin_day = today_str
+                            break
+
+            await asyncio.sleep(60)
+        except Exception as e:
+            print(f"Daily bulletin loop error: {e}")
+            await asyncio.sleep(180)
+
 @client.event
 async def on_ready():
     global last_spontaneous_time
@@ -1315,6 +1474,8 @@ async def on_ready():
     print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + TAVERN AMBIENT LOOP LOADED!")
     # Start the lively tavern ambient chatter loop in the background!
     asyncio.create_task(tavern_ambient_loop())
+    # Start the daily morning bulletin newspaper delivery loop!
+    asyncio.create_task(tavern_daily_bulletin_loop())
 
 @client.event
 async def on_member_join(member: discord.Member):
@@ -1418,6 +1579,7 @@ async def on_message(message: discord.Message):
             embed.add_field(
                 name="⚙️ Built-In Server Commands",
                 value="• `!help` or `!sanctum` — Tavern guide\n"
+                      "• `!bulletin` or `!recap` — View the Tavern Morning Chronicle\n"
                       "• `!shin` — Shin's blacksmith guide\n"
                       "• `!calc <ores>` — Forge crucible calculator\n"
                       "• `!farm <item>` — Item drop table & finder\n"
@@ -1439,6 +1601,16 @@ async def on_message(message: discord.Message):
             )
             embed.set_footer(text="Powered by Google Gemini & theforge.gg • 24/7 Cloud on Render")
             await channel.send(embed=embed)
+            return
+
+        elif cmd in ["!bulletin", "!recap", "!newspaper", "!chronicle"]:
+            # Generate the authentic Moon Sanctum Tavern Chronicle on demand
+            status_msg = await channel.send("📜 *Fetching the latest Moon Sanctum Tavern Chronicle from the archives...*")
+            embed = await generate_tavern_bulletin(channel.guild, period_name="Special Edition")
+            if embed:
+                await status_msg.edit(content=None, embed=embed)
+            else:
+                await status_msg.edit(content="⚠️ Could not retrieve the tavern chronicle right now. Try again in a moment!")
             return
 
         elif cmd in ["!shin", "!shinhelp", "!shinguide"]:
