@@ -87,9 +87,9 @@ async def maybe_update_member_memory(user_id: int, user_name: str, user_text: st
     )
 
     try:
-        res = ai_client.models.generate_content(
-            model="gemini-3.5-flash-lite",
-            contents=update_prompt
+        res = await asyncio.wait_for(
+            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=update_prompt),
+            timeout=6.0
         )
         if res and res.text:
             text = res.text.strip().strip("-*• ")
@@ -146,7 +146,11 @@ ai_client = None
 if GEMINI_KEY:
     try:
         from google import genai
-        ai_client = genai.Client(api_key=GEMINI_KEY)
+        from google.genai import types
+        ai_client = genai.Client(
+            api_key=GEMINI_KEY,
+            http_options=types.HttpOptions(timeout=10000)
+        )
         print("=== Google Gemini AI Intelligence is ENABLED! ===")
     except Exception as e:
         print(f"Gemini init error: {e}")
@@ -965,9 +969,9 @@ async def tavern_ambient_loop():
                     )
 
                     try:
-                        res = ai_client.models.generate_content(
-                            model="gemini-3.5-flash-lite",
-                            contents=skit_prompt
+                        res = await asyncio.wait_for(
+                            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=skit_prompt),
+                            timeout=8.0
                         )
                         if res and res.text:
                             lines = [l.strip() for l in res.text.strip().split("\n") if l.strip()]
@@ -1088,13 +1092,13 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
     prior_lines = [m for m in recent_msgs[:-1] if m]
     prior_context = "\n".join(f"- {m}" for m in prior_lines) if prior_lines else "No prior recent chat."
 
-    # If the user asks a question, run a quick live web search for extra fresh intel
+    # Only run live web search if explicitly asking for web/dates or unverified game topics
     web_intel = ""
-    is_question = any(w in user_text.lower() for w in [
-        "recipe", "how", "what", "where", "best", "which", "build", "why", "stats", "boss", "update", "code", "forge", "sword", "weapon", "armor",
-        "date", "today", "time", "day", "search", "web", "news", "google"
+    explicit_search = any(w in user_text.lower() for w in [
+        "search", "google", "web", "news", "leak", "leaks", "patch notes", "trello", "date", "today", "calendar"
     ])
-    if is_question or len(user_text.split()) > 2:
+    game_query = ("?" in user_text or any(w in user_text.lower() for w in ["how", "where", "why", "when", "boss", "code", "update"])) and not verified_data
+    if explicit_search or game_query:
         try:
             # Run web search in executor so it doesn't block discord loop
             loop = asyncio.get_event_loop()
@@ -1152,11 +1156,15 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         f"Respond as {npc['name']} in clean Discord format:"
     )
 
-    for model_name in ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]:
+    for model_name in ["gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]:
         try:
-            response = ai_client.models.generate_content(
-                model=model_name,
-                contents=full_prompt
+            response = await asyncio.wait_for(
+                asyncio.to_thread(
+                    ai_client.models.generate_content,
+                    model=model_name,
+                    contents=full_prompt
+                ),
+                timeout=8.0
             )
             if response and response.text:
                 raw_text = response.text.strip().strip('"').strip("'")
@@ -1209,7 +1217,23 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
         except Exception as e:
             print(f"Gemini {model_name} error: {e}")
             continue
-    return None
+
+    # Fallback in-character responses if upstream Gemini models are experiencing high demand / latency
+    fallback_lines = {
+        "kazuma": f"yeah, kazuma here. what do you want now, {user_name}... make it quick, the tavern crystal lag is hitting hard today.",
+        "aqua": f"WAAAAHHH! {user_name}! 😭 The communication crystals are acting up and Kazuma refuses to fix it!",
+        "shadow": f"The dark currents of the realm fluctuate... Speak swiftly, {user_name}, before the shadows shift.",
+        "cid": f"uh... hey {user_name}! i'm just standing here blending into the background, don't mind me!",
+        "shin": f"Ah, {user_name}, forge anvil's hot today. What are you looking to craft or discuss?",
+        "tiera": f"What is it, {user_name}? If you broke another pickaxe or came to play ancient tunes, you're paying extra.",
+        "schnee": f"Greetings, {user_name}. The sanctum is calm, though our archives seem slightly delayed today.",
+        "yuzuha": f"Kyuu~! {user_name}! Did you bring any meat buns to the counter?",
+        "aurora": f"Fufu, you seem quite lively today, {user_name}. What has caught your attention?",
+        "yukime": f"Fufu... greetings, {user_name}. Come to warm yourself by the hearth tonight?",
+        "gintoki": f"oi oi, what do you want {user_name}... if you don't have strawberry milk or Jump, let me sleep.",
+        "john_smith": f"Keep your voice down, {user_name}. The economic gears never rest."
+    }
+    return fallback_lines.get(npc_key, f"Greetings {user_name}, the sanctum crystals are lagging slightly, but I hear you.")
 
 last_spontaneous_time = 0
 msg_counter_since_spontaneous = 0
@@ -1269,9 +1293,9 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     )
     
     try:
-        response = ai_client.models.generate_content(
-            model="gemini-3.5-flash-lite",
-            contents=eval_prompt
+        response = await asyncio.wait_for(
+            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=eval_prompt),
+            timeout=8.0
         )
         if response and response.text:
             text = response.text.strip()
@@ -1357,9 +1381,9 @@ async def generate_tavern_bulletin(guild: discord.Guild, period_name: str = "Mor
     )
 
     try:
-        res = ai_client.models.generate_content(
-            model="gemini-3.5-flash-lite",
-            contents=bulletin_prompt
+        res = await asyncio.wait_for(
+            asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=bulletin_prompt),
+            timeout=12.0
         )
         if not res or not res.text:
             return None
