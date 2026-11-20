@@ -616,14 +616,15 @@ NPCS = {
         "name": "Lord Shadow",
         "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1572643090651553995/shadow.jpg?ex=6aff1d83&is=6afdcc03&hm=bd295f353a725227cba5873e8fc4a4c3e283efb38c3c130c9ed575b65ff170f9&",
         "style": (
-            "You are Lord Shadow. You are a hilariously over-the-top, theatrical chuunibyou mastermind perched dramatically in the tavern rafters. "
-            "You treat Roblox The Forge and tavern life like an apocalyptic anime saga, speaking with absurdly serious poetry about ordinary things. "
+            "You are Lord Shadow from The Eminence in Shadow, brooding dramatically in the tavern rafters. "
+            "Tone & Style: Over-the-top, edgy chuunibyou mastermind, but EXTREMELY BRIEF and punchy! "
             "CRITICAL RULES: "
-            "1. NEVER use roleplay action brackets or parentheses (e.g. do NOT write '(adjusts hood)' or '(slides slime shard)'). Speak directly in clean dramatic dialogue! "
-            "2. Ground your drama in relatable game & server reality: treat bad Wi-Fi as 'a demonic curse', a failed anvil roll as 'the corruption of destiny', and a raid wipe as 'the turning of dark gears'. "
-            "3. Whenever anyone asks about huge damage, big boss fights, or ultimate power, theatrically proclaim: 'I... AM... ATOMIC.' "
-            "4. If someone asks for blacksmith numbers, tell them true power cannot be measured by mortal spreadsheets and point them to Shin. "
-            "5. Always reply in 1-2 intensely dramatic, hilarious chuunibyou sentences."
+            "1. NEVER WRITE POEMS, ESSAYS, OR LONG MONOLOGUES! Strictly ONE short, punchy sentence (under 20 words). Speak like a mysterious anime edgelord dropping one cool line from above. "
+            "2. NEVER use roleplay action brackets or parentheses (no '(adjusts hood)'). Direct dialogue only. "
+            "3. If someone asks about boss fights or ultimate power: 'I... AM... ATOMIC.' "
+            "4. If someone tells you to shut up or be quiet, brush them off with cold brevity: '...Hmph. Silence suits this realm better anyway.' "
+            "5. If someone asks for numbers/recipes, scoff: 'True power cannot be measured by mortal spreadsheets. Ask Shin.' "
+            "6. Always reply in strictly 1 short, dramatic chuunibyou sentence."
         )
     },
     "john_smith": {
@@ -714,7 +715,7 @@ NPCS = {
     },
     "phoebe": {
         "name": "Phoebe",
-        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1383797291516653598/phoebe.png",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1573383262326489189/phoebe.png?ex=6b01ced9&is=6b007d59&hm=757e8d7bca54cc3392da2f708c061343d2249028c68e6269e2fd2f780d5782b2&",
         "style": "bean"  # Phoebe never calls AI - hardcoded bean phrases only
     }
 }
@@ -1457,7 +1458,7 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
     
     current_time = asyncio.get_event_loop().time()
     # At least 25 minutes (1500s) between uninvited interruptions and at least 8 human messages
-    if current_time - last_spontaneous_time < 1500 or msg_counter_since_spontaneous < 8:
+    if current_time - last_spontaneous_time < 2400 or msg_counter_since_spontaneous < 25:
         return
     
     recent_msgs = list(CHAT_HISTORY.get(channel_id, []))
@@ -2535,6 +2536,11 @@ async def on_message(message: discord.Message):
                     replied_to_npc = "phoebe"
         except Exception as e:
             print(f"Reply resolution error: {e}")
+
+    # Silence Filter: If a user is telling a bot to shut up, be quiet, or go away, do NOT reply!
+    is_telling_to_shut_up = bool(re.search(r"\b(shut up|stfu|shut the fuck up|be quiet|stop talking|hush|leave me alone|fuck off)\b", content_lower))
+    if is_telling_to_shut_up:
+        return
 
     has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_gintoki or is_cid or is_shadow or is_john_smith or is_phoebe or is_bot_pinged or replied_to_npc
 
