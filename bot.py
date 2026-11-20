@@ -126,6 +126,8 @@ async def maybe_update_member_memory(user_id: int, user_name: str, user_text: st
 
 # Safety Net: Users dismissed by Yukime get the cold shoulder / left on read
 YUKIME_DISMISSED_USERS = {}
+# Per-user, per-NPC timeout ledger: (user_id, npc_key) -> expiration_timestamp
+NPC_MUTED_USERS = {}
 
 # Bulletproof Single-Instance Lock via Localhost Port
 # Only ONE instance can ever run at a time!
@@ -1567,6 +1569,10 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
             line_match = re.search(r"LINE:\s*(.+)", text, re.DOTALL | re.IGNORECASE)
             if npc_match and line_match:
                 chosen_npc = npc_match.group(1).lower()
+                # Skip if this NPC was told to shut up by this user within the last 60 seconds
+                if last_message and (last_message.author.id, chosen_npc) in NPC_MUTED_USERS:
+                    if current_time < NPC_MUTED_USERS[(last_message.author.id, chosen_npc)]:
+                        return
                 chime_line = line_match.group(1).strip().strip('"').strip("'")
                 
                 # Strip leading or trailing roleplay action brackets e.g. (slides slime shard) or *sighs*
@@ -2584,9 +2590,44 @@ async def on_message(message: discord.Message):
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    # Silence Filter: If a user tells a bot to shut up or be quiet, react silently with an emoji and don't talk!
+    # Silence Filter: If a user tells an NPC to shut up, only THAT specific NPC enters a 60-second timeout for this user!
     is_telling_to_shut_up = bool(re.search(r"\b(shut up|stfu|shut the fuck up|be quiet|stop talking|hush|leave me alone|fuck off)\b", content_lower))
     if is_telling_to_shut_up:
+        # Determine which NPC they are telling to shut up:
+        target_shut_npc = replied_to_npc
+        if not target_shut_npc:
+            if is_shadow: target_shut_npc = "shadow"
+            elif is_kazuma: target_shut_npc = "kazuma"
+            elif is_aqua: target_shut_npc = "aqua"
+            elif is_gintoki: target_shut_npc = "gintoki"
+            elif is_tiera: target_shut_npc = "tiera"
+            elif is_yukime: target_shut_npc = "yukime"
+            elif is_shin: target_shut_npc = "shin"
+            elif is_aurora: target_shut_npc = "aurora"
+            elif is_cid: target_shut_npc = "cid"
+            elif is_john_smith: target_shut_npc = "john_smith"
+            elif is_schnee: target_shut_npc = "schnee"
+            elif is_yuzuha: target_shut_npc = "yuzuha"
+            elif is_phoebe: target_shut_npc = "phoebe"
+
+        # Fallback: check recent chat history for the last NPC who spoke in this channel
+        if not target_shut_npc:
+            recent_msgs = list(CHAT_HISTORY.get(channel_id, []))
+            for rm in reversed(recent_msgs):
+                for k, v in NPCS.items():
+                    if rm.startswith(f"{v['name']}:"):
+                        target_shut_npc = k
+                        break
+                if target_shut_npc:
+                    break
+        if not target_shut_npc:
+            target_shut_npc = "shadow"
+
+        # Put strictly THAT specific NPC on a 60-second timeout for this member
+        now_ts = asyncio.get_event_loop().time()
+        NPC_MUTED_USERS[(message.author.id, target_shut_npc)] = now_ts + 60.0
+        print(f"[Timeout] {NPCS[target_shut_npc]['name']} muted by {author_name} for 60 seconds.")
+
         try:
             silence_emojis = ["🤐", "🗿", "🙄", "💀", "💢"]
             await message.add_reaction(random.choice(silence_emojis))
@@ -2628,6 +2669,22 @@ async def on_message(message: discord.Message):
                 )
             )
         )
+
+        # Per-NPC 60s Timeout Check: Did this member tell this specific NPC to shut up recently?
+        mute_key = (message.author.id, target_npc)
+        if mute_key in NPC_MUTED_USERS:
+            mute_expires = NPC_MUTED_USERS[mute_key]
+            if current_time < mute_expires:
+                # If they explicitly called that NPC's name in this message, un-mute early!
+                explicitly_called = bool(re.search(rf"\b({target_npc}|{NPCS[target_npc]['name'].lower()})\b", content_lower))
+                if explicitly_called:
+                    del NPC_MUTED_USERS[mute_key]
+                    print(f"[Un-mute] {author_name} explicitly called {target_npc}, 60s timeout cleared.")
+                else:
+                    # Still muted by this member — stay quiet!
+                    return
+            else:
+                del NPC_MUTED_USERS[mute_key]
 
         # Yukime Safety-Net: If this user was recently dismissed by Yukime, she leaves them on read!
         if target_npc == "yukime":
