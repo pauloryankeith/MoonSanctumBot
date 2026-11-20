@@ -770,8 +770,8 @@ def split_message(text: str, max_len: int = 1900):
         chunks.append(text)
     return chunks
 
-async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: str, auto_delete_seconds: int = None):
-    """Guarantees strictly ONE NPC responds. Supports unlimited response length by auto-splitting across chunks."""
+async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: str, auto_delete_seconds: int = None, reply_to: discord.Message = None):
+    """Guarantees strictly ONE NPC responds. Supports direct message quoting and auto-split chunks."""
     npc = NPCS.get(npc_key)
     if not npc:
         return
@@ -787,13 +787,22 @@ async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: s
     webhook = await get_or_create_webhook(channel)
     del_sec = auto_delete_seconds if auto_delete_seconds is not None else BOT_CONFIG["auto_delete_seconds"]
 
-    chunks = split_message(message, max_len=1900)
-    for chunk in chunks:
+    # If replying to a specific message, add clean Discord quote header for webhook
+    reply_header = ""
+    if reply_to:
+        clean_text = reply_to.clean_content.replace('\n', ' ').strip()
+        if len(clean_text) > 75:
+            clean_text = clean_text[:72] + "..."
+        reply_header = f"> **@{reply_to.author.display_name}**: {clean_text}\n"
+
+    chunks = split_message(message, max_len=1800)
+    for idx, chunk in enumerate(chunks):
+        content_to_send = (reply_header + chunk) if idx == 0 and reply_header else chunk
         sent_msg = None
         if webhook:
             try:
                 sent_msg = await webhook.send(
-                    content=chunk,
+                    content=content_to_send,
                     username=npc["name"],
                     avatar_url=npc["avatar"],
                     wait=True
@@ -801,7 +810,13 @@ async def send_single_npc(channel: discord.TextChannel, npc_key: str, message: s
             except Exception as e:
                 print(f"Webhook send error: {e}")
         if not sent_msg:
-            sent_msg = await channel.send(f"**{npc['name']}**: {chunk}")
+            if reply_to:
+                try:
+                    sent_msg = await channel.send(f"**{npc['name']}**: {content_to_send}", reference=reply_to)
+                except Exception:
+                    sent_msg = await channel.send(f"**{npc['name']}**: {content_to_send}")
+            else:
+                sent_msg = await channel.send(f"**{npc['name']}**: {content_to_send}")
 
         if sent_msg and del_sec > 0:
             try:
@@ -1450,7 +1465,25 @@ async def ask_gemini_npc(channel_id: int, npc_key: str, user_name: str, user_tex
 last_spontaneous_time = 0
 msg_counter_since_spontaneous = 0
 
-async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id: int):
+
+# In-Character Emoji Banks for Silent Teasing & Reactions
+NPC_EMOJI_BANKS = {
+    "yukime": ["🍷", "🥱", "💅", "❄️", "🦊", "👀"],
+    "kazuma": ["💀", "🤦‍♂️", "💤", "🙄", "💸", "👎"],
+    "aqua": ["😭", "🥺", "💢", "✨", "🌊", "🍶"],
+    "gintoki": ["🥛", "🚬", "🥱", "🗿", "💀", "📖"],
+    "shadow": ["⚛️", "🌙", "🕶️", "🗡️", "🍷", "🗿"],
+    "cid": ["🪙", "🏃‍♂️", "😨", "🍂", "👀", "🫡"],
+    "tiera": ["🔨", "💢", "🔥", "😤", "🪓", "👀"],
+    "shin": ["🔥", "🔨", "⚔️", "👍", "🛡️", "💪"],
+    "yuzuha": ["🦊", "🍖", "✨", "🐾", "😋", "💤"],
+    "aurora": ["💜", "🍷", "🤭", "✨", "👀", "😏"],
+    "john_smith": ["🕶️", "💼", "🪙", "🎩", "🤫", "♟️"],
+    "schnee": ["❄️", "⚔️", "🛡️", "🍵", "✨", "📖"],
+    "phoebe": ["🫘", "🥔", "❓", "👀", "🏋️", "🪄"]
+}
+
+async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id: int, last_message: discord.Message = None):
     """Evaluates the live chat vibe without keywords and decides if an NPC should organically interrupt."""
     global last_spontaneous_time, msg_counter_since_spontaneous
     if not BOT_CONFIG.get("interjection_enabled", True):
@@ -1552,9 +1585,21 @@ async def maybe_chime_in_spontaneously(channel: discord.TextChannel, channel_id:
                 last_spontaneous_time = current_time
                 msg_counter_since_spontaneous = 0
                 
-                # Send spontaneous remark
-                CHAT_HISTORY[channel_id].append(f"{NPCS[chosen_npc]['name']}: {chime_line}")
-                await send_single_npc(channel, chosen_npc, chime_line)
+                # 40% Emoji Reaction Only vs 60% Spoken Reply
+                roll = random.random()
+                if roll < 0.40 and last_message:
+                    # Silent Emoji Tease: choose an in-character emoji from the NPC's bank
+                    bank = NPC_EMOJI_BANKS.get(chosen_npc, ["👀", "🗿", "💀"])
+                    chosen_emoji = random.choice(bank)
+                    try:
+                        await last_message.add_reaction(chosen_emoji)
+                        print(f"[Silent Emoji Reaction] {NPCS[chosen_npc]['name']} reacted {chosen_emoji} to {last_message.author.display_name}")
+                    except Exception as react_err:
+                        print(f"Reaction add error: {react_err}")
+                else:
+                    # 60% Spoken Reply with direct quote/reply
+                    CHAT_HISTORY[channel_id].append(f"{NPCS[chosen_npc]['name']}: {chime_line}")
+                    await send_single_npc(channel, chosen_npc, chime_line, reply_to=last_message)
     except Exception as e:
         print(f"Spontaneous eval error: {e}")
 
@@ -2539,9 +2584,14 @@ async def on_message(message: discord.Message):
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    # Silence Filter: If a user is telling a bot to shut up, be quiet, or go away, do NOT reply!
+    # Silence Filter: If a user tells a bot to shut up or be quiet, react silently with an emoji and don't talk!
     is_telling_to_shut_up = bool(re.search(r"\b(shut up|stfu|shut the fuck up|be quiet|stop talking|hush|leave me alone|fuck off)\b", content_lower))
     if is_telling_to_shut_up:
+        try:
+            silence_emojis = ["🤐", "🗿", "🙄", "💀", "💢"]
+            await message.add_reaction(random.choice(silence_emojis))
+        except Exception:
+            pass
         return
 
     has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_gintoki or is_cid or is_shadow or is_john_smith or is_phoebe or is_bot_pinged or replied_to_npc
@@ -2609,7 +2659,7 @@ async def on_message(message: discord.Message):
                 bean_reply = "phoebebe?"
             last_ai_time = asyncio.get_event_loop().time()
             CHAT_HISTORY[channel_id].append(f"Phoebe: {bean_reply}")
-            await send_single_npc(channel, "phoebe", bean_reply)
+            await send_single_npc(channel, "phoebe", bean_reply, reply_to=message)
             return
 
         ai_reply = await ask_gemini_npc(channel_id, target_npc, author_name, content, reply_context, user_id=message.author.id)
@@ -2618,7 +2668,7 @@ async def on_message(message: discord.Message):
             # Record NPC's reply into sliding context window so they remember previous turns
             CHAT_HISTORY[channel_id].append(f"{NPCS[target_npc]['name']}: {ai_reply}")
             # Send NPC reply according to BOT_CONFIG retention policy
-            await send_single_npc(channel, target_npc, ai_reply)
+            await send_single_npc(channel, target_npc, ai_reply, reply_to=message)
 
             # Background: update long-term tavern memory on this member
             asyncio.create_task(
@@ -2629,7 +2679,7 @@ async def on_message(message: discord.Message):
     else:
         # Organic conversation between guild members! Count messages and evaluate spontaneous interjections
         msg_counter_since_spontaneous += 1
-        asyncio.create_task(maybe_chime_in_spontaneously(channel, channel_id))
+        asyncio.create_task(maybe_chime_in_spontaneously(channel, channel_id, last_message=message))
 
 if __name__ == "__main__":
     client.run(TOKEN)
