@@ -715,7 +715,7 @@ NPCS = {
     },
     "phoebe": {
         "name": "Phoebe",
-        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1573383262326489189/phoebe.png?ex=6b01ced9&is=6b007d59&hm=757e8d7bca54cc3392da2f708c061343d2249028c68e6269e2fd2f780d5782b2&",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1573384920754290738/phoebe_dumbbell.png?ex=6b01d065&is=6b007ee5&hm=e424108e8e46cc6503d9fbd14e618a24b511cc7b9f4f392fd04c4adc2c698a59&",
         "style": "bean"  # Phoebe never calls AI - hardcoded bean phrases only
     }
 }
