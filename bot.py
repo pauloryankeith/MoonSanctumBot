@@ -711,6 +711,11 @@ NPCS = {
             "4. NO BLACKSMITHING MATH: If asked about anvil upgrades or ore percentages, scoff lazily: 'Do I look like a blacksmith to you? Go bother the red-eyed elf girl or the level 255 dude before I charge you 500 yen for wasting my breathing time.' "
             "5. Always reply in 1-2 dry, hilarious, 4th-wall breaking sentences."
         )
+    },
+    "phoebe": {
+        "name": "Phoebe",
+        "avatar": "https://cdn.discordapp.com/attachments/1572079602719789229/1383797291516653598/phoebe.png",
+        "style": "bean"  # Phoebe never calls AI - hardcoded bean phrases only
     }
 }
 
@@ -910,6 +915,16 @@ GINTOKI_AMBIENT_LINES = [
     "Listen up, {member}. A man who spends all his youth grinding digital ores in a cave will end up with high-tier gear and zero social skills. Put the pickaxe down and read some Weekly Shonen Jump."
 ]
 
+# Phoebe (Bean) Ambient Lines — she only ever says her 3 phrases
+PHOEBE_AMBIENT_LINES = [
+    "phoebe chupi?",
+    "phoebebe?",
+    "phoebe",
+    "phoebe chupi?",
+    "phoebe",
+    "phoebebe?",
+]
+
 AMBIENT_POOLS = {
     "yuzuha": YUZUHA_AMBIENT_LINES,
     "cid": CID_AMBIENT_LINES,
@@ -918,8 +933,104 @@ AMBIENT_POOLS = {
     "aurora": AURORA_AMBIENT_LINES,
     "kazuma": KAZUMA_AMBIENT_LINES,
     "aqua": AQUA_AMBIENT_LINES,
-    "gintoki": GINTOKI_AMBIENT_LINES
+    "gintoki": GINTOKI_AMBIENT_LINES,
+    "phoebe": PHOEBE_AMBIENT_LINES
 }
+
+
+# ── Phoebe Bean System ─────────────────────────────────────────────────────────
+# Phoebe tracks the message count and timestamp for her random bean drops
+last_phoebe_time = 0
+phoebe_msg_counter = 0
+PHOEBE_VIBE_MAP = {
+    "hype":    "phoebe",        # she's hyped with everyone
+    "sad":     "phoebebe?",     # she noticed something is wrong
+    "confused":"phoebe chupi?", # she's also confused
+    "chill":   "phoebebe?",     # she's curious about the convo
+    "dead":    "phoebe chupi?", # she woke up and is asking what's going on
+    "chaotic": "phoebe chupi?", # she wandered into the chaos
+    "drama":   "phoebebe?",     # she wandered into the drama
+}
+
+async def phoebe_vibe_response(channel_id: int) -> str:
+    """Calls Groq/Gemini with a tiny prompt to classify the chat vibe, returns Phoebe's matching phrase."""
+    recent_msgs = list(CHAT_HISTORY.get(channel_id, []))
+    if not recent_msgs:
+        return "phoebe chupi?"
+
+    snippet = "\n".join(recent_msgs[-5:])
+    vibe_prompt = (
+        f"Chat log:\n{snippet}\n\n"
+        "What is the single-word vibe of this chat? Choose EXACTLY one of: "
+        "hype, sad, confused, chill, dead, chaotic, drama\n"
+        "Reply with ONLY the single word, nothing else."
+    )
+
+    vibe = None
+    if GROQ_KEY:
+        try:
+            result = await call_groq_async(vibe_prompt, model="qwen/qwen3.8-27b", max_tokens=5)
+            if result:
+                vibe = result.strip().lower().split()[0]
+        except Exception as e:
+            print(f"Phoebe vibe Groq error: {e}")
+
+    if not vibe and ai_client:
+        try:
+            res = await asyncio.wait_for(
+                asyncio.to_thread(ai_client.models.generate_content, model="gemini-3.1-flash-lite", contents=vibe_prompt),
+                timeout=5.0
+            )
+            if res and res.text:
+                vibe = res.text.strip().lower().split()[0]
+        except Exception as e:
+            print(f"Phoebe vibe Gemini error: {e}")
+
+    return PHOEBE_VIBE_MAP.get(vibe, random.choice(["phoebe chupi?", "phoebebe?", "phoebe"]))
+
+
+async def phoebe_bean_loop():
+    """Phoebe randomly wakes up every 20-30 messages and reads the room vibe."""
+    global last_phoebe_time, phoebe_msg_counter
+    await client.wait_until_ready()
+    await asyncio.sleep(60)  # give bot time to settle
+
+    while not client.is_closed():
+        try:
+            await asyncio.sleep(30)  # check every 30 seconds
+
+            current_time = asyncio.get_event_loop().time()
+            # Phoebe appears after 20-30 messages AND at least 10 min since last appearance
+            bean_threshold = random.randint(20, 35)
+            if phoebe_msg_counter < bean_threshold or (current_time - last_phoebe_time) < 600:
+                continue
+
+            # Find the main chat channel
+            target_channel = None
+            for guild in client.guilds:
+                for ch in guild.text_channels:
+                    if ch.name.lower() in ["chat", "general", "tavern-chat", "main-chat"]:
+                        target_channel = ch
+                        break
+                if target_channel:
+                    break
+
+            if not target_channel:
+                continue
+
+            # Get the vibe-based phrase
+            phrase = await phoebe_vibe_response(target_channel.id)
+
+            # Reset counters BEFORE sending so we don't double-fire
+            last_phoebe_time = current_time
+            phoebe_msg_counter = 0
+
+            await send_single_npc(target_channel, "phoebe", phrase)
+            print(f"[Phoebe Bean] Vibe drop: '{phrase}'")
+
+        except Exception as e:
+            print(f"Phoebe bean loop error: {e}")
+            await asyncio.sleep(60)
 
 async def tavern_ambient_loop():
     """Periodically generates dynamic mini-conversations between 2-3 tavern NPCs every ~25-35 minutes."""
@@ -1091,7 +1202,7 @@ async def tavern_ambient_loop():
                     chosen_member = random.choice(online_members if online_members else guild_members) if guild_members else None
                     member_str = chosen_member.mention if chosen_member else "everyone"
 
-                    chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith", "aurora", "kazuma", "aqua", "gintoki"])
+                    chosen_npc_key = random.choice(["yuzuha", "cid", "shadow", "john_smith", "aurora", "kazuma", "aqua", "gintoki", "phoebe"])
                     lines_pool = AMBIENT_POOLS.get(chosen_npc_key, YUZUHA_AMBIENT_LINES)
                     line_template = random.choice(lines_pool)
                     ambient_msg = line_template.replace("{member}", member_str)
@@ -1627,6 +1738,7 @@ async def on_ready():
     print("ALL THEFORGE.GG DATABASES + LIVE WEB BROWSING + SLIDING CONTEXT WINDOW + TAVERN AMBIENT LOOP LOADED!")
     # Start the lively tavern ambient chatter loop in the background!
     asyncio.create_task(tavern_ambient_loop())
+    asyncio.create_task(phoebe_bean_loop())
     # Start the daily morning bulletin newspaper delivery loop!
     asyncio.create_task(tavern_daily_bulletin_loop())
 
@@ -2362,6 +2474,8 @@ async def on_message(message: discord.Message):
             return
 
     # Add message to sliding context window
+    global phoebe_msg_counter
+    phoebe_msg_counter += 1
     if channel_id not in CHAT_HISTORY:
         CHAT_HISTORY[channel_id] = deque(maxlen=6)
     CHAT_HISTORY[channel_id].append(f"{author_name}: {content}")
@@ -2379,6 +2493,7 @@ async def on_message(message: discord.Message):
     is_john_smith = bool(re.search(r"\b(john smith|johnsmith)\b", content_lower))
     is_shadow = bool(re.search(r"\b(shadow|lord shadow)\b", content_lower)) and not is_john_smith
     is_cid = bool(re.search(r"\b(cid|kagenou)\b", content_lower)) and not (is_shadow or is_john_smith)
+    is_phoebe = bool(re.search(r"\b(phoebe|phoebebe|phoebe chupi)\b", content_lower))
     is_bot_pinged = client.user in message.mentions
 
     # Check Discord's native Reply feature
@@ -2416,10 +2531,12 @@ async def on_message(message: discord.Message):
                     replied_to_npc = "shadow"
                 elif "cid" in r_name:
                     replied_to_npc = "cid"
+                elif "phoebe" in r_name:
+                    replied_to_npc = "phoebe"
         except Exception as e:
             print(f"Reply resolution error: {e}")
 
-    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_gintoki or is_cid or is_shadow or is_john_smith or is_bot_pinged or replied_to_npc
+    has_npc_trigger = is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_gintoki or is_cid or is_shadow or is_john_smith or is_phoebe or is_bot_pinged or replied_to_npc
 
     if has_npc_trigger:
         current_time = asyncio.get_event_loop().time()
@@ -2427,18 +2544,20 @@ async def on_message(message: discord.Message):
             return
 
         target_npc = (
-            "gintoki" if is_gintoki else (
-                "aqua" if is_aqua else (
-                    "kazuma" if is_kazuma else (
-                        "aurora" if is_aurora else (
-                            "yukime" if is_yukime else (
-                                "john_smith" if is_john_smith else (
-                                    "shadow" if is_shadow else (
-                                        "cid" if is_cid else (
-                                            "shin" if is_shin else (
-                                                "schnee" if is_schnee else (
-                                                    "tiera" if is_tiera else (
-                                                        "yuzuha" if is_yuzuha else replied_to_npc
+            "phoebe" if is_phoebe else (
+                "gintoki" if is_gintoki else (
+                    "aqua" if is_aqua else (
+                        "kazuma" if is_kazuma else (
+                            "aurora" if is_aurora else (
+                                "yukime" if is_yukime else (
+                                    "john_smith" if is_john_smith else (
+                                        "shadow" if is_shadow else (
+                                            "cid" if is_cid else (
+                                                "shin" if is_shin else (
+                                                    "schnee" if is_schnee else (
+                                                        "tiera" if is_tiera else (
+                                                            "yuzuha" if is_yuzuha else replied_to_npc
+                                                        )
                                                     )
                                                 )
                                             )
@@ -2470,6 +2589,20 @@ async def on_message(message: discord.Message):
                 target_npc = "tiera"
             else:
                 target_npc = "schnee"
+
+        # ── Phoebe Bean: she never calls AI — just picks her phrase by context ──
+        if target_npc == "phoebe" or (is_phoebe and not (is_shin or is_schnee or is_tiera or is_yuzuha or is_yukime or is_aurora or is_kazuma or is_aqua or is_gintoki or is_cid or is_shadow or is_john_smith)) or replied_to_npc == "phoebe":
+            # Pick phrase based on message context
+            if content.endswith("?") or "?" in content:
+                bean_reply = "phoebe chupi?"
+            elif any(w in content_lower for w in ["yes", "yeah", "yep", "sure", "ok", "okay", "agreed", "same", "fr", "facts", "true", "right"]):
+                bean_reply = "phoebe"
+            else:
+                bean_reply = "phoebebe?"
+            last_ai_time = asyncio.get_event_loop().time()
+            CHAT_HISTORY[channel_id].append(f"Phoebe: {bean_reply}")
+            await send_single_npc(channel, "phoebe", bean_reply)
+            return
 
         ai_reply = await ask_gemini_npc(channel_id, target_npc, author_name, content, reply_context, user_id=message.author.id)
         if ai_reply:
